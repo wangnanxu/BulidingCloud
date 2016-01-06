@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
+		<script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+		<script src="js/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+		<title></title>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_SendSpace">
+			<style>
+				#phototype-listbox-popup {
+					width: 100%;
+					top: 20px;
+					left: 0;
+				}
+			</style>
+			<div data-role="header" data-position="fixed">
+				<a href="#" onclick="GotoSceneItem()">[取消]</a>
+				<h1></h1>
+				<a href="#" onclick="AddComplate();">[完成]</a>
+			</div>
+			<div data-role="content">
+				<select name="day" id="phototype" data-native-menu="false">
+					<option value="2" tabindex="0">过程</option>
+					<option value="4" tabindex="1">安检</option>
+					<option value="16" tabindex="2">交底</option>
+					<option value="8" tabindex="3">临检</option>
+					<option value="64" tabindex="4">完工</option>
+				</select>
+				<div class="ui-field-contain" style="border-bottom: solid 1px #00AFEE; padding-bottom: 20px;">
+					<label for="description">描述:</label>
+					<textarea cols="40" rows="8" name="description" id="description"></textarea>
+				</div>
+				<div class="sendpic" id="div_addpic">
+
+					<div id="Gallery">
+						<!--<img class='Gallery' id="hthweqw" src="../img/images/thumb/002.jpg" style="width: 100px;" onclick="OpenPhotoSwipeAdd(0)" />
+						<img class="Gallery" id="q42sdwqw" src="../img/images/thumb/005.jpg" style="width: 100px;" onclick="OpenPhotoSwipeAdd(1)" />
+						<img class="Gallery" id="12weqfgfhw" src="../img/images/thumb/008.jpg" style="width: 100px;" onclick="OpenPhotoSwipeAdd(2)" />-->
+					</div>
+
+					<a href="#popupMenu" id="a_addpic" data-rel="popup" data-transition="fade" style="float: left;">
+						<img class="popphoto" id="img_addpic" src="../img/add.png" alt="Paris, France" style="width:50px">
+					</a>
+					<div data-role="popup" data-position-to="window" id="popupMenu" data-theme="b">
+						<ul data-role="listview" data-inset="true" style="min-width:210px;">
+							<li data-role="list-divider">选择图片</li>
+							<li><a href="#" data-rel="back" onclick="GetByCamera();">照相</a>
+							</li>
+							<li><a href="#" data-rel="back" onclick="GetByLocal();">本地相册</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- Root element of PhotoSwipe. Must have class pswp. -->
+			<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+				<div class="pswp__bg"></div>
+				<div class="pswp__scroll-wrap">
+					<div class="pswp__container">
+						<div class="pswp__item"></div>
+						<div class="pswp__item"></div>
+						<div class="pswp__item"></div>
+					</div>
+					<div class="pswp__ui pswp__ui--hidden">
+						<div class="pswp__top-bar">
+							<div class="pswp__counter"></div>
+							<button data-role='none' class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+							<button data-role='none' class="pswp__button pswp__button--share" title="Share"></button>
+							<div class="pswp__preloader">
+								<div class="pswp__preloader__icn">
+									<div class="pswp__preloader__cut">
+										<div class="pswp__preloader__donut"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+							<div class="pswp__share-tooltip">
+							</div>
+						</div>
+						<div class="pswp__caption">
+							<div class="pswp__caption__center"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ML.BC.EnterpriseData.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Departments">
+    <Key>
+      <PropertyRef Name="DepartmentID" />
+    </Key>
+    <Property Name="DepartmentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" />
+    <Property Name="EnterpriseID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="ParentID" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="256" />
+    <Property Name="Available" Type="bit" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EnterpriseProfessions">
+    <Key>
+      <PropertyRef Name="EnterpriseProfessionID" />
+    </Key>
+    <Property Name="EnterpriseProfessionID" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="32" />
+    <Property Name="Available" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EnterprisePropertys">
+    <Key>
+      <PropertyRef Name="EnterprisePropertyID" />
+    </Key>
+    <Property Name="EnterprisePropertyID" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="32" />
+    <Property Name="Available" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Enterprises">
+    <Key>
+      <PropertyRef Name="EnterpriseID" />
+    </Key>
+    <Property Name="EnterpriseID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="ProfessionID" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="PropertyID" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="Province" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="City" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="64" />
+    <Property Name="Telephone" Type="varchar" MaxLength="32" />
+    <Property Name="Fax" Type="varchar" MaxLength="32" />
+    <Property Name="Status" Type="tinyint" Nullable="false" />
+    <Property Name="RegistDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FrontUsers">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="32" />
+    <Property Name="Picture" Type="nvarchar" MaxLength="50" />
+    <Property Name="Password" Type="varchar" MaxLength="32" />
+    <Property Name="EnterpiseID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="DepartmentID" Type="int" />
+    <Property Name="Mobile" Type="varchar" MaxLength="32" />
+    <Property Name="RegistDate" Type="datetime" Nullable="false" />
+    <Property Name="LastDate" Type="datetime" />
+    <Property Name="LastIP" Type="varchar" MaxLength="32" />
+    <Property Name="LoginByDesktop" Type="bit" Nullable="false" />
+    <Property Name="LoginByMobile" Type="bit" Nullable="false" />
+    <Property Name="Closed" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MaterialType">
+    <Key>
+      <PropertyRef Name="MaterialTypeID" />
+    </Key>
+    <Property Name="MaterialTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Available" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Projects">
+    <Key>
+      <PropertyRef Name="ProjectID" />
+    </Key>
+    <Property Name="ProjectID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="128" />
+    <Property Name="EnterpriseID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="Departments" Type="varchar" MaxLength="256" />
+    <Property Name="Managers" Type="varchar" MaxLength="256" />
+    <Property Name="Roles" Type="varchar" MaxLength="256" />
+    <Property Name="RegistDate" Type="datetime" Nullable="false" />
+    <Property Name="BeginDate" Type="datetime" />
+    <Property Name="EndDate" Type="datetime" />
+    <Property Name="Status" Type="tinyint" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RFAAuthorizations">
+    <Key>
+      <PropertyRef Name="RoleID" />
+      <PropertyRef Name="FunctionID" />
+    </Key>
+    <Property Name="RoleID" Type="int" Nullable="false" />
+    <Property Name="FunctionID" Type="varchar" MaxLength="256" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RFAFunctions">
+    <Key>
+      <PropertyRef Name="FunctionID" />
+    </Key>
+    <Property Name="FunctionID" Type="varchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="MyID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="ParentID" Type="varchar" MaxLength="256" Nullable="false" />
+    <Property Name="Desription" Type="varchar" MaxLength="256" />
+    <Property Name="Available" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RFARoles">
+    <Key>
+      <PropertyRef Name="RoleID" />
+    </Key>
+    <Property Name="RoleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="OwnerID" Type="varchar" MaxLength="256" />
+    <Property Name="Description" Type="nvarchar" MaxLength="256" />
+    <Property Name="Available" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Scenes">
+    <Key>
+      <PropertyRef Name="SceneID" />
+    </Key>
+    <Property Name="SceneID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="128" />
+    <Property Name="EnterpriseID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="ProjectID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="ParentSceneID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="Woker" Type="varchar" MaxLength="2000" />
+    <Property Name="Address" Type="varchar" MaxLength="256" />
+    <Property Name="LatitudeAndLongitude" Type="varchar" MaxLength="50" />
+    <Property Name="RegistDate" Type="datetime" Nullable="false" />
+    <Property Name="BeginDate" Type="datetime" />
+    <Property Name="EndDate" Type="datetime" />
+    <Property Name="Type" Type="varchar" MaxLength="256" />
+    <Property Name="Status" Type="tinyint" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+    <Property Name="HasData" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SceneTypes">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="ParentID" Type="int" />
+    <Property Name="Available" Type="bit" Nullable="false" />
+    <Property Name="EnterpriseID" Type="varchar" MaxLength="32" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SyncState">
+    <Key>
+      <PropertyRef Name="SyncStateID" />
+    </Key>
+    <Property Name="SyncStateID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ActionType" Type="tinyint" Nullable="false" />
+    <Property Name="SyncTime" Type="datetime" Nullable="false" />
+    <Property Name="UserID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="DeviceID" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserLoginLog">
+    <Key>
+      <PropertyRef Name="UserLoginLogID" />
+    </Key>
+    <Property Name="UserLoginLogID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="32" Nullable="false" />
+    <Property Name="IP" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Time" Type="datetime" Nullable="false" />
+    <Property Name="Device" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Status" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="UserLoginState">
+    <Key>
+      <PropertyRef Name="UserLoginStateID" />
+    </Key>
+    <Property Name="UserLoginStateID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="UserName" Type="varchar" MaxLength="32" />
+    <Property Name="LoginIP" Type="nvarchar" MaxLength="32" />
+    <Property Name="Device" Type="nvarchar" MaxLength="50" />
+    <Property Name="LoginToken" Type="varchar" MaxLength="1000" />
+    <Property Name="LoginTime" Type="datetime" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserRoles">
+    <Key>
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="RoleID" />
+    </Key>
+    <Property Name="UserID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="RoleID" Type="int" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="MLBCEnterpriseDataStoreContainer">
+    <EntitySet Name="Departments" EntityType="Self.Departments" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EnterpriseProfessions" EntityType="Self.EnterpriseProfessions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EnterprisePropertys" EntityType="Self.EnterprisePropertys" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Enterprises" EntityType="Self.Enterprises" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="FrontUsers" EntityType="Self.FrontUsers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MaterialType" EntityType="Self.MaterialType" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RFAAuthorizations" EntityType="Self.RFAAuthorizations" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RFAFunctions" EntityType="Self.RFAFunctions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RFARoles" EntityType="Self.RFARoles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Scenes" EntityType="Self.Scenes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SceneTypes" EntityType="Self.SceneTypes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SyncState" EntityType="Self.SyncState" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserLoginLog" EntityType="Self.UserLoginLog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserLoginState" EntityType="Self.UserLoginState" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

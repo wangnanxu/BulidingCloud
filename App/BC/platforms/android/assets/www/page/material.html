@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_Material">
+			<div data-role="header" data-position="fixed">
+				<h1>已下载</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" data-icon="arrow-d">已下载</a></li>
+						<li><a href="#" data-icon="bullets" onclick="ChangePage('materialall.html');">资料库</a></li>
+					</ul>
+				</div>
+			</div>
+			<div data-role="content">
+				<div id="wrapper" class="MessageBottom" style="top:100px">
+					<div id="scroller">
+						<!--<input type="search" name="searchmaterial" id="searchmaterial" value="" placeholder="搜素资料...">-->
+						<ul id="materialul" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="搜素资料..."><!---->
+							<!--<div data-role="collapsibleset" data-theme="a" data-content-theme="b">
+								<div data-role="collapsible">
+									<h2>Filtered list</h2>
+									<ul data-role="listview" data-filter="true" data-filter-theme="a" data-divider-theme="b"></ul>
+								</div>
+								<div data-role="collapsible">
+									<h2>Formatted text</h2>
+									<ul data-role="listview" data-theme="a" data-divider-theme="b"> </ul>
+								</div>
+								<div data-role="collapsible">
+									<h2>Thumbnails and split button</h2>
+									<ul data-role="listview" data-split-icon="gear" data-split-theme="a"></ul>
+								</div>
+							</div>-->
+						</ul>
+						<div data-role="popup" id="purchase" data-theme="b">
+							<ul data-role="listview" data-inset="true" style="min-width:210px;">
+								<li data-role="list-divider">选择操作</li>
+								<li><a href="#" onclick="DeleteMaterial()">删除</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul id="dfooterul">
+						<li>
+							<a href="#" onClick="ChangePage(' showMessage.html ')" data-icon="comment" data-transition="none">消息</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('project.html ')" data-icon="cloud" data-transition="none">项目</a>
+						</li>
+						<li><a href="#" data-icon="shop" class="ui-btn-active ui-state-persist">资料</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('userInformation.html ')" data-icon="user" data-transition="none">个人</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

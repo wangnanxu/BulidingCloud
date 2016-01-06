@@ -1,0 +1,12 @@
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\bin\Debug\ML.BC.BCBackData.dll.config
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\bin\Debug\ML.BC.BCBackData.dll
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\bin\Debug\ML.BC.BCBackData.pdb
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\bin\Debug\EntityFramework.dll
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\bin\Debug\EntityFramework.SqlServer.dll
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\bin\Debug\EntityFramework.xml
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\bin\Debug\EntityFramework.SqlServer.xml
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\bin\Debug\zh-Hans\EntityFramework.resources.dll
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\bin\Debug\zh-Hans\EntityFramework.SqlServer.resources.dll
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\obj\Debug\ML.BC.BCBackData.csprojResolveAssemblyReference.cache
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\obj\Debug\ML.BC.BCBackData.dll
+E:\BuildingColud\SourceBranch1\ML.BC.BCBackData\obj\Debug\ML.BC.BCBackData.pdb

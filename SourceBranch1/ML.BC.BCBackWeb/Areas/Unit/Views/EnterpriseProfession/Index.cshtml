@@ -1,0 +1,258 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+@model ML.BC.BCBackWeb.Areas.Unit.Models.EnterpriseProfessionModel
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            企业管理 - <span id="OrganizationName">行业类型</span>
+        </div>
+    </div>
+    <div class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPProfession_Add), "新增", new { @class = "tools_btn", onclick = "Add()" }, new { @class = "btn_Add" }, false, true)
+    
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPProfession_Edit), "编辑", new { @class = "tools_btn", onclick = "Edit()" }, new { @class = "btn_Edit" }, false, true)
+        
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPProfession_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+         
+        @*<a title="查看相关详细信息" class="tools_btn" onclick="info();"><span><b class="btn_Info">查看详细</b></span></a>*@
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true,false)
+
+    </div>
+    <!--搜索-->
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件：
+                        </th>
+
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入名称', icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="Name" id="searchName" />
+                        </td>
+
+                        <td>
+                            <input type="button" onclick="ListGrid()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table id="dg_DataTable" class="easyui-datagrid DataContent"
+           data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,url:'@Html.Url("Unit_default", "GetList", "EnterpriseProfession")', onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'EnterpriseProfessionID',width:50">
+                    编号
+                </th>
+                <th data-options="field:'Name',width:80">
+                    名称
+                </th>
+                <th data-options="field:'Available',width:50,formatter:format,align:'center'">
+                    是否有效
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitForm();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_DataInfo').dialog('close')">
+            取消
+        </a>
+    </div>
+    <!--添加行业类型-->
+    <div id="dlg_DataInfo" class="easyui-dialog dlg_DataInfo" title="行业类型-添加" data-options="buttons: '#dlg-buttons',modal:true">
+        <form id="FormData" class="easyui-form frm" method="post" data-options="">
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        编号[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" id="txtID" name="EnterpriseProfessionID" data-options="required:true,validType:'length[1,1]'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        名称[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" id="txtName" name="Name" data-options="required:true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        是否有效:
+                    </td>
+                    <td>
+                        <select class="easyui-combobox" data-options="panelHeight:'auto',required:true,editable:false" id="txtAvailable" name="Available">
+                            <option value="true" selected="selected">是</option>
+                            <option value="false" >否</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+</div>
+@section scripts{
+    <script type="text/javascript">
+        var funcUrl = '@Html.Url("Unit_default", "Add", "EnterpriseProfession")';
+        function initDataUrl() {
+            var _url = decodeURI('@Html.Url("Unit_default", "GetList", "EnterpriseProfession")');
+            return _url;
+        }
+        function GetSearchParameters() {
+            var parameter = { "Name": $("#searchName").textbox('getValue') };
+            return parameter;
+        }
+
+        function ListGrid() {
+          
+            $("#dg_DataTable").datagrid("options").queryParams = GetSearchParameters();
+                    $("#dg_DataTable").datagrid("reload");
+        }
+        function Add() {
+            
+                funcUrl = '@Html.Url("Unit_default", "Add", "EnterpriseProfession")';
+                $("#FormData").form('clear');
+                $("#txtID").textbox("readonly", "");
+                $("#dlg_DataInfo").dialog({ title: '行业类型-新增' });
+                $("#txtAvailable").combobox("select", "true");
+                $("#txtAvailable").combobox("setText", "是");
+        }
+
+         //编辑
+        function Edit() {
+            funcUrl = '@Html.Url("Unit_default", "Update", "EnterpriseProfession")';
+            var model = {};
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+ 
+                $("#dlg_DataInfo").dialog({ title: '行业类型-编辑' });//放到外面了,会弹出
+                model.EnterpriseProfessionID = row.EnterpriseProfessionID;
+                model.Name = row.Name;
+                model.Available = row.Available;
+                 $("#dlg_DataInfo").dialog('open');
+                $('#FormData').form('clear');
+                $('#FormData').form('load', model);//model可以换成Url加载远程数据如:(/user?id=10)
+                 $("#txtID").textbox("readonly", "readonly");
+ 
+            } else {
+                IsEditData("");
+                return;
+            }
+      
+        }
+        $('#FormData').form({
+            'onLoadSuccess': function (data) {
+                if (data.Available)
+                {
+                    $("#txtAvailable").combobox("select", "true");
+                    $("#txtAvailable").combobox("setText", "是");
+                }
+                else 
+                {
+                    $("#txtAvailable").combobox("setText", "否");
+                }   
+            
+            }
+        });
+        //刷新
+        function Refresh() {
+            $("#dg_DataTable").datagrid("reload");
+        }
+
+        //删除
+        function Delete() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                var EnterpriseProfessionID = row.EnterpriseProfessionID; //获取字段
+                $.messager.confirm("系统提示", "您确认删除?", function (a) {
+                    if (!a) return;
+                    $.getJSON("@Html.Url("Unit_default", "Delete", "EnterpriseProfession")", { EnterpriseProfessionID: EnterpriseProfessionID }, function (data) {
+                        
+                        if (data.Success) {
+                            showTipsMsg("删除成功!", 2000, 0); //自定义提示信息在顶部显示
+                            clickrow = -1;
+                            ListGrid();
+                        } else {
+                            showTipsMsg(data.Message, 2000, 2);
+                        }
+                    });
+                });
+
+            } else {
+                IsDelData("");
+                return;
+            }
+        }
+
+        //提交表单
+        function submitForm() {
+            var actionUrl = funcUrl;
+            $('#FormData').form('submit', {
+                url: actionUrl,
+                onSubmit: function () {
+                    return $(this).form('enableValidation').form('validate');
+                },
+                success: function (data) {
+                    if (typeof (data) != "undefined") {
+                        data = eval("("+data+")");
+                        if (data.Success == true) {
+                            ListGrid();
+                            $("#dlg_DataInfo").dialog('close');
+                            showTipsMsg(data.Message, 2000, 0);
+                            clickrow = -1;
+                        } else {
+                            showTipsMsg(data.Message, 2000, 2);
+                        }
+                    } else {
+                        showTipsMsg(data.Message, 2000, 2);
+                    }
+                }
+            });
+        }
+            function format(value) {
+            if (value == true) {
+
+                return '<span iconCls="icon-ok">是</span>';
+            } else {
+                return '<span iconCls="icon-cancel">否</span>';
+            }
+            }
+       
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+            function ListGrid()
+            {
+                $("#dg_DataTable").datagrid("options").queryParams = GetSearchParameters();
+                $("#dg_DataTable").datagrid("reload");
+                
+            }
+        //
+            $.extend($.fn.validatebox.defaults.rules, {
+                imp: {
+                    validator: function (value, param) {
+                        return /[0-9]|[a-z]|[A-Z]/.test(value);
+                    },
+                    message: '只能输入数字或者英文字母'
+                },
+            })
+    </script>
+}

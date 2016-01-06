@@ -1,0 +1,460 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+@model ML.BC.BCBackWeb.Areas.Account.Models.LoginViewModel
+@{
+     string EnterpriseProfessionUrl = Html.Url("Unit_default", "GetEnterpriseProfessionSimpleList", "EnterpriseProfession");//类型
+    string EnterprisePropertyUrl = Html.Url("Unit_default", "GetEnterprisePropertySimpleList", "PropertyManage");   //性质
+}
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            企业管理 - <span id="OrganizationName">企业列表</span>
+        </div>
+    </div>
+    <div class="tools_bar">
+ 
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+    
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPList_Add), "新增", new { @class = "tools_btn", onclick = "Add()" }, new { @class = "btn_Add" }, false, true)
+        
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPList_Edit), "编辑", new { @class = "tools_btn", onclick = "Edit()" }, new { @class = "btn_Edit" }, false, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPList_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true,false)
+
+    </div>
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件：
+                        </th>
+ 
+                        <td>
+
+                            <input class="easyui-combobox"
+                                   name="ProfessionID" id="ProfessionID"
+                                   data-options="prompt:'请选择行业类型', icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],
+                                   method:'get',
+                                   valueField:'Id',
+                                   textField:'Text',
+                                   panelHeight:'auto',
+                                   prompt:'行业'
+                                   ">
+                         </td>
+                
+          
+                        <td>
+
+                            <input class="easyui-combobox"
+                                   name="PropertyID" id="PropertyID"
+                                   data-options="prompt:'请选择行业性质', icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],
+                                   method:'get',
+                                   valueField:'Id',
+                                   textField:'Text',
+                                   panelHeight:'auto',
+                                   prompt:'性质'
+                                    ">
+
+                        </td>
+
+                        <td>
+
+                            <input class="easyui-textbox" data-options="prompt:'请输入企业名称', icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="Name" id="txtName" />
+
+ 
+                        </td>
+                        <td>
+                            <input type="button" onclick="ListGrid()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table id="dg_DataTable" class="easyui-datagrid DataContent"
+           data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,  onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'Name',width:100">
+
+                    名称
+                </th>
+                <th data-options="field:'ProfessionName',width:40 ,align:'center'">
+                    行业
+                </th>
+                <th data-options="field:'PropertyName',width:40,align:'center'">
+                    性质
+                </th>
+                <th data-options="field:'Address',width:150">
+                    注册地址
+                </th>
+
+                <th data-options="field:'Telephone',width:100">
+                    联系方式
+                </th>
+                <th data-options="field:'Status',width:40,formatter: GetStatusText,align:'center'">
+                    状态
+                </th>
+
+                <th data-options="field:'Deleted',width:40,align:'center',formatter: GetAvailableText">
+                    已删除
+                </th>
+                <th data-options="field:'RegistDate',width:60,align:'center',formatter: GetDateTime">
+
+                    注册时间
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitForm();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_DataInfo').dialog('close')">
+            取消
+        </a>
+    </div>
+    <div id="dlg_DataInfo" class="easyui-dialog dlg_DataInfo" title="企业信息-添加"  data-options="buttons: '#dlg-buttons',modal:true">
+        <form id="FormData" class="easyui-form frm" method="post" data-options="novalidate:true">
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        名称[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Name" data-options="required:true"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        行业[*]:
+                    </td>
+                    <td>
+
+                        <input class="easyui-combobox"
+                               name="ProfessionID" id="ProfessionID2"
+                               data-options="
+                               method:'get',
+                               valueField:'Id',
+                               textField:'Text',
+                               panelHeight:'auto',
+                            required:true,
+                               editable:false
+                               ">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        性质[*]:
+                    </td>
+                    <td>
+
+                        <input class="easyui-combobox"
+                               name="PropertyID" id="PropertyID2"
+                               data-options="
+                               method:'get',
+                               valueField:'Id',
+                               textField:'Text',
+                               panelHeight:'auto',
+                               required:true,
+                               editable:false
+                               ">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        省[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Province" data-options="required:true"/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        城市[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="City" data-options="required:true"/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        注册地址:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Address" data-options="required:false"/>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        联系方式:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Telephone" data-options="required:true,validType:'mobile'" />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        传真:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Fax" data-options="required:false"/>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        状态:
+                    </td>
+                    <td>
+                        <select class="easyui-combobox" data-options="panelHeight:'auto',required:true,editable:false" name="Status">
+                            <option value="0">正常</option>
+                            <option value="1">暂停</option>
+                            <option value="2">关闭</option>
+
+                        </select>
+                        <input type="hidden" name="EnterpriseID" value="" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+    var isAdd = true;
+    var AddEnterpriseUrl = '@Html.Url("Unit_default", "AddEnterprise", "EnterpriseManagement")';
+    var UpdateEnterpriseUrl = '@Html.Url("Unit_default", "UpdateEnterprise", "EnterpriseManagement")';
+    var DeleteEnterpriseUrl = '@Html.Url("Unit_default", "DeleteEnterprise", "EnterpriseManagement")';
+    var dataUrl = '@Html.Url("Unit_default", "GetEnterpriseList", "EnterpriseManagement")';
+    var ProfessionData = [];//行业信息
+    var PropertyData = [];//性质信息
+    function GetProfessionData() {
+        $.getJSON('@EnterpriseProfessionUrl', '', function (data) {
+                 if (data == null || data.length == 0) return;
+                ProfessionData = data;
+                var ProfessionS = $("*[id^='ProfessionID']");
+                if (ProfessionS.length > 0)
+                {
+                    $.each(ProfessionS, function (i, item) {
+                        //alert($(item).attr("id"));
+                        if (item.id !== ""&&item.id!=undefined) {
+                           // $(item).combobox("loadData", data);//不得行
+                             $("#"+item.id).combobox("loadData", data);
+                        }
+                    });
+                }
+             });
+        }
+        function GetPropertyData() {
+            $.getJSON('@EnterprisePropertyUrl', '', function (data) {
+                 if (data == null || data.length == 0) return;
+                 PropertyData = data;
+                 var objs = $("*[id^='PropertyID']");
+                if (objs.length > 0)
+                {
+                    $.each(objs, function (i, item) {
+                        //alert($(item).attr("id"));
+                        if (item.id !== ""&&item.id!=undefined) {
+                             $("#"+item.id).combobox("loadData", data);
+                        }
+                    });
+                }
+             });
+        }
+        //获取行业
+        function GetProfessionText(id)
+        {
+            if (ProfessionData.length > 0)
+            {
+                for (var i in ProfessionData) {
+                    var item = ProfessionData[i];
+                    if (item.Id == id) {
+                        return item.Text;
+                    }
+                }
+                return "";
+            }
+        }
+        //获取性质
+        function GetPropertyText(id) {
+            if (PropertyData.length > 0) {
+                for (var i in PropertyData) {
+                    var item = PropertyData[i];
+                    if (item.Id == id) {
+                        return item.Text;
+                    }
+                }
+                return "";
+            }
+         }
+        //显示状态
+        function GetStatusText(value, row, index) {
+            if (typeof (value) == "undefined") {
+                return "";
+            }
+            if(value==0)
+            {
+                return "正常";
+            } else if (value == 1)
+            {
+                return "暂停";
+            }
+            return "关闭";
+        }
+        //添加
+        function Add() {
+            isAdd = true;
+            $("#dlg_DataInfo").dialog({ title: "企业信息-新增" });
+            $("#dlg_DataInfo").dialog('open');
+            $('#FormData').form('clear');
+            $("#dlg_DataInfo").dialog('center');
+            $('#FormData').form({ url: AddEnterpriseUrl });
+        }
+
+        //编辑
+        function Edit() {
+            isAdd = false;
+            var model = {};
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                //$.messager.alert('Info', row.itemid + ":" + row.productid + ":" + row.attr1);
+                model.EnterpriseID = row.EnterpriseID; model.Name = row.Name; model.ProfessionID = row.ProfessionID
+                model.PropertyID = row.PropertyID;
+                model.Province = row.Province; model.City = row.City; model.Address = row.Address;
+                model.Telephone = row.Telephone; model.Fax = row.Fax; model.Status = row.Status;
+            } else {
+                IsEditData("");
+                return;
+            }
+            //加载数据到表单
+            $("#dlg_DataInfo").dialog({ title: "企业信息-编辑" });
+            $("#dlg_DataInfo").dialog('center');
+            $('#FormData').form({ url: UpdateEnterpriseUrl });
+            $("#dlg_DataInfo").dialog('open');
+            $('#FormData').form('load', model);
+        }
+        function Info() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+            } else {
+                showTipsMsg("您没有选择任何数据!", 2000, 2);
+                return;
+            }
+        }
+        //删除
+        function Delete() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                var EnterpriseID = row.EnterpriseID; //获取字段
+                $.messager.confirm("系统提示", "您确认删除?", function (a) {
+                    if (!a) return;
+                    $.getJSON(DeleteEnterpriseUrl, { EnterpriseID: EnterpriseID }, function (data) {
+                        if (data.Success) {
+                            if (data.Value) {
+                                ListGrid();
+                                showTipsMsg("删除成功!", 2000, 0); //自定义提示信息在顶部显示
+                                clickrow = -1;
+                            } else {
+                                showTipsMsg("删除失败!", 2000, 2);
+                            }
+                        } else {
+                            showTipsMsg(data.Message, 2000, 2);
+                        }
+                    });
+
+                });
+
+            } else {
+                IsDelData(""); //方式1 预先定义的,适合删除时候调用
+                //showTipsMsg("您没有选择数据!", 2000,2); //方式2
+                return;
+            }
+        }
+        function ListGrid(value) {
+            //加载数据
+            $("#dg_DataTable").datagrid("options").queryParams = GetSearchParameters();
+            $("#dg_DataTable").datagrid("load", dataUrl);
+        }
+        
+    
+        function GetSearchParameters() {
+            var ProfessionID = $("#ProfessionID").combobox("getValue"); //alert(ProfessionID);
+            var PropertyID = $("#PropertyID").combobox("getValue");
+            var Name = $("#txtName").textbox("getValue");
+            //var str = "ProfessionID=" + ProfessionID
+            //str += "&PropertyID=" + PropertyID;
+           // str += "&Name=" + Name;
+            //return str;
+            var parameter = { ProfessionID: ProfessionID, PropertyID: PropertyID, Name: Name};
+            return parameter;
+        }
+
+        //提交表单
+        function submitForm() {
+            $('#FormData').form('submit', {
+                onSubmit: function () {
+                    return $(this).form('enableValidation').form('validate');
+                },
+                success: function (data) {
+                    if (typeof (data) != "undefined") {
+                        data = $.parseJSON(data);
+                        if (data.Success == true) {
+                            $("#dlg_DataInfo").dialog('close');
+                            ListGrid();
+                            if (isAdd) {
+                                showTipsMsg("系统提示:添加企业成功!", 2000, 0);
+                                clickrow = -1;
+                            } else {
+                                showTipsMsg("系统提示:修改企业成功!", 2000, 0);
+                                clickrow = -1;
+                            }
+
+                        } else {
+                            showTipsMsg(data.Message, 2000, 2);
+                        }
+                    } else {
+                        if (isAdd) {
+                            showTipsMsg("系统提示:添加企业失败!", 2000, 2);
+                        } else {
+                            showTipsMsg("系统提示:修改企业失败!", 2000, 2);
+                        }
+                    }
+
+                }
+            });
+        }
+      
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+        $(function () {
+            ListGrid();
+            $.ajaxSetup({
+                async:false
+            })
+            GetProfessionData();
+            GetPropertyData();
+            $.ajaxSetup({
+                async: true
+            })
+            
+        })
+    </script>
+}

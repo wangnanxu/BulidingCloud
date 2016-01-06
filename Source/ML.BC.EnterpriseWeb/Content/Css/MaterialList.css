@@ -1,0 +1,53 @@
+﻿.txtbox {
+    width: 100px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+    .txtbox:hover {
+        white-space: normal;
+        text-overflow: initial;
+    }
+
+.state {
+    position: relative;
+    top: -16px;
+    left: 100px;
+}
+
+.borderTD {
+    border-bottom: 1px dashed #ccc;
+}
+
+.FileTD {
+    border-bottom: 1px dashed #ccc;
+    overflow-y: auto;
+}
+
+.close_img {
+    position: absolute;
+    left: 206px;
+    top: -8px;
+    background: url(/Content/Images/img_close.png);
+    background-size: 15px 15px;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    border-radius: 50% 50%;
+}
+
+.cancel {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    border: 1px solid #bbb;
+    cursor:pointer;
+    background:rgb(252,252,252);
+}
+    .cancel:hover {
+        background:rgb(226,226,226);
+    }
+.fittd {
+    width:160px !important
+}

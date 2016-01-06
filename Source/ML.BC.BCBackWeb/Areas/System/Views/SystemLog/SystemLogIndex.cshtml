@@ -1,0 +1,304 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            平台管理 - <span id="OrganizationName">系统日志</span>
+        </div>
+    </div>
+    <div class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+  
+        @Html.Button(() => HasFunction(Functions.Root_SysManagement_SysLogManagement_ViewDetail), "查看详情", new { @class = "tools_btn", onclick = "Info()" }, new { @class = "btn_Add" }, false, true)
+        @Html.Button(() => HasFunction(Functions.Root_SysManagement_SysLogManagement_Down), "下载", new { @class = "tools_btn", onclick = "Down()" }, new { @class = "btn_Add" }, false, true)    
+        @Html.Button(() => HasFunction(Functions.Root_SysManagement_SysLogManagement_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+      
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true,false)
+      
+    </div>
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0"  class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件：
+                        </th>
+                        <td>
+                            <select class="easyui-combobox" id="txtLogType" name="LogType"
+                                    data-options="panelHeight:'auto',required:true,onSelect:LogTypeChange">
+                                <option value="0">全部(ALL)</option>
+                                <option value="1">错误(Error)</option>
+                                <option value="2">调试(Debug)</option>
+                                <option value="3">详情(Info)</option>
+                            </select>
+
+                        </td>
+                        <td>
+                            <input class="easyui-datebox" data-options="prompt:'创建日期开始', icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="StartDate" id="txtStartDate" />
+ 
+                        </td>
+           
+                        <td>
+                            <input class="easyui-datebox" data-options="prompt:'创建日期结束', icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="EndDate" id="txtEndDate" />
+                        </td>
+                        <td>
+                            <input type="button" onclick="ListGrid()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="dlg_SystemLogInfo" class="easyui-dialog" title="日志详情" style="width:95%; height: 95%; padding: 10px;" data-options="modal:true,draggable:false,closed:true">
+        <!--对话框数据加载动画-->
+        <img src="/Content/Images/loading.gif" id="Loading-small-dlg" class="Loading-small-dlg" style="display: block; position: absolute; height: 30px; width: 30px; z-index: 99999; top: 50%; left: 50%; float: left; ">
+        <!--对话框数据加载动画-->
+        <div id="detail-content" style="width:100%;height:100%;overflow-y:scroll;overflow-wrap:break-word;overflow-x:auto">
+
+        </div>
+        <!--页码容器-->
+        <div id="pager" class="easyui-pagination pager" style="position:absolute;background-color:white;border: 1px solid #ddd;bottom: 5px; left: 5px; right: 5px;display:none"> </div>
+    </div>
+
+    <table id="dg_DataTable" class="easyui-datagrid DataContent"
+           data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,    onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'FileName',width:80">
+                    文件名
+                </th>
+                <th data-options="field:'FileSize',width:100,formatter:GetFileSizeText">
+                    文件大小
+                </th>
+                <th data-options="field:'CreateTime',width:100,formatter:GetDateTime">
+                    创建时间
+                </th>
+                <th data-options="field:'UpdateTime',width:100,formatter:GetDateTimeYYYY_MM_HH_mm_ss">
+                    最后修改时间
+                </th>
+            </tr>
+        </thead>
+    </table>
+    @*<div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitForm();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_DataInfo').dialog('close')">
+            取消
+        </a>
+    </div>*@
+ </div>
+ 
+
+@section scripts{
+
+    <script type="text/javascript">
+    var dataUrl = '@Html.Url("System_default", "GetSystemLogList", "SystemLog")';
+    var dataInfoUrl = '@Html.Url("System_default", "GetSystemLogInfoByFullName", "SystemLog")';
+        var DownUrl = '@Html.Url("System_default", "SystemLogDown", "SystemLog")';
+
+        var curLogType = 0; var curFileName = "";
+        //获取文件大小显示
+        function GetFileSizeText(value, row, index) {
+            var Unit = "Byte";
+            if (value > 1024) {
+                value = (value / 1024).toFixed(2);
+                Unit = "KB";
+                 if (value > 1024) {
+                    value = (value / 1024).toFixed(2);
+                    Unit = "MB";
+                    if (value > 1024) {
+                        value = (value / 1024).toFixed(2);
+                        Unit = "GB";
+                    }
+                }
+
+            }
+            value += Unit;
+            return value;
+        }
+
+        function GetSearchParameters() {
+            //var LogType = $("#txtLogType").datebox("getValue");
+            var StartDate = $("#txtStartDate").datebox("getValue");
+            var EndDate = $("#txtEndDate").datebox("getValue");
+            var parameter = { LogType: curLogType, StartDate: StartDate, EndDate: EndDate };
+            return parameter;
+        }
+
+
+        $('#FormData').form({
+            'onLoadSuccess': function (data) {
+             }
+        });
+
+        function LogTypeChange(rec)
+        {
+            curLogType = rec.value;
+        }
+        function dg_DataTableChange(rec) {
+            curFileName= rec.FileName
+        }
+        function Info() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                var title = row.FileName;
+                var FileName = title;
+                var LogType = row.LogType;
+                var FullName = row.FullName;
+                $("#dlg_SystemLogInfo").dialog('setTitle',title);
+                $("#dlg_SystemLogInfo").dialog('open');
+                GetSystemLogContent(FullName);
+            } else {
+                showTipsMsg("您没有选择任何数据!", 2000, 2);
+                return;
+            }
+        }
+
+        function GetSystemLogContent(FullName)
+        {
+            showLoadingDlg();
+            var jjs = { "Success": true, "Value": "000000", "Message": "" };
+            $.ajax({
+                type: "post",
+                url: dataInfoUrl,
+                 //dataType: "json",
+                data: { FullName: FullName },
+                success: function (datas) {
+                    
+                    if (datas != null && datas != "") {
+                        LogContentHandle(datas);
+                        // datas = eval("("+ datas+")");
+                        //    if (typeof (datas) == "string") {
+                        //        datas = eval(datas);
+                        //    }
+                        //    if (datas.Success == true) {
+                        //        //成功获取到数据 开始处理
+                        //        LogContentHandle(datas.Value);
+                        //        $("#pager").pagination('options').total = datas.Value.total;
+                        //        $("#pager").pagination('refresh');
+                        //    }
+                        //    else {
+                        //        showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                        //        LogContentHandle(datas.Message); 
+                        //    }
+
+                    } else {
+                        showTipsMsg("该日志暂无数据!", 2000, 2);
+                    }
+                }
+                //,
+                //error: function (v1, v2) {
+                //    alert(v1+";;"+v2)
+                //    showTipsMsg("网络错误!", 4000, 2);
+                //}
+                , complete: function () {
+                    hideLoadingDlg();
+                }
+            });
+        }
+
+        function Down() {
+            //下载
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                var FullName = row.FullName;
+                var url = DownUrl + "?FullName=" + FullName;
+                url = decodeURIComponent(url);
+                url = encodeURI(url);
+                //toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no
+                window.open(url, "_blank", "width:500px,height=500px,location=no");
+            } else {
+                showTipsMsg("您没有选择任何数据!", 2000, 2);
+                return;
+            }
+        }
+        //删除
+        function Delete() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                var FileName = row.FileName; //获取字段
+                var LogType = row.LogType;
+
+                $.messager.confirm("系统提示", "您确认删除?", function (a) {
+                    if (!a) return;
+                    $.post("@Html.Url("System_default", "DeleteSystemLog", "SystemLog")", { FileName: FileName, LogType: LogType }, function (data) {
+                    if (data.Success) {
+                            showTipsMsg("删除成功!", 2000, 0); //自定义提示信息在顶部显示
+                            ListGrid();
+                    } else {
+                        showTipsMsg('删除失败,请稍候再试!', 2000, 2);
+                    }
+                });
+
+            });
+
+        } else {
+            IsDelData(""); //方式1 预先定义的,适合删除时候调用
+            //showTipsMsg("您没有选择数据!", 2000,2); //方式2
+            return;
+        }
+    }
+    //生成分页组件  页码回调;按当前分页情况获取服务器数据并处理
+    function getPager(total) {
+        $("#pager").pagination({
+            total: total,//总的记录数
+            pageSize: 10,//每页显示的大小。
+            pageList: [1, 10, 20, 50, 100],//选择每页显示的记录数的下拉框的值。
+            onSelectPage: function (pageNumber, pageSize) {
+                $.ajax({
+                    type: "post",
+                    url: dataInfoUrl,
+                    data: { LogType: curLogType, FileName: curFileName, page: pageNumber, rows: pageSize },
+                    dataType: "json",
+                    success: function (datas) {
+                        if (datas.Success == true) {
+                            //成功获取到数据 开始处理
+                            LogContentHandle(datas.Value);
+                            $("#pager").pagination('options').total = datas.Value.total;
+                            $("#pager").pagination('refresh');
+                        }
+                        else {
+                            showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                        }
+                    },
+                    error: function () {
+                        showTipsMsg("网络错误!", 4000, 2);
+                    }
+                });
+            }
+        });
+
+
+    }
+    function LogContentHandle(data) {
+        if (data != "") {
+            $("#detail-content").html(data);
+        } else {
+
+            $("#detail-content").html("暂时没有数据!");
+        }
+    }
+
+    function ListGrid() {
+        //加载远程数据
+        $("#dg_DataTable").datagrid("options").queryParams = GetSearchParameters();//添加附加参数
+        $("#dg_DataTable").datagrid("load", dataUrl);
+    }
+    
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+
+    $(function () {
+        ListGrid();
+    })
+    </script>
+}

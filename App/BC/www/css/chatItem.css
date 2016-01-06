@@ -1,0 +1,58 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+#temp li{
+	padding: 0 10px;
+	height: auto;
+	font-size: 14px;
+	background: #fff;
+}
+.clear{ clear:both}
+.chatItem{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+.chatItemI{
+	display: block;
+	height: 100%;
+	width: 45px;
+}
+.me .chatItemI,.me .chatItemTC{
+	float: right;
+	text-align: right;
+}
+.you .chatItemI,.you .chatItemTC{
+	float: left;
+	text-align: left;
+}
+.chatItemI img{
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	border: solid 1px #00AFEE;
+}
+.chatItemTC{
+	display: block;
+	width: 80%;
+	padding: 0 10px;
+}
+.chatItemTime{
+	padding-bottom: 6px;
+}
+.chatItemContent{
+	padding-bottom: 10px;
+	background:-webkit-gradient(linear, 0 0, 0 100%, from(#b4d174), to(#a4c363));
+	border-bottom: 1px solid #b9cf8b;
+    border-left: 1px solid #ccdea3;
+    border-radius: 4px;
+    border-top: 1px solid #dce6c8;
+    border-right: 1px solid #dce6c8;
+}

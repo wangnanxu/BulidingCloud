@@ -1,0 +1,70 @@
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="msapplication-tap-highlight" content="no" />
+		<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/zTreeStyle.css"/>
+		<script src="js/jquery-1.11.0.min.js"></script>
+		<script src="js/jquery.mobile-1.4.5.min.js"></script>
+		<!--服务器通讯层-->
+		<script src="js/Communication/severDataRequest.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Communication/upload.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Communication/download.js" type="text/javascript" charset="utf-8"></script>
+		<!--数据层-->
+		<script src="js/Model/database.js" type="text/javascript" charset="utf-8"></script>
+		<!--控制层-->
+		<script src="js/Control/device/fileErrorcode.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/device/floder.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/device/camera.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/addScene_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/addSceneMessage_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/login_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/material_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/project_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/scene_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/sceneItem_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/sendMessage_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/showMessage_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/userInformation_C.js" type="text/javascript" charset="utf-8"></script>
+		<!--显示层-->
+		<script src="js/View/comm/ChangePage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/comm/jquery.ztree.core-3.5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/comm/jquery.ztree.excheck-3.5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/addScene_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/addSceneMessage_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/login_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/material_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/project_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/scene_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/sceneItem_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/sendMessage_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/showMessage_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/userInformation_V.js" type="text/javascript" charset="utf-8"></script>
+		<title>施工云平台(BC)</title>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_Login">
+			<div data-role="content">
+				<div class="ui-field-contain">
+					<label for="account">账号：</label>
+					<input type="text" name="account" id="account" placeholder="请输入账号" value="">
+				</div>
+				<div class="ui-field-contain">
+					<label for="password">密码：</label>
+					<input type="password" name="password" id="password" placeholder="请输入密码" value="">
+				</div>
+				<div class="ui-field-contain">
+					<a href="#" data-role="button" data-transition="none" onclick="Login()">登陆 </a>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="js/Control/index_C.js"></script>
+	</body>
+
+</html>

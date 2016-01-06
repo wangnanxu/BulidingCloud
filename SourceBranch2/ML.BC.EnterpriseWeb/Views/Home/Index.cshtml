@@ -1,0 +1,77 @@
+﻿@{
+    string _Name = BCSession.User == null ? "请登录" : BCSession.User.UserName;
+
+
+}
+
+<div id="Container">
+    <div id="Header">
+        <div id="HeaderLogo">
+            <img style="" src="~/content/Images/logo.png">
+        </div>
+        <div id="Headermenu">
+            <ul id="topnav">
+                <li class="list" id="metnav_1">
+                    <a id="nav_1" href="javascript:;" onclick="AddTabMenu('c1082f45-b8b6-493e-951a-9052706e1bb7', '@Html.Url("Account_default", "MessageIndex", "MessageManagement")', '消息', 'icon-Message', 'true')">
+                        <span class=" c1">
+                        </span>我的消息
+                    </a>
+                </li>
+                <li onclick="" class="list" id="metnav_3">
+                    <a id="nav_3" href="javascript:;" onclick="AddTabMenu('c1082f45-b8b6-493e-951a-9052706e1bb7', '@Html.Url("Account_default", "Index", "PersonalInfoManagment")', '个人信息', 'icon-PersonalSetting', 'true')">
+                        <span class="c3"></span>个人信息
+                    </a>
+                </li>
+                <li onclick="LoginOut();" class="list" id="metnav_5">
+                    <a id="nav_4" href="javascript:">
+                        <span class="c4"></span>安全退出
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="MainContent">
+        <div class="navigation leftmenu" id="MenuContent">
+            @Html.Partial("_NavigateMenu")
+        </div>
+        <div id="ContentPannel" class="Content" style="float:none;height:645px;position:relative">
+     </div>
+    <div id="botton_toolbar" class="">
+        <div class="item">
+            <a id="datetime" class="datetime" title="">2015.3.15 12:30</a>
+            <span class="south-separator">&nbsp;</span>
+        </div> 
+         <div class="item">
+             
+            &nbsp;账号&nbsp;:<a id="LoginAccount">@_Name</a> <span class="south-separator"> &nbsp;</span>
+        </div>
+   
+            <div class="item">
+
+                所在部门&nbsp;: <a  title="">@ViewBag.depart</a>  
+                <span class="south-separator">&nbsp; </span>
+            </div>
+            <div class="item" style="text-align: right; float: right; padding-right: 30px">
+                <span class="south-separator">&nbsp;</span>版本:V1.0 
+            </div>
+        </div>
+</div>
+<div id="MsgContainer" class="MsgContainer">
+    <div id="SysMsg_" class="Msg" style="display:none">
+        <!--       <div id="sub" style="position:absolute;top:50%"> <div id="content" style="position:relative;top:-50%">企业后端....</div> </div>-->
+    </div>
+    <div id="SysMsg_0" class="Msg MsgSuccess" style="display:none">
+        成功后的信息..
+    </div>
+    <div id="SysMsg_1" class="Msg MsgWaiting" style="display:none">
+        等待中的信息
+    </div>
+    <div id="SysMsg_2" class="Msg MsgError" style="display:none">
+        错误时候的信息
+    </div>
+    <div id="SysMsg_3" class="Msg MsgInfo" style="display:none">
+        其他提示信息
+    </div>
+</div>
+<div id="Loading" class="Loading" style="display:none">
+</div>

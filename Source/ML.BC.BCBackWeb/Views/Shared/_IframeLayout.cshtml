@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=0.5, minimum-scale=0.2, maximum-scale=5.0, user-scalable=yes" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.png" rel="shortcut icon" type="image/png" />
+
+    @Styles.Render("~/Content/Js/EasyUI/themes/gray/easyui.css")
+    @Styles.Render("~/Content/Js/EasyUI/themes/icon.css")
+    @Styles.Render("~/Content/Css/Comm.css")
+    @Styles.Render("~/Content/Css/Buttons.css")
+    @Scripts.Render("~/Content/Js/jquery.min.js")
+    @Scripts.Render("~/Content/Js/EasyUI/jquery.easyui.min.js")
+    @RenderSection("CSS", false)
+</head>
+<body style="height:100%;">
+    <div id="Loading" class="Loading" style="display:block"></div>
+    @RenderBody()
+   
+    @Scripts.Render("/Content/Js/FunctionJS.js")
+    @Scripts.Render("/Content/Js/DateFormat.js")
+
+
+    @Scripts.Render("~/Content/Js/EasyUI/locale/easyui-lang-zh_CN.js")
+    @Scripts.Render("~/Content/Js/Comm.js")
+    <script type="text/javascript">
+        var curorientation = false;//1:横屏,2竖;
+        var curscWidth = 0;
+        function orientationchangeHandeler(evt) {
+            // alert('evt.orientation=' + window.orientation);
+            var scwidth = window.screen.width;
+            if (scwidth != curscWidth) {
+                if (scwidth > curscWidth) {
+                    curorientation = 1;
+                    //横屏了
+                } else {
+                    curorientation = 2;
+                }
+                curscWidth = scwidth;
+
+            }
+        }
+
+        $(function () {
+            if (window.orientation != undefined) {
+                //移动端执行的
+                if (window.orientation == 0 || window.orientation == 180 || window.orientation == -180) {
+                    //竖屏
+                    curorientation = 2;
+                } else {
+                    //横
+                    curorientation = 1;
+                }
+                var orientationName = "onorientationchange" in window ? "orientationchange" : "resize";
+                window.addEventListener(orientationName, orientationchangeHandeler, false);
+                // $(window).bind(orientationName,orientationchangeHandeler)
+            }
+
+             $.parser.onComplete = function (context) {
+                loadinghide();
+            }
+            initpage();
+         });
+ 
+         function initpage() {
+             Initeasyui_comboboxStyle();
+             if (curorientation != false) {
+                 InitDataContentDataOption(curorientation);
+             }
+            var bodywith = GetdocumentClientWidth();
+            var contentwidth = bodywith - $(".leftmenu").width() - 10;
+            //var bodyheight = GetdocumentClientHeight();
+            var diffheight = $(".btnbartitle").height() + $(".tools_bar").height() + $(".btnbarcontetn").height();
+            var parentheight = top.$(".Content").height(); var tabs_headerHeight=top.$(".tabs-header").height();
+            var contentheight = parentheight - diffheight - tabs_headerHeight-10;
+            //alert(diffheight + ';;' + contentheight + ';bodyh:' + bodyheight);
+            // $("#Content,.Content").height(contentheight);
+            // alert(contentheight);
+            // $("#MainContent").height(500);
+            $(".DataContent").height(contentheight);
+            $(".DataContent2").height(contentheight );
+            $(".DataContent3").height(contentheight);
+            
+            $.parser.parse(); //解析元素
+            $("#dlg_DataInfo").dialog('close'); //关闭弹出窗口
+            $("#dlg_details").dialog('close');
+            $("#dlg_edit").dialog('close');
+            $("#ttt").dialog('close');
+            $("#ddd").dialog('close');
+            $('#add_dialog').dialog("close");
+            setTimeout(function () { $(".datagrid-body").height(contentheight); }, 3000);
+        }
+
+        //清除表单
+        function clearForm() {
+            $('#FormData,.FormData').form('clear');
+        }
+        //刷新列表
+        function ReLoadData() {
+            $("#dg_DataTable").datagrid("reload");
+        }
+        function LoadDataGrid(data) {
+            //加载数据
+            $("#dg_DataTable").datagrid("loadData", data);
+        }
+        function ListGridForUrl(url) {
+            //加载远程数据
+            $("#dg_DataTable").datagrid("load", url);
+        }
+        //手机号验证
+        $.extend($.fn.validatebox.defaults.rules, {
+            mobile: {
+                validator: function (value, param) {
+                    return /(^[1][3587]\d{9}$)|(^[0]\d{3}[-]\d{8}$|^[0]\d{2}[-]\d{8}$)/.test(value);
+                },
+                message: '电话号码不正确，例023-62625453或者手机号'
+            },
+        })
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

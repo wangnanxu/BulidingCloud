@@ -1,0 +1,107 @@
+﻿@Scripts.Render("~/Content/Js/JqueryUI/echarts-all.js")
+@Scripts.Render("~/Content/Js/JqueryUI/esl.js")
+<div id="echart" style="width:500px;height:400px"></div>
+<div id="pieechart" style="width:600px;height:400px"></div>
+<script type="text/javascript">
+    $(function () {
+
+        var option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['蒸发量']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    mark: { show: true },
+                    magicType: { show: true, type: ['line', 'bar'] },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+           
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ['11月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    splitArea: { show: true }
+                }
+            ],
+            series: [
+                {
+                    name: '蒸发量',
+                    type: 'bar',
+                    data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+                }
+            ]
+        };
+        option.xAxis[0].data[0] = '123';
+        var myChart = echarts.init(document.getElementById("echart"));
+        myChart.setOption(option);
+
+        var pieoption = {
+            title: {
+                text: '某站点用户访问来源',//主标题
+                subtext: '纯属虚构',//副标题
+                x: 'center'//水平安放位置，默认为全图居中，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
+            },
+            tooltip: {//提示框，鼠标悬浮交互时的信息提示
+                trigger: 'item',//触发类型
+                formatter: "{a} <br/>{b} : {c} ({d}%)"//内容格式器：{string}（Template） | {Function}，支持异步回调
+            },
+            legend: {//图例
+                orient: 'vertical',//布局方式，默认为水平布局 'horizontal' 横 | 'vertical'竖 
+                x: 'left',
+                data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    mark: { show: true },//辅助线标志
+                    dataView: { show: true, readOnly: false },//数据视图
+                    magicType: { //动态类型切换
+                        show: true,
+                        type: ['pie', 'funnel'],// type ['line', 'bar', 'stack', 'tiled', 'force', 'chord', 'pie', 'funnel'] 
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+                    restore: { show: true },//还原，复位原始图表
+                    saveAsImage: { show: true }//保存图片
+                }
+            },
+            calculable: true,
+            series: [ //驱动图表生成的数据内容数组
+                {
+                    name: '访问来源',
+                    type: 'pie',//类型
+                    radius: '55%',//半径
+                    center: ['50%', '60%'],//圆心坐标
+                    data: [
+                        { value: 335, name: '直接访问' },
+                        { value: 310, name: '邮件营销' },
+                        { value: 234, name: '联盟广告' },
+                        { value: 135, name: '视频广告' },
+                        { value: 1548, name: '搜索引擎' }
+                    ]
+                }
+            ]
+        };
+        var piechart = echarts.init(document.getElementById("pieechart"));
+        piechart.setOption(pieoption);
+    })
+
+</script>

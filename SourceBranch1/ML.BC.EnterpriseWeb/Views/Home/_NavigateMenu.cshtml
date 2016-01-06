@@ -1,0 +1,55 @@
+﻿@using ML.BC.Web.Framework;
+
+<div class="easyui-accordion" style="height: auto">
+    @if (HasFunction(Functions.Root_SystemSetting))
+    {
+        <div title="系统设置" data-options="iconCls:'icon-SystemSettings'">
+            <div class="sub-menu">
+
+                @Html.MenuItem(() => HasFunction(Functions.Root_SystemSetting_UserManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bb1','{0}', '用户管理', 'icon-UserManagement', 'true')", Html.Url("Account_default", "index", "EnterpriseUser")) }, "UserManagement.png", "用户管理")
+                @Html.MenuItem(() => HasFunction(Functions.Root_SystemSetting_RoleManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bb2','{0}', '角色管理', 'icon-RoleManagement', 'true')", Html.Url("Account_default", "EnterpriseRoleIndex", "EnterpriseRoleManagement")) }, "RoleManagement.png", "角色管理")
+                @Html.MenuItem(() => HasFunction(Functions.Root_SystemSetting_OrganizationManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bb3','{0}', '组织结构', 'icon-OrganizationStructure', 'true')", Html.Url("Unit_default", "EnterpriseDepartmentIndex", "DepartmentManage")) }, "OrganizationStructure.png", "组织结构")
+                @Html.MenuItem(() => HasFunction(Functions.Root_SystemSetting_OperationLogManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bb4','{0}', '操作日志管理', 'icon-EnterpriseLog', 'true')", Html.Url("Unit_default", "Index", "LogManagement")) }, "EnterpriseLog.png", "操作日志管理")
+
+                @Html.MenuItem(() => HasFunction(Functions.Root_SystemSetting_ScenetypeManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bb5','{0}', '现场类型', 'icon-SceneType', 'true')", @Html.Url("Scene_default", "ScencesTypeIndex", "ScenesTypeManagement")) }, "SceneType.png", "现场类型")
+
+                @Html.MenuItem(() => HasFunction(Functions.Root_SystemSetting_UserLoginStateManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bb6','{0}', '用户状态', 'icon-UserLoginState', 'true')", Html.Url("Account_default", "UserLoginStateIndex", "Account")) }, "UserLoginState.png", "用户状态")
+            </div>
+        </div>
+
+    }
+    @if (HasFunction(Functions.Root_ProjectManagement))
+    {
+        <div title="项目管理" data-options="iconCls:'icon-ProjectManagement'">
+            <div class="sub-menu">
+                @Html.MenuItem(() => HasFunction(Functions.Root_ProjectManagement_ProjectListManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bb7','{0}', '项目清单', 'icon-ProjectList', 'true')", @Html.Url("Scene_default", "ProjectListIndex", "ProjectManagment")) }, "ProjectList.png", "项目清单")
+                @Html.MenuItem(() => HasFunction(Functions.Root_ProjectManagement_SceneListManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bb8','{0}', '现场清单', 'icon-SceneList', 'true')", @Html.Url("Scene_default", "ScenesIndex", "ScenesManagement")) }, "SceneList.png", "现场清单")
+                @Html.MenuItem(() => HasFunction(Functions.Root_ProjectManagement_GISMapManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bb9','{0}', 'GIS地图', 'icon-GISMap', 'true')", @Html.Url("Scene_default", "GISMap", "ScenesManagement")) }, "GISMap.png", "GIS地图")
+
+            </div>
+        </div>
+
+    }
+    @if (HasFunction(Functions.Root_DataManagement))
+    {
+        <div title="知识管理" data-options="iconCls:'icon-DataManagement'">
+            <div class="sub-menu">
+                @Html.MenuItem(() => HasFunction(Functions.Root_DataManagement_DataListManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2b10','{0}', '知识清单', 'icon-DataList', 'true')", "/Home/Construction") }, "DataList.png", "知识清单")
+                @Html.MenuItem(() => HasFunction(Functions.Root_DataManagement_DataTypeManagement), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2b11','{0}', '知识分类', 'icon-DataType', 'true')", @Html.Url("Specification_default", "MaterialTypeIndex", "MaterialTypeManagement")) }, "DataType.png", "知识分类")
+            </div>
+        </div>
+
+    }
+    @if (HasFunction(Functions.Root_ReportManagement))
+    {
+        <div title="报表管理" data-options="iconCls:'icon-ReportManagement'">
+            <div class="sub-menu">
+                @Html.MenuItem(() => true, new { onclick = string.Format("AddTabMenu('c128ef42-b0b6-443e-952a-9054d06e1b32','{0}', '部门数据', 'icon-DepartmentData', 'true')", Html.Url("ReportForm_default", "DepartmentTableIndex", "DepartmentTable")) }, "DepartmentData.png", "部门数据")
+                @Html.MenuItem(() => true, new { onclick = string.Format("AddTabMenu('c128ef45-b5b6-493e-952a-9054706e1b12','{0}', '项目统计', 'icon-ProjectData', 'true')", Html.Url("ReportForm_default", "ProjStatisticsIndex", "ProjectStatistics")) }, "ProjectData.png", "项目统计")
+                @Html.MenuItem(() => HasFunction(Functions.Root_ReportManagement_SceneDataReport), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2b12','{0}', '现场数据', 'icon-SceneData', 'true')", "/Home/SubHome") }, "SceneData.png", "现场数据")
+                @Html.MenuItem(() => HasFunction(Functions.Root_ReportManagement_SceneVerifyRateReport), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2b13','{0}', '现场审核率', 'icon-SceneExamine', 'true')", "/Home/SubHome") }, "SceneExamine.png", "现场审核率")
+            </div>
+        </div>
+
+    }
+</div>

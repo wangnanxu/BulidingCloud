@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "App 下载";
+    Layout = string.Empty;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/Js/EasyUI/themes/gray/easyui.css")
+    @Styles.Render("~/Content/Js/EasyUI/themes/icon.css")
+    @Styles.Render("~/Content/Css/Index.css")
+    @Styles.Render("~/Content/Css/Comm.css")
+    @Styles.Render("~/Content/Css/BCicon.css")
+    <style>
+        .bodywrapper {
+            width:80%;
+            margin:0px auto;
+            position:relative;
+        }
+        .hearder {
+            height: 60px;
+            width: inherit;
+            position: fixed;
+            top: 0px;
+            background-image: url(/Content/Images/Login/BCLogo.png);
+            background-repeat: no-repeat;
+            background-size: auto 50px;
+            background-color: #076893;
+            color: #ffffff;
+            font-weight: bold;
+            background-position-x: 15px;
+        }
+        .content{
+            padding:85px 5px 60px 5px;
+        }
+        .footer {
+            
+        }
+    </style>
+</head>
+<body style="height:100%;">
+    <div class="bodywrapper">
+        <div class="hearder">
+            <span style="font-size: 26px; margin-left: 120px; padding-top: 10px; display: block;">施工云平台-APP下载</span>
+        </div>
+
+        <div class="content">
+            <p style="font-size:14px;">
+                施工云平台APP主要用于项目现场的工作人员的签到，签退以及发布现场照片等。现提供以下版本供下载使用：
+            </p>
+            <div>
+                <div style="display:block; width:45%; text-align:center; float:left;">
+                    <img src="/Content/Images/androidqrcode.png" style="max-width:340px; padding:30px;" />
+                    <div style="text-align:center;">
+                        Android版本&nbsp;(<a href="/AppPackage/BuildCloud.apk" target="_self" style="color:skyblue; text-decoration:underline;">下载</a>)
+                    </div>
+                </div>
+                <div style="display: block; width: 45%; text-align: center; float: left;">
+                    <img src="/Content/Images/iosqrcode.png" style="max-width: 340px; padding: 30px;" />
+                    <div style="text-align:center;">
+                        IOS 版本 (目前只有越狱了的IOS系统可以安装)&nbsp;(<a href="/AppPackage/BuildCloud.ipa" target="_self" style="color:skyblue; text-decoration:underline;">下载</a>)
+                    </div>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+        <div class="footer">
+            <hr />
+            <p style="padding:15px; text-align:center;">
+                <!--适用浏览器：IE8、360、FireFox、Chrome、Safari、Opera、傲游、搜狗、世界之窗。-->
+                ©2015 重庆迈浪科技有限公司. 
+            </p>
+        </div>
+    </div>
+</body>
+</html>

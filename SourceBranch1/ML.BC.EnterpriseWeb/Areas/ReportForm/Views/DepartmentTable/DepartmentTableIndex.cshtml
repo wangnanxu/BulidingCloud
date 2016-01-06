@@ -1,0 +1,138 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            报表管理 - <span id="OrganizationName">部门数据</span>
+        </div>
+    </div>
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+    </div>
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件:
+                        </th>
+                        <td>
+                            <input class="easyui-datetimebox" style="width:200px" data-options="prompt:'开始时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],editable:false" id="starttime" />
+                        </td>
+                        <td>
+                            <input class="easyui-datetimebox" style="width:200px" data-options="prompt:'结束时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],editable:false" id="endtime" />
+                        </td>
+                        <td>
+                            <input type="button" onclick="search()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="func-table" class="DataContent" style="height:auto">
+        <table id="dg_DataTable" class="easyui-treegrid DataContent" style="width: auto; overflow: scroll" data-options="rownumbers: true,animate: true,collapsible: false,fitColumns: true,idField: 'id',treeField: 'Department',onClickRow:onClickRow,showFooter:true">
+            <thead>
+                <tr>
+                    <th data-options="field:'Tit',align:'center'" colspan="6">2015年</th>
+                </tr>
+                <tr>
+                    <th data-options="field:'Department',width:50">
+                        部门
+                    </th>
+                    <th data-options="field:'People',width:50">
+                        人数
+                    </th>
+                    <th data-options="field:'Project',width:50">
+                        项目数
+                    </th>
+                    <th data-options="field:'Scene',width:50">
+                        现场数
+                    </th>
+                    <th data-options="field:'Picture',width:50">
+                        图片数
+                    </th>
+                    <th data-options="field:'PictureMb',width:50,formatter:mbformat">
+                        图片占用空间
+                    </th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+
+          var dataUrl ='@Html.Url("ReportForm_default", "GetList", "DepartmentTable")';
+            function search() {
+
+                $.getJSON(dataUrl, GetSearchParameters(), function (data) {
+                    $("#dg_DataTable").treegrid("loadData", data);
+                });
+
+               // $("#dg_DataTable").treegrid("options").queryParams = GetSearchParameters();
+               // $("#dg_DataTable").treegrid("load", dataUrl);
+            }
+
+            var clickrow = 0;
+
+            function onClickRow(row) {
+                if (row.id == clickrow) {
+                    $("#dg_DataTable").treegrid("unselect", row.id);
+                    clickrow = 0;
+                    return;
+                }
+                clickrow = row.id;
+            }
+            function mbformat(value) {
+                if (value) {
+                    return value + "MB";
+                }
+            }
+            function dateformat(value) {
+                //将日期转换为2005-5-5格式
+                if (value != undefined) {
+                    var num1 = value.split(' ');
+
+                    var b = num1[0];
+                    b = b.replace("-", "年");
+                    b = b.replace("-", "月");
+                    b = b.replace("/", "年");
+                    b = b.replace("/", "月");
+                    b = b + "日";
+                    b = b.replace("日日","日");
+                    return b;
+                }
+            }
+
+            function GetSearchParameters() {
+                var start = $("#starttime").datetimebox("getValue").replace(/-/g,"/");
+                var end = $("#endtime").datetimebox("getValue").replace(/-/g,"/");
+                var nowdate = new Date();
+                if (start == "")
+                    start = null;
+
+                if (end == "")
+                    end = null;
+              var starttime = new Date(start);
+                var endtime = new Date(end);
+                if (starttime.getTime()- endtime.getTime()> 0)
+                {
+                    showTipsMsg("请选择正确的时间范围", 2000, 2);
+                    return;
+                }
+                $($("td[field='Tit'] div span")[0]).html(dateformat(start==null?"1970-1-1 00:00:00":start) + "----" + dateformat(end == null?nowdate.toLocaleDateString():end));
+                var parameter = { starttime: start, endtime: end };
+                return parameter;
+            }
+            $(function () {
+                search();
+            });
+    </script>
+}

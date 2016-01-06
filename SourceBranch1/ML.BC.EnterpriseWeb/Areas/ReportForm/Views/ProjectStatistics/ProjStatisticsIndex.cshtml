@@ -1,0 +1,125 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+@section CSS{
+    <style>
+        .number {
+           
+        }
+    </style>
+}
+<div id="Content" class="Content ClearFloat">
+
+    <div class="btnbartitle">
+        <div>
+            报表管理 - <span id="OrganizationName">项目统计</span>
+        </div>
+    </div>
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+    </div>
+    <!--搜索-->
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件:
+                        </th>
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入项目名称',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="projectName" id="ProjectName" />
+                        </td>
+
+                        <td>
+                            <input type="button" onclick="Search()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table id="dg_DataTable" class="easyui-datagrid DataContent"
+           data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,url:'@Html.Url("ReportForm_default", "GetProjStatData", "ProjectStatistics")',loadFilter:loadFilter,showFooter:true,pageList:[1,10,20,30,50,100], onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'projectName',width:100,align:'center'">
+                    项目名称
+                </th>
+                <th data-options="field:'typeCount1',width:90,formatter:numberFormat,align:'center'">
+                    签到
+                </th>
+                <th data-options="field:'typeCount2',width:90,formatter:numberFormat,align:'center'">
+                    过程
+                </th>
+                <th data-options="field:'typeCount3',width:90,formatter:numberFormat,align:'center'">
+                    安全
+                </th>
+                <th data-options="field:'typeCount4',width:90,formatter:numberFormat,align:'center'">
+                    临检
+                </th>
+                <th data-options="field:'typeCount5',width:90,formatter:numberFormat,align:'center'">
+                    交底
+                </th>
+                <th data-options="field:'typeCount6',width:90,formatter:numberFormat,align:'center'">
+                    签退
+                </th>
+                <th data-options="field:'typeCount7',width:90,formatter:numberFormat,align:'center'">
+                    完工
+                </th>
+                <th data-options="field:'typeCountTotal',width:90,formatter:numberFormat">
+                    合计
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+        function numberFormat(value) {
+            if (value == -1) {
+                return '获取失败';
+            }
+            return "<span class='Snumber'>" + value + "</span>";
+        }
+
+        function Search() {
+            var parameter = { ProjectName: $('#ProjectName').val() };
+            $("#dg_DataTable").datagrid('options').queryParams = parameter;
+            $("#dg_DataTable").datagrid("reload");
+        }
+        function Reload() {
+            $('#ProjectName').textbox("setValue", "");
+            $("#dg_DataTable").datagrid('options').queryParams = {};
+            $("#dg_DataTable").datagrid("reload");
+        }
+       
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+        //数据过滤
+        function loadFilter(data) {
+            if (data.Value != null) {
+                data.Value.footer[0].projectName = "本页项目合计[" + data.Value.rows.length + "]";
+                data.Value.footer[1].projectName = "所有项目合计[" + data.Value.total + "]";
+                return data.Value;
+            }
+            showTipsMsg("获取到的数据为空!", 4000, 2)
+            return { total: 0, rows: [] };
+
+        }
+
+    </script>
+}
+

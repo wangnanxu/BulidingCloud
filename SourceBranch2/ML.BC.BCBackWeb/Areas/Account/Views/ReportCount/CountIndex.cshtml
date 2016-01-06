@@ -1,0 +1,120 @@
+﻿<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            报表管理 - <span id="OrganizationName">项目完工统计</span>
+        </div>
+    </div>
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+    </div>
+    @*<div class="btnbarcontetn">
+            <div>
+                <table border="0" class="frm-find">
+                    <tbody>
+                        <tr>
+                            <th>
+                                查询条件:
+                            </th>
+                            <td>
+                                <input class="easyui-datetimebox" style="width:200px" data-options="prompt:'开始时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],editable:false" id="starttime" />
+                            </td>
+                            <td>
+                                <input class="easyui-datetimebox" style="width:200px" data-options="prompt:'结束时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],editable:false" id="endtime" />
+                            </td>
+                           <td>
+                                <input type="button" onclick="search()" value="搜 索" class="btnSearch" id="btnSearch">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>*@
+    <div class="panel-header" style="width:99%">
+        <div class="panel-title">
+            统计
+        </div>
+
+    </div>
+    <div style="margin-left:24%;margin-top:26px;display:none" id="allcount">
+        <div class="spanpic people"><span id="countpeople" style="font-size: 20px; height: 20px">0</span><br><span class="bv">总人数</span></div>
+        <div class="spanpic picture"><span id="countpicture" style=" font-size: 20px; height: 20px">0</span><br><span class="bv">图片</span></div>
+        <div class="spanpic project">
+            <span id="countproject" style=" font-size: 20px; height: 20px">0</span><br><span class="bv">项目</span>
+        </div>
+        <div class="spanpic scene"><span id="countscene" style="font-size: 20px; height: 20px"></span><br><span class="bv">现场</span></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function search()
+    {
+        $.getJSON('@Html.Url("Account_default", "GetList", "ReportCount")', "", function (data) {
+            
+            if (data) {
+                $("#countpeople").html(doformat(data.Users));
+                $("#countpicture").html(doformat(data.Pictures));
+                $("#countproject").html(doformat(data.Projects));
+                $("#countscene").html(doformat(data.Scenes));
+                $("#allcount").show();
+            } else
+                showTipsMsg("没有获取到任何数据", 2000, 2);
+        })
+    }
+    $(function () {
+       search();
+    });
+    function doformat(value)
+    {
+        if (value / 1000 >= 1) {
+            var ret = "";
+            var x = value.toString().length % 3;
+            ret = value.toString().substr(0, x);
+            for (var i = 0; i < value.toString().substr(x, value.toString().length).length / 3 ; i++) {
+                ret += "," + value.toString().substr(x, value.toString().length).substr(i * 2, 3);
+            }
+            if (x == 0)//整除3
+            {
+                ret = ret.substr(1, ret.length);
+            }
+            return ret;
+        } else return value;
+    }
+</script>
+<style>
+    .spanpic {
+        width: 150px;
+        height: 50px;
+        display: inline-block;
+        padding-left: 50px;
+        line-height: 22px;
+        vertical-align: bottom;
+    }
+
+    .bv {
+        margin-left: 2px;
+        color: black;
+        font-size: 13px;
+    }
+
+    .people {
+        background: url(/Content/Images/CountPeople.png) no-repeat left top;
+        color: rgb(174,201,91);
+    }
+
+    .picture {
+        background: url(/Content/Images/CountPicture.png) no-repeat left top;
+        color: rgb(213,140,223);
+    }
+
+    .project {
+        background: url(/Content/Images/CountProject.png) no-repeat left top;
+        color: rgb(132,185,219);
+    }
+
+    .scene {
+        background: url(/Content/Images/CountScene.png) no-repeat left top;
+        color: rgb(248,164,125);
+    }
+</style>

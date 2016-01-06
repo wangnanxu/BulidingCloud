@@ -1,0 +1,45 @@
+﻿<#@ template debug="true" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data" #>
+<#@ import namespace="System"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="System.Data"#>
+<#@ import namespace="System.Data.SqlClient"#>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+<#
+var ConnectionString = "Data Source=192.168.0.21;Initial Catalog=BCBackDB;User ID=bcdevelopment;Password=123456;";
+Func<List<string>> GetAllFunctions = ()=>{
+    var result = new List<string>();
+	using(var conn = new System.Data.SqlClient.SqlConnection(ConnectionString))
+	{
+		conn.Open();
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = "Select FunctionID from RFAFunctions  order by FunctionID asc";
+        var reader = cmd.ExecuteReader();
+        while(reader.Read())
+        {
+            result.Add(reader[0].ToString());
+        }
+	}
+    return result;            
+};
+#>
+namespace ML.BC.BCBackData.Common
+{ 
+	public class Functions : CustomFunctions
+	{
+		<#
+			var list = GetAllFunctions();
+			list.ForEach(n =>
+			{
+		#>
+public const string <#=n.Replace(".", "_") #> = "<#=n #>";
+		<#
+			});
+		#>
+	}
+}

@@ -1,0 +1,340 @@
+﻿
+@*企业性质管理视图*@
+@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+
+<div id="Content" class="Content ClearFloat">
+    <!--标题-->
+    <div class="btnbartitle">
+        <div>
+            企业管理 - <span id="OrganizationName">企业性质</span>
+        </div>
+    </div>
+    <!--工具栏-->
+    <div class="tools_bar">
+ 
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+  
+         @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPProperty_Add), "新增", new { @class = "tools_btn", onclick = "Add()" }, new { @class = "btn_Add" }, false, true)
+ 
+ 
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPProperty_Edit), "编辑", new { @class = "tools_btn", onclick = "Edit()" }, new { @class = "btn_Edit" }, false, true)
+         @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPProperty_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+ 
+     
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true,false)
+ 
+        @*@Html.Button(() => HasFunction(""), "查看详情", new { @class = "tools_btn", onclick = "Delete()", title="查看相关详细信息"}, new { @class = "btn_Info" }, true, true)
+            <div class="tools_separator">
+            </div>*@
+ 
+    </div>
+    <!--搜索栏-->
+    @*<div style="margin-top: 1px; background: #fff" class="btnbarcontetn">
+            <div>
+                <table border="0" style="height: 45px;" class="frm-find">
+                    <tbody>
+                        <tr>
+                            <th>
+                                查询条件：
+                            </th>
+
+                            <th>
+                                名称：
+                            </th>
+                            <td>
+                                <input type="text" style="width: 200px" class="txt" id="txtName" name="keyword">
+                            </td>
+                            <td>
+                                <input type="button" onclick="search()" value="搜 索" class="btnSearch" id="btnSearch">
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>*@
+    <!--数据表格-->
+    <table id="dg_DataTable" class="easyui-datagrid DataContent" style="height:300px"
+           data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,url:'@Html.Url("Unit_default", "GetList", "PropertyManage")',onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'EnterprisePropertyID',width:50">
+                    编号
+                </th>
+                <th data-options="field:'Name',width:80">
+                    名称
+                </th>
+                <th data-options="field:'Available',width:50,align:'center',formatter:GetAvailableText">
+                    是否有效
+                </th>
+
+            </tr>
+        </thead>
+    </table>
+    <!--增加对话框-->
+
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitForm();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_DataInfo').dialog('close')">
+            取消
+        </a>
+    </div>
+    <div id="dlg_DataInfo" class="easyui-dialog dlg_DataInfo" title="性质管理-新增"  data-options="buttons: '#dlg-buttons',modal:true">
+        <form id="FormData" class="easyui-form frm" method="post" data-options="novalidate:true">
+
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        编号[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox" type="text" name="EnterprisePropertyID" data-options="required:true,validType:'length[1,1]' " />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        名称[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Name" data-options="required:true">
+                    </td>
+
+
+
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        是否有效:
+                    </td>
+                    <td>
+                        <select name="Available" class="easyui-combobox" data-options="required:true,editable:false,value:'true',panelHeight:'auto'">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <!--编辑对话框-->
+    <div id="dlg2-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitFormx();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_edit').dialog('close')">
+            取消
+        </a>
+    </div>
+    <div id="dlg_edit" class="easyui-dialog dlg_DataInfo" title="性质管理-编辑" data-options="buttons: '#dlg2-buttons',modal:true">
+        <form id="FormEdit" class="easyui-form frm" method="post" data-options="novalidate:true">
+
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        编号:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" id="txtID" name="EnterprisePropertyID" data-options="required:true,validType:'length[1,1]'" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        名称:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Name" data-options="required:true">
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="FixedColumn">
+                        是否有效:
+                    </td>
+                    <td>
+                        <select name="Available" class="easyui-combobox" data-options="required:true,editable:false,panelHeight:'auto'">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+
+                        </select>
+
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        //$("#dg_DataTable").datagrid("load", '@Html.Url("Unit_default", "GetList", "PropertyManage")');
+        //url: '@Html.Url("Account_default", "GetList", "BackUser")'
+     
+        //打开添加对话框
+        function Add() {
+            isnew = true;
+            $("#dlg_DataInfo").dialog('open');
+            $('#FormData').form('clear');
+        }
+
+        //编辑
+        function Edit() {
+            isnew = false;
+            var model = {};
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                //$.messager.alert('Info', row.itemid + ":" + row.productid + ":" + row.attr1);
+                model.EnterprisePropertyID = row.EnterprisePropertyID;
+                model.Name = row.Name;
+                model.Available = row.Available+"";
+
+            } else {
+                IsEditData("");
+                return;
+            }
+            //加载数据到表单
+            $("#dlg_edit").dialog('open');
+            $('#FormEdit').form('load', model);//model可以换成Url加载远程数据如:(/user?id=10)
+            $("#txtID").textbox("readonly", "readonly");
+        }
+        //详情
+        function Info() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                $("#dlg_details").dialog('open');
+                row.Closed = row.Closed + "";
+                $('#FormDetails').form('load', row);//model可以换成Url加载远程数据如:(/user?id=10)
+            } else {
+                showTipsMsg("您没有选择任何数据!", 2000, 2);
+                return;
+            }
+        }
+        //删除
+        function Delete() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                var ID = row.EnterprisePropertyID ; //获取字段
+                $.messager.confirm("系统提示", "您确认删除?", function (a) {
+                    if (!a) return;
+                    $.getJSON('@Html.Url("Unit_default", "DeleteProp", "PropertyManage")', { propID: ID }, function (data) {
+                       
+                        if (data.Success) {
+                          
+                            if (data.Value) {
+                                showTipsMsg("删除成功!", 2000, 0); //自定义提示信息在顶部显示
+                                clickrow = -1;
+                            }
+                            ReLoadData();
+                        }
+                    });
+
+                });
+
+            } else {
+                IsDelData(""); //方式1 预先定义的,适合删除时候调用
+                //showTipsMsg("您没有选择数据!", 2000,2); //方式2
+                return;
+            }
+        }
+        //加载数据
+        function ListGrid(value) {
+            $("#dg_DataTable").datagrid("load", '@Html.Url("Account_default", "GetList", "BackUser")');
+        }
+
+        //刷新
+        function Refresh() {
+            $("#dg_DataTable").datagrid("reload");
+        }
+
+        //搜索
+        function search() {
+            var key = $("#txtName")[0].value;
+            var data = {};
+            data.keyword = key;
+            $.ajax({
+                type: "post",
+                url: '@Html.Url("Unit_default", "SearchByName", "PropertyManage")',
+                data: data,
+                dataType: "json",
+                success: function (data) {
+                    $("#dg_DataTable").datagrid("loadData", data.Value);
+                },
+                error: function (data,state) {
+                    //$("#dg_DataTable").datagrid("load", data);
+                }
+            });
+        }
+        var isnew;
+        //提交表单 新建用
+        function submitForm() {
+            var url= '@Html.Url("Unit_default", "AddProp", "PropertyManage")';
+            $('#FormData').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    var r = $("#FormData").form('enableValidation').form('validate');
+                    return r;
+                },
+                success: function (data) {
+                    if (typeof (data) != "undefined") {
+                        data = $.parseJSON(data);
+                        if (data.Success == true) {
+                            $("#dlg_DataInfo").dialog('close');
+                            showTipsMsg("系统提示:添加成功!", 2000, 0);
+                            clickrow = -1;
+                            ReLoadData();
+                        } else {
+                             showTipsMsg(data.Message, 2000, 2);
+
+                        }
+                    }
+
+                }
+            });
+        }
+
+        //提交表单 更新用
+        function submitFormx() {
+            var url = '@Html.Url("Unit_default", "UpdateProp", "PropertyManage")';
+            $('#FormEdit').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    var r = $("#FormEdit").form('enableValidation').form('validate');
+                    return r;
+                },
+                success: function (data) {
+                    if (typeof (data) != "undefined") {
+                        data = $.parseJSON(data);
+                        if (data.Success == true) {
+                            $("#dlg_edit").dialog('close');
+                            showTipsMsg("系统提示:修改成功!", 2000, 0);
+                            clickrow = -1;
+                            ReLoadData();
+                        } else {
+                            showTipsMsg(data.Message, 2000, 2);
+                        }
+                    }
+
+                }
+            });
+         
+            
+        }
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+        $(function () {
+            $("#dlg_details").dialog('close');
+            $("#dlg_edit").dialog('close');
+        })
+     </script>
+}

@@ -1,0 +1,26 @@
+.materialbox {
+	width: 100%;
+	height: 40px;
+	position: relative;
+}
+.materialbtn {
+	width: 30px;
+	height: 100%;
+	cursor: pointer;
+	position: absolute;
+	top: 0;
+	right: 0;
+	background: url("../img/download.png");
+}
+.btndownload {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	width: 60%;
+	height: 30px;
+	display: block;
+	background: #00AFEE;
+	color: #C4C7CB;
+	margin: 5px auto;
+	line-height: 30px;
+	vertical-align: middle;
+}

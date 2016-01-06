@@ -1,0 +1,111 @@
+.Contain{
+	margin: 0;
+	padding: 0;
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#b7cffa), to(#ffffff));
+	/*background:-moz-linear-gradient(top, #b7cffa,#ffffff);*/
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+.login_logo{
+	width: 100%;
+	height: auto;
+	height: 50%;
+	text-align: center;
+}
+.login_logo img{
+	width: 30%;
+	margin: 30px auto;
+	
+}
+.login_body{
+	width: 70%;
+	height: auto;
+	border-radius: 10px;
+	margin:  0 auto;
+	border: solid 3px #1f2966;
+	background: #ffffff;
+}
+.login_body_b{
+	width: 100%;
+	border-bottom: solid 2px #1f2966;
+}
+.login_body_t{
+	width: 100%;
+	border-top: solid 1px #1f2966;
+}
+.login_body_v{
+	width: 100%;
+	margin: 5px auto;
+	vertical-align: middle;
+	display: block;
+}
+.login_body_img{
+	width:20%;
+	text-align: center;
+	display: block;
+	height: 100%;
+	vertical-align: middle;
+	margin: 0.5em 0;
+	float: left;
+}
+.login_body_input{
+	width:70%;
+	text-align: left;
+	display: block;
+	height: 100%;
+	vertical-align: middle;
+	float: left;
+	margin: 0.5em 0;
+}
+.login_input{
+	width:100% ;
+	height: 44px;
+	border: none;
+	color: #cccccc;
+	line-height: 44px;
+	vertical-align: middle;
+	font-size: 16px;
+	background: transparent;
+}
+input[type=text]:focus, input[type=password]:focus{
+	border: solid 1px #FFFFFF;
+}
+.login_button{
+	width: 70%;
+	height: 40px;
+	border-radius: 8px;
+	margin: 0 auto;
+	border:solid 3px #1f2966;
+	margin-top:20px ;
+	text-align: center;
+}
+
+.login_button_a{
+	text-decoration: none;
+	line-height: 40px;
+	height: 40px;
+	vertical-align: middle;
+	display:inline-block;
+}
+.button_a{
+	background: #1f2966;
+}
+.button_a a{
+	color: #ffffff;
+	font-size: 16px;
+	font-weight: 400;
+	font-family: arial;
+	text-shadow: none;
+}
+.button_a a:hover,.button_a a:visited,.button_a a:active,.button_a a:link {
+	color: #ffffff;
+}
+.button_b {
+	margin-top: 50px;
+	background: #ffffff;
+}
+.button_b a{
+	color: #1f2966;
+}

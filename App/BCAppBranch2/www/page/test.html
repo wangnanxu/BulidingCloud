@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_TestPage">
+			<div data-role="header" data-position="fixed">
+				<h1>个人信息</h1>
+			</div>
+			<div data-role="content">
+				<!--<img src="" onerror="this.src='../img/head.jpg'" onload="ImgGetPictureURI('http://192.168.1.200:80/UserAvatar/A00003_20150629105438862.jpg','testimg',false)" id="testimg" alt="" />-->
+
+				<button class="ui-btn" onclick="TestDeleteTable()">删除表</button>
+				<button class="ui-btn" onclick="TestDeleteCommentTable()">删除具体现场表</button>
+				<button class="ui-btn" onclick="TestDeleteCurrentUsersTable()">删除当前用户表</button>
+
+				<button class="ui-btn" onclick="CheckImg()">检测图片是否存在</button>
+			</div>
+			<script type="text/javascript">
+				function CheckImg() {
+					CheckImgExists('http://192.168.1.12:8088/Handlers/Image.ashx?fileName=thu201571142253628.jpg', function(url) {});
+				}
+
+				function TestImg() {
+					Download("", function(URI) {
+						$("#testimg").attr("src", URI);
+					}, 0);
+				}
+
+				function CallBackPath(obj) {
+					alert(obj.ownname + ";" + obj.ownURI + ";" + obj.parentname + ";" + obj.parentURI);
+				}
+
+				function TestDeleteTable() {
+					dbBase.OpenTransaction(function(tx) {
+						dbBase.DropTable(tx, "tb_CurrentUsers", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_UserMessage", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_Departments", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_Projects", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_Scenes", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_SceneMessage", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_SceneMessageComments", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_Materials", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_UserRoles", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_Comment", TestDeleteTableCallback);
+						dbBase.DropTable(tx, "tb_FrontUsers", TestDeleteTableCallback);
+					})
+				}
+
+				function TestDeleteCommentTable() {
+					dbBase.OpenTransaction(function(tx) {
+						dbBase.DropTable(tx, "tb_SceneMessageComments", TestDeleteTableCallback, function(istrue) {
+							alert(istrue);
+						});
+					})
+				}
+
+				function TestDeleteCurrentUsersTable() {
+					dbBase.OpenTransaction(function(tx) {
+						dbBase.DropTable(tx, "tb_CurrentUsers", TestDeleteTableCallback, function(istrue) {
+							alert(istrue);
+						});
+					})
+				}
+
+				function TestDeleteTableCallback(obj) {
+					//					alert(obj);
+				}
+
+				function addUsers() {
+						dbBase.OpenTransaction(function(tx) {
+							//增加组织信息
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["1", "李四", "1", "施工员", "111", "工程部", "0"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["2", "李四", "1", "施工员", "111", "工程部", "0"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["3", "李四", "1", "施工员", "111", "工程部", "0"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["4", "李四", "1", "施工员", "112", "财务部", "0"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["5", "李四", "1", "施工员", "112", "财务部", "0"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["6", "李四", "1", "施工员", "112", "财务部", "0"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["7", "李四", "1", "施工员", "113", "工程一部", "111"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["8", "李四", "1", "施工员", "113", "工程一部", "111"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["9", "李四", "1", "施工员", "113", "工程一部", "111"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["10", "李四", "1", "施工员", "113", "工程一部", "111"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["11", "李四", "1", "施工员", "114", "项目部", "0"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["12", "李四", "1", "施工员", "114", "项目部", "0"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["13", "李四", "1", "施工员", "115", "工程二部", "113"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["14", "李四", "1", "施工员", "115", "工程二部", "113"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["15", "李四", "1", "施工员", "116", "项目一部", "114"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["16", "李四", "1", "施工员", "116", "项目一部", "114"]);
+							dbBase.InsertTable(tx, "tb_Departments", ['UserID', 'UserName', 'RoleID', 'RoleName', 'DepartmentID', 'DepartmentName', 'ParentID'], ["17", "李四", "1", "施工员", "116", "项目一部", "114"]);
+						})
+					}
+					//本地数据库插入成功回调函数
+
+				function addMaterial() {
+					dbBase.OpenTransaction(function(tx) {
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["1", "Adobe", "http://www.baidu.com", "word"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["2", "Amazon", "http://www.baidu.com", "word"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["3", "Apple", "http://www.baidu.com", "excel"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["4", "Adobe", "http://www.baidu.com", "word"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["5", "Google", "http://www.baidu.com", "excel"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["6", "IBM", "http://www.baidu.com", "excel"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["7", "Microsoft", "http://www.baidu.com", "excel"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["8", "Yahoo", "http://www.baidu.com", "word"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["9", "United States", "http://www.baidu.com", "word"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["10", "Baidu", "http://www.baidu.com", "excel"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["11", "Adobe", "http://www.baidu.com", "excel"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["12", "Microsoft", "http://www.baidu.com", "excel"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["13", "United", "http://www.baidu.com", "pdf"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["14", "Baidu", "http://www.baidu.com", "pdf"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["15", "Adobe", "http://www.baidu.com", "pdf"]);
+						dbBase.InsertTable(tx, "tb_Materials", ['MaterialID', 'MaterialName', 'Download', 'Type'], ["16", "Adobe", "http://www.baidu.com", "pdf"]);
+					})
+				}
+
+				function UserCallBack(callback) {
+					if (callback) {
+						alert(callback);
+					}
+				}
+
+				function addProject() {
+					dbBase.OpenTransaction(asdProject);
+				}
+
+				function asdProject(tx) {
+					//项目测试数据
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["1", "轨道一号线", '111|112', '1|3', "1", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["2", "轨道二号线", '111|112', '1|3', "1", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["3", "轨道三号线", '111|112', '1|3', "1", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["4", "轨道四号线", '111|112', '1|3', "1", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["5", "轨道五号线", '111|112', '1|3', "1", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["6", "轨道六号线", '111|112', '1|3', "1", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["7", "轨道七号线", '111|112', '1|3', "1", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["8", "轨道八号线", '111|112', '1|3', "1", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["9", "轨道九号线", '111|112', '1|3', "0", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["10", "轨道十号线", '111|112', '1|3', "0", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["11", "轨道十一号线", '111|112', '1|3', "0", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["12", "轨道十二号线", '111|112', '1|3', "0", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["13", "轨道十三号线", '111|112', '1|3', "0", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["14", "轨道十四号线", '111|112', '1|3', "0", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["15", "轨道十五号线", '111|112', '1|3', "0", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["16", "轨道十六号线", '111|112', '1|3', "0", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["17", "轨道十七号线", '111|112', '1|3', "0", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Projects", ['ProjectID', 'ProjectName', 'Departments', 'Roles', 'HaveScene', 'Status'], ["18", "轨道十八号线", '111|112', '1|3', "0", "未完成"]);
+					//现场测试数据
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["1", "0", "石桥铺", "1", "", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["2", "0", "解放碑", "2", "", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["3", "0", "大坪", "1", "", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["4", "0", "沙坪坝", "1", "", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["5", "0", "观音桥", "3", "", "未完成"]);
+					//子现场测试数据
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["6", "1", "渝州路", "1", "", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["7", "2", "朝天门", "2", "", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["8", "1", "歇台子", "1", "", "未完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["9", "1", "白马凼", "1", "", "完成"]);
+					dbBase.SaveOrUpdateTable(tx, "tb_Scenes", ['SceneID', 'ParentID', 'SceneName', 'ProjectID', 'Worker', 'Status'], ["10", "5", "华新街", "3", "", "未完成"]);
+					//增加信息	
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是1", 11, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是2", 12, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是3", 13, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是4", 14, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是5", 15, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是6", 16, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是7", 17, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是8", 18, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是9", 19, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是11", 20, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是12", 21, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是13", 22, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是14", 43, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是15", 45, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是16", 47, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是17", 42, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是18", 23, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是19", 24, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是20", 25, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是2", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是2", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是2", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是2", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是2", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是4", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是4", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是4", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是4", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是4", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 2014, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 51, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["7", "这是一", 52, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是6", 53, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是6", 54, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["2", "这是6", 55, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是6", 56, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 57, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 58, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["4", "这是一", 59, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 60, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["3", "这是什么时候的事哦，你知道吗", 61, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "很好，很好，很好很好的朋友", 62, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["5", "这是5", 63, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是什么时候的事哦，我怎么不知道", 64, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是5", 65, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["2", "这是5", 66, 011]);
+					dbBase.SaveOrUpdateTable(tx, "tb_UserMessage", [, "UserID", "Message", "SendTime", "Recipients"], ["1", "这是一", 67, 011]);
+				}
+			</script>
+			<div data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul id="dfooterul">
+						<li><a href="#" onClick="ChangePage('showMessage.html')" data-icon="comment" data-transition="none">消息</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('project.html')" data-icon="cloud" data-transition="none">项目</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('material.html')" data-icon="shop" data-transition="none">资料</a>
+						</li>
+						<li><a href="#" data-icon="user" class="ui-btn-active ui-state-persist">个人</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</body>
+
+</html>

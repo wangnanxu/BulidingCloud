@@ -1,0 +1,278 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+
+<div id="Content" class="Content ClearFloat">
+    <!--标题-->
+    <div class="btnbartitle">
+        <div>
+            企业管理 - <span id="OrganizationName">企业日志</span>
+        </div>
+    </div>
+    <!--工具栏-->
+    <div class="tools_bar">
+
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPLog_ClearLogs), "清空日志", new { @class = "tools_btn", onclick = "ClearLog()", title = "清空所有日志" }, new { @class = "btn_Delete" }, true, true)
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPLog_ViewDetail), "查看详细", new { @class = "tools_btn", onclick = "info()", title = "查看相关详细信息" }, new { @class = "btn_Info" }, true, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+
+    </div>
+    <!--搜索栏-->
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件：
+                        </th>
+
+                        <td>
+                            <input style="width: 150px" class="easyui-combobox" id="Enterprise" name="EnterpriseId" data-options="
+                                   valueField: 'Id',
+                                   textField: 'Text',
+                                   icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],
+                                   editable:false,
+                                   url: './GetEnterpriseList',
+                                   method:'post',
+                                   panelheight:'auto',
+                                   prompt:'请选择一个企业',
+                                   ">
+                        </td>
+
+                        <td>
+
+                            <input placeholder="用户ID" type="text" style="width: 100px" class="easyui-textbox" id="UserID" name="UserID" data-options="prompt:'用户ID',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]">
+                        </td>
+
+                        <td>
+                            <input placeholder="用户名" type="text" style="width: 100px" class="easyui-textbox" id="UserName" name="UserName" data-options="prompt:'用户名',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]">
+                        </td>
+                        <td>
+                            <input placeholder="操作ID" type="text" style="width: 100px" class="easyui-textbox" id="OperationID" name="OperationID" data-options="prompt:'操作ID',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]">
+                        </td>
+                        <td>
+                            <input placeholder="起始时间" type="text" style="width: 100px" class="easyui-datetimebox" id="StartTime" name="StartTime" data-options="editable:false,prompt:'起始时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).datetimebox('clear')}}]">
+                        </td>
+                        <td>
+                            <input placeholder="结束时间" type="text" style="width: 100px" class="easyui-datetimebox" id="EndTime" name="EndTime" data-options="editable:false,prompt:'截至时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).datetimebox('clear')}}]">
+                        </td>
+                        <td>
+                            <input type="button" onclick="search()" value="搜 索" class="btnSearch" id="btnSearch">
+
+                        </td>
+
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--数据表格-->
+    <table id="dg_DataTable" class="easyui-datagrid DataContent" data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,url:'@Html.Url("Unit_default", "GetLogList", "BackLogManagement")',pageList: [1,10,20,50,100],onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'UserID',width:60">
+                    用户ID
+                </th>
+                <th data-options="field:'UserName',width:100">
+                    用户名
+                </th>
+                <th data-options="field:'EnterpriseName',width:100">
+                    所属企业
+                </th>
+                <th data-options="field:'OperationId',width:100">
+                    操作ID
+                </th>
+                <th data-options="field:'OperationName',width:120">
+                    操作
+                </th>
+                <th data-options="field:'OperateTime',width:120">
+                    操作时间
+                </th>
+                <th data-options="field:'ClientIP',width:100">
+                    用户IP
+                </th>
+                <th data-options="field:'OperationLogID',width:120">
+                    日志ID
+                </th>
+
+            </tr>
+        </thead>
+    </table>
+
+
+
+    <!--详情对话框-->
+    <div id="dlg_details" class="easyui-dialog dlg_DataInfo" title="日志信息-详情" data-options="modal:true">
+        <form id="FormDetails" class="easyui-form frm" method="post" data-options="novalidate:true">
+
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        用户名:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="UserName" data-options="required:true">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        企业名:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="EnterpriseName" data-options="required:true">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        用户ID:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox" readonly="readonly" type="text" name="UserID" data-options="" />
+                    </td>
+                </tr>
+
+
+      
+
+                <tr>
+                    <td class="FixedColumn">
+                        操作ID:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="OperationId" data-options="required:true,height:50,multiline:true">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        操作数据:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="OperationData" data-options="required:true,height:50,multiline:true">
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        操作:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="OperationName" data-options="">
+
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="FixedColumn">
+                        操作时间:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="OperateTime" data-options="required:true" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        用户IP:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="ClientIP" data-options="required:true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        日志ID:
+                    </td>
+                    <td>
+                        <input readonly="readonly" class="easyui-textbox" name="OperationLogID">
+                    </td>
+
+                </tr>
+
+            </table>
+        </form>
+    </div>
+
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+
+        //详情
+        function info() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                $("#dlg_details").dialog('open');
+                $('#FormDetails').form('load', row);//model可以换成Url加载远程数据如:(/user?id=10)
+            } else {
+                showTipsMsg("您没有选择任何数据!", 2000, 2);
+                return;
+            }
+        }
+        //清空
+        function ClearLog() {
+
+                $.messager.confirm("系统提示", "您确认清空所有日志?!!", function (a) {
+                    if (!a) return;
+                    $.post('@Html.Url("Unit_default", "ClearLog", "BackLogManagement")', {}, function (data) {
+                        if (data.Success) {
+                            if (data.Value == true) {
+                                showTipsMsg("清空成功!", 2000, 0); //自定义提示信息在顶部显示
+
+                            }
+                            Reload();
+                        }
+                    });
+
+                });
+
+
+        }
+
+
+
+
+        //获取搜索参数
+        function getQueryParams() {
+            var obj = {};
+            obj.EnterpriseId = $("#Enterprise").combobox('getValue');
+            obj.UserName = document.getElementById("UserName").value;
+            obj.OperationID = document.getElementById("OperationID").value;
+            obj.UserID = document.getElementById("UserID").value;
+            obj.StartTime = $("#StartTime").datetimebox("getValue");
+            obj.EndTime = $("#EndTime").datetimebox("getValue");
+            return obj;
+        }
+
+        //搜索 增加查询参数，重新加载表格
+        function search() {
+            //查询参数直接添加在queryParams中
+            var q = getQueryParams();
+            $('#dg_DataTable').datagrid('options').queryParams = q;
+            $("#dg_DataTable").datagrid('reload');
+        }
+        
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+        //刷新表格数据
+        function Reload(rec) {
+            $('#dg_DataTable').datagrid('options').queryParams = {};
+            $("#dg_DataTable").datagrid('reload');
+        }
+    </script>
+}

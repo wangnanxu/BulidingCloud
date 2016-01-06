@@ -1,0 +1,104 @@
+﻿@using ML.BC.Web.Framework;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=0.5, minimum-scale=0.2, maximum-scale=5.0, user-scalable=yes" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.png" rel="shortcut icon" type="image/png" />
+    @Styles.Render("~/Content/Js/EasyUI/themes/gray/easyui.css")
+    @Styles.Render("~/Content/Js/EasyUI/themes/icon.css")
+    @Styles.Render("~/Content/Css/Index.css")
+    @Styles.Render("~/Content/Css/Comm.css")
+    @Styles.Render("~/Content/Css/BCicon.css")
+     <style>
+          .tabs li
+        {
+            padding: 0px 0px;
+        }
+        .tabs-icon
+        {
+            min-width: 22px;
+            min-height: 22px;
+            margin-top: -10px;  
+             background-size: 20px 20px;
+        }
+ 
+        .tabs-with-icon
+        {
+            padding-left: 20px;
+        }
+        /*去除 panl 里面ifrmae width=100%时候的滚动条*/
+        .panel-body {
+        overflow-x:hidden;overflow-y:hidden;
+        }
+    </style>   
+    
+ 
+</head>
+<body style="height:100%;">
+    <div id="Loading" class="Loading" style="display:block"></div>
+
+    @RenderBody()
+    @Scripts.Render("~/Content/Js/jquery.min.js")
+    @Scripts.Render("~/Content/Js/MainIndex.js")
+    @Scripts.Render("/Content/Js/FunctionJS.js")
+    @Scripts.Render("~/Content/Js/EasyUI/jquery.easyui.min.js")
+    @Scripts.Render("~/Content/Js/EasyUI/locale/easyui-lang-zh_CN.js")
+    @Scripts.Render("~/Content/Js/Comm.js")
+    <script type="text/javascript">
+        var curtab = { title: "", index: 0 };
+        var isfirtLoad = true;
+        $(function () {
+            $.parser.onComplete = function (context) {
+                loadinghide();
+            }
+            if (self == top) {
+                initpage();
+            }
+        });
+        window.onresize = initpage;
+        function initpage() {
+            Initeasyui_comboboxStyle();
+            var bodywith = GetdocumentClientWidth();
+            var contentwidth = bodywith - $(".leftmenu").width() - 10;
+            var bodyheight = GetdocumentClientHeight();
+            var contentheight = bodyheight - $("#Header").height() - $("#botton_toolbar").height() - $("#Headerbotton").height() -1;
+            // $("#Content,.Content").height(contentheight);
+            // alert(contentheight);
+            $("#MenuContent,.MenuContent").height(contentheight);
+            // $("#MainContent").height(500);
+            $.parser.parse(); //解析元素
+            $("#dlg").dialog('close'); //关闭弹出窗口
+             $('#ContentPannel').tabs({
+                height: contentheight,
+                selected:curtab.index,
+                onSelect: function (title, index) {
+                    if (index != 0) {
+                         curtab.title = title; curtab.index = index;
+                    } 
+                }
+            });
+            if (isfirtLoad) {
+                //添加一个tab页面
+                //  AddTabMenu('a108ef45-b8b6-493e-951a-9050706e2bba', '/Account/FrontUser/Index', '企业账号', 'icon-EnterpriseAccount', 'true')
+                AddTabMenu('tabs_iframe_Imain', '@Html.Url("Default", "SubHome", "Home")', '首页', 'icon-Index', false);
+                isfirtLoad = false;
+
+                var firtTabTitle = $("#ContentPannel .tabs-first");
+                firtTabTitle.bind("click", function () {
+                    curtab.title = "首页"; curtab.index = 0;
+                });
+ 
+            } 
+                $('#ContentPannel').tabs("select", curtab.index);
+
+          
+   
+        }
+    </script>
+     @RenderSection("scripts", required: false) 
+</body>
+</html>

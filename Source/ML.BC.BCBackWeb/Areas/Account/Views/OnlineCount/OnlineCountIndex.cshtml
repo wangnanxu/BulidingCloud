@@ -1,0 +1,154 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            系统设置 - <span id="OrganizationName">在线人数</span>
+        </div>
+    </div>
+    <div class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+        @Html.Button(() => true, "下线", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+
+    </div>
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件：
+                        </th>
+
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入用户名',    icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="UserName" id="txtUserName" />
+                        </td>
+                        <td>
+                            <input type="button" onclick="ListGrid()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table id="dg_DataTable" class="easyui-datagrid DataContent"
+           data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,onClickRow: onClickRow">
+        <thead>
+            <tr>
+                @*<th data-options="field:'UserLoginStateID',width:80">
+                        状态ID
+                    </th>*@
+                <th data-options="field:'UserID',width:80">
+                    用户ID
+                </th>
+                <th data-options="field:'UserName',width:100">
+                    用户名
+                </th>
+
+                <th data-options="field:'Device',width:100">
+                    设备
+                </th>
+                <th data-options="field:'LoginIP',width:70">
+                    登录IP
+                </th>
+                <th data-options="field:'LoginToken',width:100">
+                    登录口令
+                </th>
+                <th data-options="field:'LoginTime',width:100">
+                    登录时间
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+         var dataUrl = '@Html.Url("Account_default", "GetOnlineList", "OnlineCount")';//查询
+         var DeleteUrl = '@Html.Url("Account_default", "DeleteOnlineUser", "OnlineCount")';//删除
+         function GetSearchParameters() {
+            var UserName = $("#txtUserName").textbox("getValue");
+            var parameter = { UserName: UserName };
+            return parameter;
+        }
+
+
+        function Info() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+            } else {
+                showTipsMsg("您没有选择任何数据!", 2000, 2);
+                return;
+            }
+        }
+        function timeformat(value)
+        {
+            if (value != undefined) {
+                var num1 = value.split('(');
+                var num2 = num1[1].split(')');
+                var a = new Date(parseInt(num2[0]));
+                var b = a.toLocaleDateString();
+                b += a.toLocaleTimeString();
+               
+              b=  b.replace("上午", " ");
+              b=  b.replace("下午"," ");
+                return b;
+            }
+        }
+        //删除
+        function Delete() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                var data = {};
+               // data.UserLoginStateID = row.UserLoginStateID; //获取字段
+                data.UserID = row.UserID;
+                $.messager.confirm("系统提示", "确定让该用户下线吗?", function (a) {
+                    if (!a) return;
+                    $.getJSON(DeleteUrl, data, function (data) {
+                        if (data.Success) {
+                            if (data.Value) {
+                                showTipsMsg("下线成功!", 2000, 0);
+                                clickrow = -1;
+                                ListGrid();
+                            } else {
+                                showTipsMsg('下线失败', 2000, 2);
+                            }
+                        } else {
+                            showTipsMsg(data.Message, 2000, 2);
+                        }
+                    });
+
+                });
+
+            } else {
+                IsDelData(""); //方式1 预先定义的,适合删除时候调用
+                //showTipsMsg("您没有选择数据!", 2000,2); //方式2
+                return;
+            }
+        }
+        
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+        function ListGrid() {
+            //加载远程数据
+            $("#dg_DataTable").datagrid("options").queryParams = GetSearchParameters();//添加附加参数
+            $("#dg_DataTable").datagrid("load", dataUrl);
+        }
+        
+        $(function () {
+            ListGrid();
+         });
+    </script>
+}

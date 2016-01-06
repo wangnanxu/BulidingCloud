@@ -1,0 +1,900 @@
+﻿
+<div class="template" style="display:none">
+
+
+    <!--Sceneitem模版-->
+    <script type="template" id="SI-template">
+        <div class="scene-item">
+            <div class="item_poster" style=" ">
+                <img src="{avartarurl}" class="item_avartar" alt="头像" />
+                <br>
+                <span class="item_name">{SIName}</span>
+            </div>
+            <div class="container_s">
+                <div class="info-banner">
+                    <div class="line-one">
+                        <span class="item-time">
+                            {time}
+                        </span>
+                        <span class="item-address">
+                            {address}
+                        </span>
+                        <span class="item-type">
+                            {type}
+                        </span>
+                        <span class="item-status" id="item-status">
+                            {status}
+                        </span>
+                    </div>
+                    <div class="item-action-group">
+
+                        <span class="item-action">
+                            @if (HasFunction(Functions.Root_ProjectManagement_SceneListManagement_VerifySceneData))
+{ <a class="action" href="javascript:;" style="display:{display};" onclick="checkSI('{siid}',this)">审核</a> }
+                        </span>
+
+                        <span class="item-action">
+                            @if (HasFunction(Functions.Root_ProjectManagement_SceneListManagement_DeleteSceneData))
+                            { <a class="action action_delete" href="javascript:;" onclick="deleteSI('{siid}',this)">删除</a> }
+                        </span>
+                        <span class="item-action">
+                            @if (HasFunction(Functions.Root_ProjectManagement_SceneListManagement_ArchiveSceneData))
+{ <a class="action" href="javascript:;" style="display:{display};" onclick="archiveSI('{siid}',this)">归档</a> }
+                        </span>
+                    </div>
+                </div>
+
+                <div class="item-content-c">
+                    <div class="item-content">
+                        {SIcontent}
+                    </div>
+                </div>
+                <!--评论容器-->
+                <div class="comment-container">
+                    @if (HasFunction(Functions.Root_ProjectManagement_SceneListManagement_CommentSceneData))
+                    {
+                        <a class="new_comment_button" href="javascript:;" onclick="commentSI2('{siid}', this);">
+                            <span class="comment-new">增加评论</span>
+                        </a>
+                    }
+                    <span style="display:{display};margin-left:10px;" id="Rect_Button">
+                        <a class="new_comment_button" href="javascript:void(0);" onclick="alter2('{siid}', this, '{allData}');">
+                            <span class="comment-new">{RectButton}</span>
+                        </a>
+                    </span>
+                    <div class="comment-input-container" style="display:none">
+                        <textarea class="comment-input" style=" width: 95% ;height: 50px; color: blue; display: block; font-size: large;"></textarea>
+
+                        <a href="#" onclick="postComment('{siid}','{status}',this)" class="comment_button_container">
+                            <span class="comment_button">发&nbsp;&nbsp;&nbsp;&nbsp;表</span>
+                        </a>
+                    </div>
+                    <!--评论在此-->
+                </div>
+            </div>
+            <div class="clear" style="clear:both"></div>
+        </div>
+
+    </script>
+    <!--Sceneitem模版-->
+    <!--评论模版-->
+    <script type="template" id="CMT-template">
+        <div class="comment-item">
+            <span class="cmtname">{CMname}:</span>
+            <span class="cmt_content">{CMcontent}</span>
+            <span class="cmttime">{CMtime}</span>
+            <a href="#" class="comment_delete" onclick="deleteComment('{siid}','{cmtguid}')"><span class="delete-comment">删除</span></a>
+        </div>
+    </script>
+    <!--评论模版-->
+    <!--审核对话框-->
+    <div id="dlg-buttons-check">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitFormCheck();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_check').dialog('close')">
+            取消
+        </a>
+    </div>
+
+    <div id="dlg_check" class="easyui-dialog dlg_DataInfo" title="审核" data-options="buttons: '#dlg-buttons-check',modal:true,top:30,closed:true">
+
+        <form id="FormCheck" class="easyui-form frm" method="post" data-options="novalidate:true" enctype="multipart/form-data">
+
+            <table cellpadding="5">
+
+
+
+
+                <tr>
+                    <td class="FixedColumn">
+                        审核意见:
+                    </td>
+                    <td>
+                        <textarea class="content" name="content" style="height:100px;width:218px"></textarea>
+                        <input hidden="hidden" readonly="readonly" type="text" name="SceneItemID" data-options="required:true,editable:false">
+                    </td>
+                </tr>
+
+
+
+                <tr>
+                    <td class="FixedColumn">
+                        审核结果[*]:
+                    </td>
+                    <td>
+                        <select class="easyui-combobox" name="status" id="workers" data-options="required:true,panelHeight:'auto',editable:false">
+
+                            <option value="1" selected="selected">通过审核</option>
+                            <option value="2">需要整改</option>
+
+                        </select>
+                    </td>
+                </tr>
+
+
+            </table>
+        </form>
+    </div>
+    <!--审核对话框-->
+    <div id="dlg-buttons-si">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitFormSceneItem();">
+            提交
+        </a><a href="javascript:void(0)" id="addRect" style="display:none" class="easyui-linkbutton" onclick="javascript:addRect();">
+            提交
+        </a>  <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_SI').dialog('close')">
+            取消
+        </a>
+    </div>
+
+    <div id="dlg_SI" class="easyui-dialog dlg_DataInfo" title="施工数据-新增" data-options="buttons: '#dlg-buttons-si',modal:true,top:30,closed:true">
+        <div style="display: none; top: 334px; position: absolute; left: 30%; z-index: 999; " id="Loading-upload">
+            <img src="/Content/Images/loadimg.gif" style="" />
+        </div>
+        <form id="FormSI" class="easyui-form frm" method="post" data-options="novalidate:true" enctype="multipart/form-data">
+
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        所属现场[*]:
+                    </td>
+                    <td>
+                        <input id="et" readonly="readonly" class="easyui-textbox" name="SceneID" data-options="editable:false,required:true,">
+                        <input type="hidden" id="prevSceneItemId" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        现场名称[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="SceneName" data-options="required:true,editable:false">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        文字内容:
+                    </td>
+                    <td>
+                        <textarea class="content" name="content" style="height:100px;width:218px"></textarea>
+                    </td>
+                </tr>
+                <tr class="fileUpload">
+                    <td class="FixedColumn">
+                        图片(可多选):
+                    </td>
+                    <td>
+                        <input id="file-input" type="file" class="" name="files" multiple="multiple" data-options="multiline:true">
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="FixedColumn">
+                        类型[*]:
+                    </td>
+                    <td>
+                        <select class="easyui-combobox" name="SceneItemType" id="workers" data-options="panelHeight:'auto',editable:false,readonly:true">
+
+                            <option value="2">过程</option>
+                            <option value="4">安全</option>
+                            <option value="8">临检</option>
+                            <option value="16">交底</option>
+                            <option value="64">完工</option>
+                            <option value="1">签到</option>
+                            <option value="32">签退</option>
+                        </select>
+                    </td>
+                </tr>
+
+
+            </table>
+        </form>
+    </div>
+</div>
+
+<style>
+    .img_close {
+        background: url(/Content/Images/close1.png);
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        opacity: 0;
+        border-radius: 21px;
+        background-size: 19px 19px;
+        cursor: pointer;
+        margin-left: 4px;
+        transition: background .1s linear;
+    }
+
+    .img_anchor {
+        position: relative;
+        float: left;
+    }
+</style>
+<script type="text/javascript">
+
+    var uploadUrl = '@Html.Url("Scene_default", "AddSceneItem", "ScenesManagement")';
+    //生成分页组件  页码回调;按当前分页情况获取服务器SI数据并处理
+    function genPager(total) {
+        $("#pager").pagination({
+            total: total,//总的记录数
+            pageSize: 10,//每页显示的大小。
+            pageList: [1, 10, 20, 50, 100],//选择每页显示的记录数的下拉框的值。
+            onSelectPage: function (pageNumber, pageSize) {
+                $.ajax({
+                    type: "post",
+                    url: SIurl,
+                    data: { SceneID: curSceneID, page: pageNumber, rows: pageSize },
+                    dataType: "json",
+                    success: function (datas) {
+                        if (datas.Success == true) {
+                            //成功获取到数据 开始处理
+                            processSIs(datas.Value);
+                            $("#pager").pagination('options').total = datas.Value.total;
+                            $("#pager").pagination('refresh');
+                            $("#dlg_details").scrollTop(0);
+                        }
+                        else {
+                            showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                        }
+                    },
+                    error: function () {
+                        showTipsMsg("网络错误!", 4000, 2);
+                    }
+                });
+            }
+        });
+
+
+    }
+
+    //刷新当前SI页数据
+    function refreshPage() {
+        var rows = $("#pager").pagination('options').pageSize;
+        var page = $("#pager").pagination('options').pageNumber;
+        if (!rows || rows < 1) rows = 10;
+        if (!page || page < 1) page = 1;
+        showLoadingDlg();
+        $.ajax({
+            type: "post",
+            url: SIurl,
+            data: { SceneID: curSceneID, page: page, rows: rows },
+            dataType: "json",
+            success: function (datas) {
+                hideLoadingDlg();//隐藏加载动画
+                if (datas.Success == true) {
+                    //成功获取到数据 开始处理
+
+                    processSIs(datas.Value);
+                    $("#pager").pagination('refresh', { total: datas.Value.total, pageNumber: page });
+                }
+                else {
+                    $("#detail-content > .scene-item").remove();
+                    $("#detail-content").append($("<div class='empty-tips scene-item'>无数据</div>"));
+                    showTipsMsg("服务器信息:" + datas.Message, 4000, 2);
+                }
+            },
+            error: function () {
+                hideLoadingDlg();//隐藏加载动画
+                $("#detail-content > .scene-item").remove();
+                $("#detail-content").append($("<div class='empty-tips scene-item'>无数据</div>"));
+                showTipsMsg("未知错误!请刷新或重新登录!", 4000, 2);
+            }
+        });
+    }
+
+
+    //首次 分页插件之前 获取服务器SI数据并处理
+    function loadSIs(SceneID) {
+        $.ajax({
+            type: "post",
+            url: SIurl,
+            data: { SceneID: SceneID },
+            dataType: "json",
+            success: function (datas) {
+
+                if (ajaxCallback) { ajaxCallback(1); }
+                if (datas.Success == true) {
+                    //成功获取到数据 开始处理
+                    processSIs(datas.Value);
+                    genPager(datas.Value.total);//根据返回的total数据生成分页组件 之后获取数据将交给分页组件 此方法不会调用
+                }
+                else {
+                    $("#detail-content > .scene-item").remove();
+                    $("#detail-content").append($("<div class='empty-tips scene-item'>无数据</div>"));
+                    showTipsMsg("无数据,远程服务器信息:" + datas.Message, 4000, 2);
+                }
+            },
+            error: function () {
+                if (ajaxCallback) { ajaxCallback(0); }
+                $("#detail-content > .scene-item").remove();
+                $("#detail-content").append($("<div class='empty-tips scene-item'>无数据</div>"));
+                showTipsMsg("网络错误!", 4000, 2);
+            }
+        });
+    }
+
+
+
+    //处理SceneItem数据集合并显示
+    function processSIs(sis) {
+
+
+        var datas = sis.rows;
+        if (datas.length < 1) {
+            showTipsMsg("获取到的数据为空!", 4000, 2);
+            $("#detail-content").append($("<div class='empty-tips scene-item'>无数据</div>"));
+            return 0;
+        }
+
+        $("#detail-content > .scene-item").remove();
+        for (var i in datas) {
+            var data = datas[i];
+            var dom = processSI(data);
+
+            $("#detail-content").append(dom);
+        }
+        $("#detail-content").onclick = function () {
+            $(".comment-input-container").hide();
+        }
+    }
+    //淡入
+    function closeimg(target) {
+        $(target).children().eq(0).animate({
+            opacity: 0
+        }, 300);
+
+    }
+    //淡出
+    function showimg(target) {
+        $(target).children().eq(0).animate({
+            opacity: 1
+        }, 300);
+    }
+    //鼠标更换图片
+    function closepic(target) {
+        $(target).css("background", "url('/Content/Images/img_close.png')").css("background-size", "19px 19px");
+    }
+    function closepic1(target) {
+        $(target).css("background", "url('/Content/Images/close1.png')").css("background-size", "19px 19px");
+    }
+    //删除图片
+    function deleteimg(target, sid, imgstr) {
+        $.messager.confirm('删除确认', '你确定删除该图片吗?', function (r) {
+            if (r) {
+                imgstr = imgstr.split("fileName=")[1];
+                $.post('@Html.Url("Scene_default", "DeleteImg", "ScenesManagement")', { imgName: imgstr, sid: sid }, function (data) {
+                    if (typeof (data) != "object")
+                        data = eval("(" + data + ")");
+                    if (data.Success) {
+                        showTipsMsg(data.Message, 2000, 0);
+                    }
+                    else {
+                        showTipsMsg(data.Message, 2000, 2);
+                    }
+                })
+                refreshPage();
+            }
+        })
+    }
+    function showbigimg(imgstr) {
+        window.open(imgstr);
+    }
+
+    //处理单个SceneItem数据到模版 返回处理后的dom 包括评论
+    var imgdomstr = "";
+    function processSI(data) {
+      if ('@BCSession.User.UserID' != data.userID) {
+                imgdomstr = "<a target=\"_blank\"  class=\"img_anchor\" href=\"javascript:void(0)\"><img title=\"点击查看大图\" alt=\"照片\" src='{thu_url}' onclick='showbigimg(\"{org_url}\")' style='width:200px;height:200px;border:1px solid gray;margin-left:2px;' class='item-img' /></a>";
+            } else {
+                imgdomstr = "<a target=\"_blank\" onmouseleave='closeimg(this)' onmouseenter='showimg(this)' class=\"img_anchor\" href=\"javascript:void(0)\"><i class=\"img_close\" onmouseenter='closepic(this)' onclick='deleteimg(this,\"{siid}\",\"{org_url}\")' onmouseleave='closepic1(this)'></i><img title=\"点击查看大图\" alt=\"照片\" src='{thu_url}' onclick='showbigimg(\"{org_url}\")' style='width:200px;height:200px;border:1px solid gray;margin-left:2px;' class='item-img' /></a>";
+            }
+            var template = $("#SI-template").html();
+            template = template.replace(/{siid}/g, data.sceneItemID)//scenenitemid
+                  .replace("{avartarurl}", (data.userAvartarURL == null || data.userAvartarURL == "" ? "/content/Images/head.jpg" : data.userAvartarURL))//头像
+            .replace("{time}", data.time)//时间
+                 .replace("{status}", formatStatus(data.status))//时间
+                .replace("{status}",data.status)
+                .replace("{type}", formatType(data.type))//类型
+            .replace("{SIName}", data.userName)//用户名
+            .replace("{sceneID}", data.sceneID)
+            .replace("{RectButton}","点击整改");
+
+
+            //处理图片
+            var imgstr = "";
+
+            for (var i in data.images) {
+                var org_url = data.images[i].OriginalPicture;
+                var thu_url = data.images[i].ThumbnailPicture;
+                var img = imgdomstr.replace(/{org_url}/g, org_url);
+                img = img.replace(/{thu_url}/g, thu_url);
+                imgstr = imgstr + img;
+            }
+            template = template.replace("{SIcontent}", imgstr + "<br><div style='clear:both'>" + (data.description == null ? "" : data.description) + "</div>")
+            .replace(/{siid}/g, data.sceneItemID)
+            .replace("{address}", data.address)//地址
+            .replace("{allData}", data.sceneID + "," + data.type);
+
+            var dom = $(template);
+            var cdom = dom.find(".comment-container");
+            processComment(cdom, data.comments, data.sceneItemID);//处理评论
+            if (data.type == 1 || data.type == 32)//签到 签退 无操作按钮和内容
+            {
+
+                dom.find(".item-content").remove();
+                dom.find(".item-status").remove();
+                dom.find(".comment-container").remove();
+                dom.find(".action").remove();
+                dom.find(".container_s").css("height", "93px");
+                return dom;
+            }
+            if (data.status == 3)//归档无法操作任何数据
+            {
+                dom.find(".item-action-group").remove();
+                dom.find(".new_comment_button").remove();
+                dom.find("#comment_delete").remove();
+                dom.find(".info-banner").prop("style")["margin-bottom"] = "10px";
+            }
+            if (!curUserId || curUserId != data.userID) {
+                dom.find(".action_delete").remove();
+            }
+            if (data.isExamine)//已整改
+            {
+                dom.find("#Rect_Button").prop("style")["display"] = "none";
+                dom.html(dom.html().replace(/{display}/g, "none"));
+                dom.find("#item-status").html("已整改");
+            } else {
+                if (data.userID == '@BCSession.User.UserID' && data.status == 2) {
+                dom.find("#Rect_Button").prop("style")["display"] = "inline-block";
+            }
+            else
+                dom.find("#Rect_Button").prop("style")["display"] = "none";
+            dom.html(dom.html().replace(/{display}/g, "inline-block"));
+        }
+        return dom;
+    }
+
+    //格式化状态数据
+    function formatStatus(value) {
+        switch (value) {
+            case 0:
+                return "正常状态";
+            case 1:
+                return "通过审核";
+            case 2:
+                return "需要整改";
+            case 3:
+                return "已经归档";
+            default:
+                return "未知状态";
+        }
+    }
+
+    //格式化类型数据
+    function formatType(value) {
+        switch (value) {
+            case 1:
+                return "签到";
+            case 2:
+                return "过程照";
+            case 4:
+                return "安全照";
+            case 8:
+                return "临检";
+            case 16:
+                return "交底";
+            case 32:
+                return "签退";
+            default:
+                return "未知类型";
+        }
+    }
+    var curUserId = "@ViewBag.UserId";
+    //处理评论数据到模版 附加到指定dom
+    //dom 评论数组 siid
+    function processComment(dom, datas, siid) {
+
+        for (i = datas.length; i > 0; i--) {
+
+            var data = datas[i - 1];
+            var template = $("#CMT-template").html();
+
+            template = template.replace("{CMtime}", data.Stime);
+            template = template.replace("{CMname}", data.UserName);
+            template = template.replace("{}", data.UserID);
+            template = template.replace("{CMcontent}", data.Content);
+            template = template.replace("{siid}", siid);
+            template = template.replace("{cmtguid}", data.CommentGuid);
+            if (!curUserId || curUserId != data.UserID) {
+                template = template.replace("删除", "");
+            }
+            var cmtdom = $(template);
+            dom.prepend(cmtdom);
+        }
+    }
+
+    //删除SI的评论
+    function deleteComment(siid, cmtguid) {
+        $.messager.confirm('删除确认', '你确定删除该评论吗吗?', function (r) {
+            if (r) {
+                $.ajax({
+                    type: "post",
+                    url: '@Html.Url("Scene_default", "DeleteSceneItemComment", "ScenesManagement")',
+                    data: { SceneItemID: siid, CommentGuid: cmtguid },
+                    dataType: "json",
+                    success: function (datas) {
+                        if (datas.Value == true) {
+                            //成功获取到数据 开始处理
+                            showTipsMsg("删除成功", 4000, 1);
+                            refreshPage();
+                        }
+                        else {
+                            showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                        }
+                    },
+                    error: function () {
+                        showTipsMsg("网络错误!", 4000, 2);
+                    }
+                });
+            }
+        });
+    }
+
+
+    //审核SIxxx
+    function checkSIxxxxxx(siid) {
+        //$.messager.confirm('确认审核', '确认要进行审核吗?', function (r) {
+        //if (r) {
+        var opt = $.messager.defaults;
+        opt.ok = "通过";
+        opt.cancel = "整改";
+        $.messager.defaults = opt;
+        $.messager.confirm('审核该项目', '是否通过审核?<br>取消审核请关闭窗口.', function (r) {
+            var status;
+            if (r) { status = 1 } else { status = 2 }
+            $.ajax({
+                type: "post",
+                url: '@Html.Url("Scene_default", "CheckSceneItem", "ScenesManagement")',
+                data: { SceneItemID: siid, status: status },
+                dataType: "json",
+                success: function (datas) {
+                    if (datas.Value == true) {
+                        //成功获取到数据 开始处理
+                        showTipsMsg("成功", 4000, 1);
+                        refreshPage();
+                    }
+                    else {
+                        showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                    }
+                },
+                error: function () {
+                    showTipsMsg("网络错误!", 4000, 2);
+                }
+            });
+
+        });
+        opt.ok = "是";
+        opt.cancel = "否";
+        $.messager.defaults = opt;
+    }
+    // });
+    //}
+
+    //打开审核SI对话框
+    function checkSI(siid) {
+
+        var model = { SceneItemID: siid };
+        $("#FormCheck").form('clear');
+        $("#FormCheck").form('load', model);
+        $("#dlg_check").dialog('open');
+        document.onkeydown = function (e) {
+
+        };
+        @*//$.messager.confirm('确认审核', '确认要进行审核吗?', function (r) {
+            //if (r) {
+            var opt = $.messager.defaults;
+            opt.ok = "通过";
+            opt.cancel = "整改";
+            $.messager.defaults = opt;
+            $.messager.prompt('审核该项目', '是否通过审核?<br>取消审核请关闭窗口.', function (r) {
+                var status;
+                if (r) { status = 1 } else { status = 2 }
+                $.ajax({
+                    type: "post",
+                    url: '@Html.Url("Scene_default", "CheckSceneItem", "ScenesManagement")',
+                    data: { SceneItemID: siid, status: status },
+                    dataType: "json",
+                    success: function (datas) {
+                        if (datas.Success == true) {
+                            //成功获取到数据 开始处理
+                            showTipsMsg("成功", 4000, 1);
+                            refreshPage();
+                        }
+                        else {
+                            showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                        }
+                    },
+                    error: function () {
+                        showTipsMsg("网络错误!", 4000, 2);
+                    }
+                });
+
+            });
+            opt.ok = "是";
+            opt.cancel = "否";
+            $.messager.defaults = opt;*@
+    }
+    //提交审核数据表单
+    function submitFormCheck() {
+        $('#FormCheck').form('submit', {
+            url: '@Html.Url("Scene_default", "CheckSceneItem", "ScenesManagement")',
+            onSubmit: function () {
+                return $(this).form('enableValidation').form('validate');
+            },
+            success: function (data) {
+                if (typeof (data) != "undefined") {
+                    data = $.parseJSON(data);
+                    if (data.Value == true) {
+                        $("#dlg_check").dialog('close');
+                        showTipsMsg("系统提示:成功!", 4000, 0);
+                        refreshPage();
+
+                    } else {
+
+                        showTipsMsg("失败,服务器消息:" + data.Message, 4000, 2);
+
+                    }
+                }
+
+            },
+            error: function () {
+                $("#Loading-upload").hide();
+                showTipsMsg("网络错误!", 4000, 2);
+            }
+        });
+    }
+
+
+    //评论SI
+    function commentSI(siid, dom) {
+        var opt = $.messager.defaults;
+        opt.ok = "发表";
+        opt.cancel = "取消";
+        $.messager.defaults = opt;
+        $.messager.prompt('添加评论', '请输入评论:', function (r) {
+            var status;
+            if (r) {
+                $.ajax({
+                    type: "post",
+                    url: '@Html.Url("Scene_default", "AddSceneItemComment", "ScenesManagement")',
+                    data: { SceneItemID: siid, comment: r },
+                    dataType: "json",
+                    success: function (datas) {
+                        if (datas.Value == true) {
+                            //成功获取到数据 开始处理
+                            showTipsMsg("评论成功", 4000, 1);
+                            refreshPage();
+                        }
+                        else {
+                            showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                        }
+                    },
+                    error: function () {
+                        showTipsMsg("网络错误!", 4000, 2);
+                    }
+                });
+            }
+
+        });
+
+        opt.ok = "是";
+        opt.cancel = "否";
+        $.messager.defaults = opt;
+    }
+
+    //显示指定SI的评论输入框
+    function commentSI2(siid, dom) {
+        var cmtdom = $(dom).nextAll(".comment-input-container");//被点击的按钮所对应的评论容器
+        //var height = $(cmtdom).parent().position().top;
+
+        //$("#detail-content").scrollTop($("#detail-content").scrollTop()+height-100);
+        cmtdom.toggle(500);
+        document.onkeydown = function (e) {
+            //捕捉回车事件
+            var ev = (typeof event != 'undefined') ? window.event : e;
+            if (ev.keyCode == 13 && document.activeElement.tagName == "TEXTAREA1") {
+                return false;//禁用回车事件
+            }
+        }
+    }
+    //发表评论SI
+    function postComment(siid, status, dom) {
+        var cmtcontent = $(dom).parent().parent().find("textarea")[0].value;//评论内容
+        cmtcontent = cmtcontent.replace(/</g, "&lt;");
+        cmtcontent = cmtcontent.replace(/>/g, "&gt;");
+        if (cmtcontent != "" && cmtcontent) {
+            $.ajax({
+                type: "post",
+                url: '@Html.Url("Scene_default", "AddSceneItemComment", "ScenesManagement")',
+                data: { SceneItemID: siid, comment: cmtcontent, status: status },
+                dataType: "json",
+                success: function (datas) {
+                    if (datas.Value == true) {
+                        //成功获取到数据 开始处理
+                        showTipsMsg("评论成功", 4000, 1);
+                        refreshPage();
+                    }
+                    else {
+                        showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                    }
+                },
+                error: function () {
+                    showTipsMsg("网络错误!", 4000, 2);
+                }
+            });
+        } else {
+            $(".comment-input-container").hide(500);
+        }
+    }
+
+    //删除si
+    function deleteSI(siid) {
+        $.messager.confirm('删除确认', '你确定删除吗?', function (r) {
+            if (r) {
+                $.ajax({
+                    type: "post",
+                    url: '@Html.Url("Scene_default", "DeleteSceneItem", "ScenesManagement")',
+                    data: { SceneItemID: siid },
+                    dataType: "json",
+                    success: function (datas) {
+                        if (datas.Value == true) {
+                            //成功获取到数据 开始处理
+                            showTipsMsg("删除成功", 4000, 1);
+                            refreshPage();
+                        }
+                        else {
+                            showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                        }
+                    },
+                    error: function () {
+                        showTipsMsg("网络错误!", 4000, 2);
+                    }
+                });
+            }
+        });
+    }
+    //归档SI
+    function archiveSI(siid) {
+        $.messager.confirm('归档确认', '归档后将无法操作该项数据!<br>你确认归档吗?', function (r) {
+            if (r) {
+
+                $.ajax({
+                    type: "post",
+                    url: '@Html.Url("Scene_default", "ArchiveSceneItem", "ScenesManagement")',
+                    data: { SceneItemID: siid },
+                    dataType: "json",
+                    success: function (datas) {
+                        if (datas.Value == true) {
+                            //成功获取到数据 开始处理
+                            showTipsMsg("归档成功", 4000, 1);
+                            refreshPage();
+                        }
+                        else {
+                            showTipsMsg("远程服务器信息:" + datas.Message, 4000, 2);
+                        }
+                    },
+                    error: function () {
+                        showTipsMsg("网络错误!", 4000, 2);
+                    }
+                });
+            }
+        });
+    }
+
+    function alter2(sid, target, data) {
+        var model = {};
+        model.SceneID = data.split(",")[0];
+        model.SceneItemType = data.split(",")[1];
+        model.content = "";
+        model.files = null;
+        model.SceneName = $("#dlg_details").panel("options").title.split('现场:')[1].split("|")[0];
+        $('#FormSI').form('load', model);
+        //$("#workers").combobox("readonly", "readonly");
+        $("#dlg_SI").dialog('open');
+        $("#dlg-buttons-si").children("a").eq(0).hide();
+        $("#prevSceneItemId").val(sid);
+        $("#addRect").show();
+
+
+    }
+    function addRect() {
+        var url = uploadUrl;
+        $("#Loading-upload").show();
+        $('#FormSI').form('submit', {
+            url: url,
+            onSubmit: function (para) {
+                para.prevSceneItemId = $("#prevSceneItemId").val();
+                return $(this).form('enableValidation').form('validate');
+
+            },
+            success: function (data) {
+                $("#Loading-upload").hide();
+                if (typeof (data) != "undefined") {
+                    data = $.parseJSON(data);
+                    if (data.Value == true) {
+                        $("#dlg_SI").dialog('close');
+                        showTipsMsg("系统提示:成功!", 4000, 0);
+                        refreshPage();
+                    } else {
+
+                        showTipsMsg("失败,服务器消息:" + data.Message, 4000, 2);
+
+                    }
+                }
+
+            },
+            error: function () {
+                $("#Loading-upload").hide();
+                showTipsMsg("未知错误!请刷新或重新登录!", 4000, 2);
+            }
+        });
+
+    }
+    function submitFormSceneItem() {
+        var url = uploadUrl;
+        $("#Loading-upload").show();
+        $('#FormSI').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('enableValidation').form('validate');
+            },
+            success: function (data) {
+                $("#Loading-upload").hide();
+                if (typeof (data) != "undefined") {
+                    data = $.parseJSON(data);
+                    if (data.Value == true) {
+                        $("#dlg_SI").dialog('close');
+                        showTipsMsg("系统提示:成功!", 4000, 0);
+                        Reload();
+                    } else {
+
+                        showTipsMsg("失败,服务器消息:" + data.Message, 4000, 2);
+
+                    }
+                }
+
+            },
+            error: function () {
+                $("#Loading-upload").hide();
+                showTipsMsg("未知错误!请刷新或重新登录!", 4000, 2);
+            }
+        });
+
+    }
+
+
+</script>
+

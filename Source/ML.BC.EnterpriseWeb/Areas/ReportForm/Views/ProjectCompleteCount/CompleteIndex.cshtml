@@ -1,0 +1,190 @@
+﻿@Scripts.Render("~/Content/Js/JqueryUI/echarts-all.js")
+@Scripts.Render("~/Content/Js/JqueryUI/esl.js")
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            报表管理 - <span id="OrganizationName">项目完工统计</span>
+        </div>
+    </div>
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+    </div>
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件:
+                        </th>
+                        <td>
+                            <input class="easyui-datetimebox" style="width:200px" data-options="prompt:'开始时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],editable:false" id="starttime" />
+                        </td>
+                        <td>
+                            <input class="easyui-datetimebox" style="width:200px" data-options="prompt:'结束时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],editable:false" id="endtime" />
+                        </td>
+                        <td>
+                            <input class="easyui-textbox " data-options=" prompt:'请输入地址',icons:[{iconcls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]"  id="address"/>
+                        </td>
+                        <td>
+                            <input class="easyui-combotree" data-options="multiple:false,cascadeCheck:false,lines:true,url:'@Html.Url("ReportForm_default", "GetDepartment", "ProjectCompleteCount")',method:'get',prompt:'请选择部门'" id="department" />
+                        </td>
+                        <td>
+                            <input type="button" onclick="search()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+        <div id="project" style="width:45%;height:400px;float:left;padding-top:50px"></div>
+        <div id="scene" style="width: 45%; height:400px; float: left; padding-left: 50px; padding-top: 50px"></div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+            function GetSearchPara()
+            {
+                var retpara = {};
+                retpara.begintime = $("#starttime").datebox("getValue").replace(/-/g, "/");
+                retpara.endtime = $("#endtime").datebox("getValue").replace(/-/g, "/");
+                if (starttime == "")
+                    starttime = null;
+                if (endtime == "")
+                    endtime = null;
+                retpara.address = $("#address").textbox("getValue");
+                retpara.department = "";
+                department = $("#department").combotree("getValues");
+                $.each(department, function (key, value) {
+                    retpara.department += value+",";
+                })
+                retpara.department = retpara.department.substr(0, retpara.department.length - 1);
+                return retpara;
+            }
+
+            function search()
+            {
+               
+                    var projectoption = {
+                        title: {
+                            text: '项目数量及其在建率和完工率',//主标题
+                            x: 'center'//水平安放位置，默认为全图居中，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
+                        },
+                        tooltip: {//提示框，鼠标悬浮交互时的信息提示
+                            trigger: 'item',//触发类型
+                            formatter: "{b} : {c} ({d}%)"//内容格式器：{string}（Template） | {Function}，支持异步回调
+                        },
+                        legend: {//图例
+                            orient: 'vertical',//布局方式，默认为水平布局 'horizontal' 横 | 'vertical'竖 
+                            x: 'left',
+                            data: ['完工项目', '准备项目', '在建项目']
+                        },
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                dataView: { show: true, readOnly: false },//数据视图
+                                restore: { show: true },//还原，复位原始图表
+                                saveAsImage: { show: true }//保存图片
+                            }
+                        },
+                        calculable: true,
+                        series: [ //驱动图表生成的数据内容数组
+                            {
+                                name: '项目数据',
+                                type: 'pie',//类型
+                                radius: '55%',//半径
+                                center: ['50%', '60%'],//圆心坐标
+                                itemStyle: {
+                                    normal: {
+                                        label: {
+                                            position: 'outer',
+                                            formatter: function (params) {//格式化
+                                                return params.name + params.value + "("+(params.percent - 0).toFixed(2) + '%)'
+                                            }
+                                        }
+                                    }
+                                },
+                                data: [
+                                    { value: 335, name: '完工项目' },
+                                    { value: 310, name: '准备项目' },
+                                    { value: 234, name: '在建项目' },
+                                   
+                                ]
+                            }
+                        ]
+        
+                    };
+                    var project = echarts.init(document.getElementById("project"));
+                  
+                  
+                    var sceneoption = {
+                        title: {
+                            text: '现场数量及其在建率和完工率',//主标题
+                            x: 'center'//水平安放位置，默认为全图居中，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
+                        },
+                        tooltip: {//提示框，鼠标悬浮交互时的信息提示
+                            trigger: 'item',//触发类型
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"// a（系列名称），b（数据项名称），c（数值）, d（饼图：百分比 | 雷达图：指标名称）
+                        },
+                   
+                        legend: {//图例
+                            orient: 'vertical',//布局方式，默认为水平布局 'horizontal' 横 | 'vertical'竖 
+                            x: 'left',
+                            data: [ '完工现场','准备现场','在建现场']
+                        },
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                dataView: { show: true, readOnly: false },//数据视图
+                                restore: { show: true },//还原，复位原始图表
+                                saveAsImage: { show: true }//保存图片
+                            }
+                        },
+                        calculable: true,
+                        series: [ //驱动图表生成的数据内容数组
+                            {
+                                type: 'pie',//类型
+                                radius: '55%',//半径
+                                center: ['50%', '60%'],//圆心坐标
+                                itemStyle: {
+                                    normal: {
+                                        label: {
+                                            position: 'outer',
+                                            formatter: function (params) {//格式化
+                                                return params.name + params.value + "(" + (params.percent - 0).toFixed(2) + '%)'
+                                            }
+                                        }
+                                    }
+                                },
+                                data: [
+
+                                    { value: 310, name: '完工现场' },
+                                    { value: 300, name: '准备现场' },
+                                { value: 335, name: '在建现场' }
+                                ]
+                            }
+                        ]
+
+                    };
+                    var scene = echarts.init(document.getElementById("scene"));
+                  
+                    $.getJSON('@Html.Url("ReportForm_default", "GetList", "ProjectCompleteCount")', GetSearchPara(), function (data) {
+
+                        projectoption.series[0].data[0].value = data.project.EndCount;
+                        projectoption.series[0].data[1].value = data.project.ReadyCount;
+                        projectoption.series[0].data[2].value = data.project.IngCount;
+                        sceneoption.series[0].data[0].value = data.scene.EndCount;
+                        sceneoption.series[0].data[2].value = data.scene.IngCount;
+                        sceneoption.series[0].data[1].value = data.scene.ReadyCount;
+                        project.setOption(projectoption);
+                        scene.setOption(sceneoption);
+                    })
+               
+                   
+                }
+        $(function () {
+            search();
+        })
+    </script>
+}

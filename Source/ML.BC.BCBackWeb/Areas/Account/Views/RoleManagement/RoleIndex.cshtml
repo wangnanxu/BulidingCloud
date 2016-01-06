@@ -1,0 +1,311 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            平台管理 - <span id="OrganizationName">系统角色</span>
+        </div>
+    </div>
+    <div class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+    
+        @Html.Button(() => HasFunction(Functions.Root_SysManagement_SysRoleManagement_Add), "新增", new { @class = "tools_btn", onclick = "Add()" }, new { @class = "btn_Add" }, false, true)
+      
+        @Html.Button(() => HasFunction(Functions.Root_SysManagement_SysRoleManagement_Edit), "编辑", new { @class = "tools_btn", onclick = "Edit()" }, new { @class = "btn_Edit" }, false, true)
+       
+        @Html.Button(() => HasFunction(Functions.Root_SysManagement_SysRoleManagement_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+       
+         @Html.Button(() =>true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true,false)
+        
+    </div>
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0"  class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件：
+                        </th>
+             
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入角色ID', icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="RoleID" id="txtRoleID" />
+                        </td>
+                     
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入角色名称', icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="Name" id="txtName" />
+                        </td>
+                      
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入角色描述', icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="Description" id="txtDescription" />
+                        </td>
+                        <td>
+                            <input type="button" onclick="ListGrid()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table id="dg_DataTable" class="easyui-datagrid DataContent"
+           data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'RoleID',width:80">
+                    角色ID
+                </th>
+                <th data-options="field:'Name',width:100">
+                    名称
+                </th>
+                <th data-options="field:'Description',width:120,align:'left'">
+                    描述
+                </th>
+                <th data-options="field:'Available',width:50,align:'center',formatter:GetAvailableText">
+                    是否有效
+                </th>
+
+            </tr>
+        </thead>
+    </table>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitForm();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_DataInfo').dialog('close')">
+            取消
+        </a>
+    </div>
+    <div id="dlg_DataInfo" class="easyui-dialog dlg_DataInfo" title="系统角色-添加" data-options="buttons: '#dlg-buttons',modal:true">
+        <form id="FormData" class="easyui-form frm" method="post" data-options="">
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        名称[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" id="txtName" name="Name" data-options="required:true">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        描述:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" id="txtDescription" name="Description" data-options="required:true">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        是否有效:
+                    </td>
+                    <td>
+
+                        <select class="easyui-combobox" id="txtAvailable" name="Available"
+                                data-options="panelHeight:'auto',required:true,editable:false">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                     </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        拥有功能:
+                    </td>
+                    <td>
+                        @*data-options="url:funtion.json,method:'get',animate:true,lines:true,id:id,text:Name,parentId:_parentId"*@
+                        @*<ul  id="treeFunctions" ></ul>*@
+                        <select id="treeFunctions" multiple></select>
+                        <input name="RoleID" type="hidden" value="0" id="hidRoleID" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+ 
+</div>
+@section scripts{
+ @Scripts.Render("~/Content/Js/EasyUI/tree/FunctionsComboxTree.js")
+    <script type="text/javascript">
+    var FunctionsDataUrl = '@Html.Url("Account_default", "GetFunclistByTreeJson", "FunctionManagement")';//功能树url
+    var AddRoleUrl = '@Html.Url("Account_default", "AddRole", "RoleManagement")';
+    var UpdateRoleUrl = '@Html.Url("Account_default", "UpdateRole", "RoleManagement")';
+        var GetRoleByRoleIDUrl = '@Html.Url("Account_default", "GetRoleByRoleID", "RoleManagement")';
+        var AuthorizationListByRoleIDUrl = '@Html.Url("Account_default", "GetAuthorizationListByRoleID", "AuthorizationManagement")';//角色授权url
+
+    var dataUrl = '@Html.Url("Account_default", "GetRoleList", "RoleManagement")';
+    var isAdd = true;
+   
+    function GetData() {
+        $.post(dataUrl, GetSearchParameters(), function (data) {
+            if (data.Success) {
+                if (data.Value != null) {
+                    var value = data.Value;
+                    showTipsMsg("获取到" + value.total + "条数据!", 2000, 0);
+                    LoadDataGrid(data);
+                }
+            } else {
+                showTipsMsg("获取数据失败!" + data.Message, 2000, 2);
+            }
+        });
+    }
+
+    function GetSearchParameters() {
+         var RoleID = $("#txtRoleID").textbox("getValue");
+        var Name = $("#txtName").textbox("getValue");
+        var Description = $("#txtDescription").textbox("getValue");
+        //var str = "RoleID=" + RoleID;
+        //str += "&Name=" + Name;
+        //str += "&Description=" + Description;
+        var parameter = { RoleID: RoleID, Name: Name, Description: Description };
+        return parameter;
+    }
+
+    var loadFilter = function (data, parent) {
+        // if (data.parent == parent.id) { return true; } return false;
+
+    }
+    //添加
+    function Add() {
+        isAdd = true;
+        GetFunctionsData();
+        $("#dlg_DataInfo").dialog({ title: '系统角色-新增' });
+        $("#dlg_DataInfo").dialog('open'); $("#dlg_DataInfo").dialog('center');
+        $('#FormData').form('clear');
+        $('#FormData').form({ url: AddRoleUrl });
+    }
+
+ 
+    //编辑
+    function Edit() {
+        isAdd = false;
+        var model = {};
+        var row = $('#dg_DataTable').datagrid('getSelected');
+
+        if (row) {
+            //$.messager.alert('Info', row.itemsid + ":" + row.productid + ":" + row.attr1);
+
+            model.RoleID = row.RoleID; model.Name = row.Name; model.OwnerID = row.OwnerID
+            model.Description = row.Description; model.Available = row.Available+"";
+        } else {
+            IsEditData("");
+            return;
+        }
+        var FunctionIDs = GetStrToArry(row.FunctionIDs, '|');
+        $("#dlg_DataInfo").dialog({ title: '系统角色-编辑' });
+        //加载数据到表单
+        $("#dlg_DataInfo").dialog('open'); $("#dlg_DataInfo").dialog('center');
+        $('#FormData').form('clear');
+        $('#FormData').form({ url: UpdateRoleUrl });
+        $('#FormData').form('load', model);
+        setAvailable("txtAvailable", model.Available);
+         $('#FormData').form('load', GetRoleByRoleIDUrl+"/?RoleID="+model.RoleID);//model可以换成Url加载远程数据如:(/user?id=10)
+     
+        if (FunctionIDs.length == 0) {
+            $.post(AuthorizationListByRoleIDUrl, { RoleID: model.RoleID }, function (FunctionIDs) {
+                GetFunctionsData(FunctionIDs);//获取授权信息
+            });
+        } else {
+            GetFunctionsData(FunctionIDs);
+        }
+    }
+    $('#FormData').form({
+        'onLoadSuccess': function (data) {
+            setAvailable("txtAvailable", data.Available);
+        }
+    });
+    function Info() {
+        var row = $('#dg_DataTable').datagrid('getSelected');
+        if (row) {
+        } else {
+            showTipsMsg("您没有选择任何数据!", 2000, 2);
+            return;
+        }
+    }
+    //删除
+    function Delete() {
+        var row = $('#dg_DataTable').datagrid('getSelected');
+        if (row) {
+            var RoleID = row.RoleID; //获取字段
+            $.messager.confirm("系统提示", "您确认删除?", function (a) {
+                if (!a) return;
+                $.getJSON("@Html.Url("Account_default", "DeleteRole", "RoleManagement")", { RoleID: RoleID }, function (data) {
+                    if (data.Success) {
+                        if (data.Value) {
+                            showTipsMsg("删除成功!", 2000, 0); //自定义提示信息在顶部显示
+                            clickrow = -1;
+                            ReLoadData();
+                        } else {
+                            showTipsMsg('删除失败', 2000, 2);
+                        }
+                    } else {
+                        showTipsMsg(data.Message, 2000, 2);
+                    }
+                });
+
+            });
+
+        } else {
+            IsDelData(""); //方式1 预先定义的,适合删除时候调用
+            //showTipsMsg("您没有选择数据!", 2000,2); //方式2
+            return;
+        }
+    }
+
+    function ListGrid() {
+        //加载远程数据
+
+        $("#dg_DataTable").datagrid("options").queryParams = GetSearchParameters();//添加附加参数
+        $("#dg_DataTable").datagrid("load", dataUrl);
+    }
+
+    //提交表单
+    function submitForm() {
+        $('#FormData').form('submit', {
+            onSubmit: function (param) {
+                param.FunctionIDs = GetSelectFunctions();
+                return $(this).form('enableValidation').form('validate');
+            },
+            success: function (data) {
+                if (typeof (data) != "undefined") {
+                    data = $.parseJSON(data);
+                    if (data.Success == true) {
+                        $("#dlg_DataInfo").dialog('close');
+                      
+                        if (isAdd) {
+                            ListGrid();
+                            showTipsMsg("系统提示:添加角色成功!", 2000, 0);
+                            clickrow = -1;
+                        } else {
+                            ReLoadData();
+                            showTipsMsg("系统提示:修改角色成功!", 2000, 0);
+                            clickrow = -1;
+                        }
+
+                    } else {
+                        showTipsMsg(data.Message, 2000, 2);
+                    }
+                } else {
+                    if (isAdd) {
+                        showTipsMsg("系统提示:添加角色失败!", 2000, 2);
+                    } else {
+                        showTipsMsg("系统提示:修改角色失败!", 2000, 2);
+                    }
+                }
+            }
+        });
+    }
+        
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+    $(function () {
+        ListGrid();
+        GetFunctionsData();
+    })
+    </script>
+}

@@ -1,0 +1,520 @@
+﻿@Styles.Render("~/Content/CSS/MaterialList.css")
+@Scripts.Render("~/Content/Js/webuploader.js")
+@Styles.Render("~/Content/CSS/webuploader.css")
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            知识管理 - <span id="OrganizationName">知识清单</span>
+        </div>
+    </div>
+    <div class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+        @Html.Button(() => HasFunction(Functions.Root_DataManagement_DataListManagement_Add), "上传", new { @class = "tools_btn", title = "上传资料", id = "fileup", onclick = "upload()" }, new { @class = "btn_Add" }, false, true)
+        @Html.Button(() => HasFunction(Functions.Root_DataManagement_DataListManagement_Edit), "编辑", new { @class = "tools_btn", title = "修改资料", onclick = "Edit()" }, new { @class = "btn_Edit" }, false, true)
+        @Html.Button(() => HasFunction(Functions.Root_DataManagement_DataListManagement_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()", title = "删除资料" }, new { @class = "btn_Delete" }, false, true)
+        @Html.Button(() => HasFunction(Functions.Root_DataManagement_DataListManagement_Info), "查看详细", new { @class = "tools_btn", onclick = "Info()", title = "查看详情" }, new { @class = "btn_Info" }, false, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true)
+    </div>
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" style="height: 45px;" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件:
+                        </th>
+
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入名称',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" id="searchName" />
+                        </td>
+                        <td>
+                            <input class="easyui-combobox" data-options="prompt:'请选择文件类型',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear')}}],editable:false,url:'@Html.Url("Specification_default","GetFileType","MaterialListManagement")'" id="fileType" />
+                        </td>
+                        <td>
+                            <input class="easyui-combobox" data-options="prompt:'请选择知识类型',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear')}}],editable:false,url:'@Html.Url("Specification_default","GetMaterialType","MaterialListManagement")'" id="materialType" />
+                        </td>
+                        <td>
+                            <input type="button" onclick="SearchByName()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table id="dg_DataTable" class="easyui-datagrid DataContent" data-options="pagination:true,url:'@Html.Url("Specification_Default","GetList","MaterialListManagement")',method:'get',fitColumns:true,pagination:true,rownumbers:true,singleSelect:true,onClickRow:onClickRow,onLoadSuccess:onLoadSuccess">
+        <thead>
+            <tr>
+                <th data-options="field:'fileID',width:50,hidden:true">文件ID</th>
+                <th data-options="field:'fileName',width:50,formatter:iconformat">文件名</th>
+                <th data-options="field:'fileSize',width:50,formatter:sizeformat">文件大小</th>
+                <th data-options="field:'fileTypeName',width:50">文件类型</th>
+                <th data-options="field:'materialTypeName',width:50">知识类型</th>
+                <th data-options="field:'updateTime',width:50">更新时间</th>
+            </tr>
+        </thead>
+    </table>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" id="submit_btn">提交</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick='javascript:$("#dlg_DataInfo").dialog("close")'>取消</a>
+    </div>
+    <div class="easyui-dialog dlg_DataInfo" id="dlg_DataInfo" title="知识清单-新增" data-options="buttons:'#dlg-buttons',model:true,width:300">
+        @* <form class="easyui-form frm" method="post" id="dlg_form" enctype="multipart/form-data" data-options="novalidate:true">*@
+        <table>
+            <tr>
+                <td class="FixedColumn borderTD">
+                    知识类型:
+                </td>
+                <td class="borderTD">
+                    <input class="easyui-combobox" name="materialType" data-options="novalidate:true,required:true,prompt:'请选择知识类型',icons:{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear')}},editable:false,url:'@Html.Url("Specification_default","GetMaterialType","MaterialListManagement")',width:200" id="form_materialType" />
+                </td>
+            </tr>
+            <tr style="display:none">
+                <td class="FixedColumn borderTD">
+                    文件名称:
+                </td>
+                <td class="borderTD">
+                    <input class="easyui-textbox" name="fileName" data-options="required:true,width:200" />
+                </td>
+            </tr>
+            <tr id="file_upload">
+                <td class="FixedColumn borderTD">
+                    选择文件:
+                </td>
+                <td class="borderTD">
+                    <div id="picker">选择文件</div>
+                    @*<input type="file" name="filestr" id="upload_file" enctype="multipart/form-data" multiple="multiple" accept=".doc,.xls,.ppt,.pdf,.docx,.xlsx,.pptx"/>*@
+                </td>
+            </tr>
+
+            <tr>
+                <td class="FixedColumn borderTD">文件列表:</td>
+                <td class="FileTD">
+                    <div id="thelist" style="margin-top:12px;max-height:150px;height:auto">
+
+                    </div>
+                </td>
+            </tr>
+            <tr></tr>
+        </table>
+        @*</form>*@
+
+    </div>
+    <!--修改数据-->
+    <div id="alter-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick='submitForm()'>提交</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick='javascript:$("#alter_DataInfo").dialog("close")'>取消</a>
+    </div>
+    <div class="easyui-dialog dlg_DataInfo" id="alter_DataInfo" title="知识清单-修改" data-options="buttons:'#alter-buttons',model:true,width:300">
+        <form class="easyui-form frm" method="post" id="dlg_form" data-options="novalidate:true">
+            <table>
+                <tr>
+                    <td class="FixedColumn">
+                        知识类型:
+                    </td>
+                    <td>
+                        <input class="easyui-combobox" id="alter_materialType" name="materialType" data-options="novalidate:true,required:true,prompt:'请选择知识类型',icons:{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear')}},editable:false,url:'@Html.Url("Specification_default","GetMaterialType","MaterialListManagement")',width:200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        文件名称:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox" name="fileName" data-options="required:true,width:200" />
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+
+    </div>
+    <!--查看详情-->
+    <div class="easyui-dialog dlg_DataInfo" id="dlg_info" data-options="closed:true,width:250" title="查看详细">
+        <form class="easyui-form frm" id="info_form">
+            <table>
+                <tr>
+                    <td class="FixedColumn">
+                        文件名:
+                    </td>
+                    <td class="fittd">
+                        <label id="form_fileName"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        文件大小:
+                    </td>
+                    <td>
+                        <label id="form_fileSize"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        文件类型:
+                    </td>
+                    <td>
+                        <label id="form_fileTypeName"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        知识类型:
+                    </td>
+                    <td>
+                        <label id="form_materialTypeName"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        更新时间:
+                    </td>
+                    <td>
+                        <label id="form_updateTime"></label>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <script type="text/javascript">
+        var BASE_URL = "/Content";
+        // 文件上传
+        jQuery(function () {
+
+            var $ = jQuery,
+                $list = $('#thelist'),
+                $btn = $('#submit_btn'),
+                state = 'pending',
+                uploader;
+
+            uploader = WebUploader.create({
+
+                // 不压缩image
+                resize: false,
+
+                // swf文件路径
+                swf: BASE_URL + '/css/Uploader.swf',
+
+                // 文件接收服务端。
+                server: '@Html.Url("Specification_default","Upload","MaterialListManagement")',
+
+                // 选择文件的按钮。可选。
+                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                pick: '#picker',
+
+                chunked: true,
+                chunkSize: 3242880,
+                accept: {
+                    title: 'r',
+                    extensions: 'doc,docx,xlsx,xls,ppt,pptx,pdf',
+                },
+                threads:4
+            });
+            var filedom = null;
+            // 当有文件添加进来的时候
+            uploader.on('fileQueued', function (file) {
+                filedom = file;
+                var $adddom = $('<div id="' + file.id + '" style="width:auto;position:relative" >' +
+                    '<div class="txtbox">' + file.name + '</div>' +
+                  ' <div class="progress-bar" ></div>' +
+                    '<span class="state">等待上传...</span><div class="cancel">删除</div></div>' +
+                '</div>');
+                $list.append($adddom);
+
+                $adddom.find(".cancel").click(function () {
+                    uploader.removeFile(file);//删除上传列表file
+                    removeFile(file);//删除显示的file
+                })
+            });
+            function removeFile(file)
+            {
+                var $li = $('#' + file.id);
+                $li.off().find('.file-panel').off().end().remove();
+            }
+            // 文件上传过程中创建进度条实时显示。
+            uploader.on('uploadProgress', function (file, percentage) {
+                var $li = $('#' + file.id);
+                var $percent = $li.find('.progress-bar');
+
+                // 避免重复创建
+                if (!$percent.length) {
+                    $percent = $('<div style="width: 133px;height: 15px;position: relative;left: 100%;top: -17px;border: solid 1px;overflow:hidden">' +
+                  ' <div class="progress-bar" role="progressbar" style="background-color: rgb(164, 155, 199);width: 0%;height: 100%;position: absolute;top: 0px;left: 0px;"></div></div>' +
+                    '<span class="state">等待上传...</span>'
+                  ).appendTo($li).find('.progress-bar');
+                }
+
+                $li.find('span.state').text('上传中');
+
+                var $li = $('#' + filedom.id);
+
+
+            });
+
+            uploader.on('uploadSuccess', function (file, data) {
+                if (data.Success)
+                    $('#' + file.id).find('span.state').text('已上传');
+                else {
+                    showTipsMsg(data.Message, 2000, 2);
+                    $('#' + file.id).find('span.state').text('上传失败');
+                }
+
+            });
+
+            uploader.on('uploadError', function (file,data) {
+                if (data.Success)
+                    $('#' + file.id).find('span.state').text('已上传');
+                else
+                {
+                    showTipsMsg(data.Message, 2000, 2);
+                    $('#' + file.id).find('span.state').text('上传失败');
+                }
+
+            });
+
+            uploader.on('uploadComplete', function (file) {
+                $('#' + file.id).find('.progress').fadeOut();
+                uploader.reset();
+                Reference();
+            });
+
+            uploader.on('uploadBeforeSend', function (block, data, headers) {
+
+                    if (block.chunk + 1 != block.chunks)//分片
+                    {
+                        data.isChunk = true;
+                        data.byteLength = data.size;
+                        data.ext = block.file.ext;
+                        data.start = block.start;
+                        data.end = block.end;
+                        data.materialType = $("#form_materialType").combobox("getValue");
+                    }
+                    else {
+                        if (block.chunk + 1 == block.chunks && block.chunk > 1)//分片结束
+                        {
+                            data.isChunk = true;
+                            data.byteLength = data.size;
+                            data.ext = block.file.ext;
+                            data.start = block.start;
+                            data.end = block.end;
+                            data.materialType = $("#form_materialType").combobox("getValue");
+                        } else {
+                            data.isChunk = false;
+                            data.byteLength = data.size;
+                            data.ext = block.file.ext;
+                            data.materialType = $("#form_materialType").combobox("getValue");
+                        }
+                    }
+
+            });
+            uploader.on('all', function (type) {
+                if (type === 'startUpload') {
+                    state = 'uploading';
+                } else if (type === 'stopUpload') {
+                    state = 'paused';
+                } else if (type === 'uploadFinished') {
+                    state = 'done';
+                }
+
+                if (state === 'uploading') {
+                    $btn.text('暂停上传');
+                } else {
+                    $btn.text('上传');
+                    $btn.css('height','24px').css("width","34px").css('line-height',"23px");
+                }
+            });
+
+            $btn.on('click', function () {
+                if (state === 'uploading') {
+                    uploader.stop();
+                } else {
+                    $("#form_materialType").textbox("enableValidation").textbox("validate");
+                    $("#form_materialType").textbox("options").novalidate = false;
+                    if ($("#form_materialType").textbox("isValid")) {
+                        uploader.upload();
+                    } else {
+                        uploader.stop();
+                    }
+                }
+            });
+        });
+
+
+
+    </script>
+    <script type="text/javascript">
+        var uploadUrl = '@Html.Url("Specification_default","Upload","MaterialListManagement")';
+        var uploadSmall = '@Html.Url("Specification_default","UploadSmall","MaterialListManagement")';
+        var updateUrl = '@Html.Url("Specification_default","Update","MaterialListManagement")';
+        var deleteUrl = '@Html.Url("Specification_default","Delete","MaterialListManagement")';
+        var url = '';
+        function submitForm(target) {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            $("#dlg_form").form('submit', {
+                url: url,
+                onSubmit: function (para) {
+                    if (url == updateUrl) {
+                        para.fileID = row.fileID;
+                    }
+                    return $(this).form('enableValidation').form('validate');
+                },
+                success: function (data) {
+                    data = eval("(" + data + ")");
+                    if (!data.Success) {
+                        showTipsMsg(data.Message, 2000, 2);
+                    } else {
+                        showTipsMsg(data.Message, 2000, 0);
+                        $('#alter_DataInfo').dialog('close');
+                        clickrow = -1;
+                        Reference();
+                    }
+                }
+            }
+             )
+
+        }
+        function upload() {
+            url = uploadSmall;
+            //$("#dlg_form").form("clear");
+            $("#file_upload").show();
+            $("#thelist").html("");
+            $("#dlg_DataInfo").dialog({
+                title: "知识清单-新增"
+            })
+
+
+        }
+        function Edit() {
+            var row = $("#dg_DataTable").datagrid("getSelected");
+            if (row) {
+
+                url = updateUrl;
+                $("#alter_DataInfo").dialog({
+                    title: '知识清单-修改'
+                });
+                var model = {};
+                model.fileName = row.fileName;
+                $("#dlg_form").form("load", model);
+
+                $("#alter_materialType").combobox("setValue", parseInt(row.materialType));
+            }
+            else {
+                showTipsMsg("您当前未选中任何一行", 2000, 2);
+            }
+        }
+        function Download(target) {
+            $.messager.confirm("系统提示", "确认下载", function (a) {
+                if (a) {
+                    if ('@HasFunction(Functions.Root_DataManagement_DataListManagement_Download)' != 'True') {
+                        showTipsMsg("您当前没有下载权限", 2000, 2);
+                        return;
+                    }
+                    var td = $(target).closest("td").prev().find("div").eq(0).html();
+                    var domstr = "<form id='tempform' action='@Html.Url("Specification_default", "Download", "MaterialListManagement")' method='post'><input value='" + $(target).html() + "' name='fileName' />";
+                    domstr += "<input value='" + td + "' name='fileID' /><input id='submit_download' type='submit' /></form>";
+                    $("body").append($(domstr));
+                    $("#submit_download").click();
+                }
+
+            })
+
+
+
+        }
+        function SearchByName() {
+            var model = {};
+            model.name = $("#searchName").textbox("getText");
+            model.fileType = $("#fileType").combobox("getValue");
+            model.materialType = isNaN(parseInt($("#materialType").combobox("getValue"))) ? null : parseInt($("#materialType").combobox("getValue"));
+            model.rows = $("#dg_DataTable").datagrid("options").pageSize;
+            model.page = $("#dg_DataTable").datagrid("options").pagrNumber;
+            $("#dg_DataTable").datagrid("options").queryParams = model;
+            $("#dg_DataTable").datagrid("load", '@Html.Url("Specification_default","GetList","MaterialListManagement")');
+        }
+        function iconformat(value) {
+            if (value) {
+                var imgstr = "";
+                if (value.split('.')[1].indexOf("doc") != -1)//word
+                {
+                    imgstr = "<img style='width:20px;height:20px;position:relative;top:2px' src='/Content/Images/icon/word_img.png' />";
+                }
+                else if (value.split('.')[1].indexOf("xls") != -1)//excel
+                {
+                    imgstr = "<img style='width:20px;height:20px;position:relative;top:2px' src='/Content/Images/icon/excel_img.png' />";
+                }
+                else if (value.split('.')[1].indexOf('ppt') != -1)//ppt
+                {
+                    imgstr = "<img style='width:20px;height:20px;position:relative;top:2px' src='/Content/Images/icon/ppt_img.png' />";
+                }
+                else if (value.split('.')[1].indexOf('pdf') != -1)//ppt
+                {
+                    imgstr = "<img style='width:20px;height:20px;position:relative;top:2px' src='/Content/Images/icon/pdf_img.png' />";
+                }
+            }
+            if ('@HasFunction(Functions.Root_DataManagement_DataListManagement_Download)' == 'True')
+                return imgstr + "<a href='javascript:void(0)' style='text-decoration:underline;position:relative;top:-2px;left:1px' onclick='Download(this)'>" + value + "</a>";
+            else return imgstr + value;
+        }
+        function Delete() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                $.messager.confirm("系统提示", "确认删除?", function (a) {
+                    if (a) {
+                        $.getJSON(deleteUrl, { fileID: row.fileID }, function (data) {
+                            if (data.Success) {
+                                showTipsMsg(data.Message, 2000, 0);
+                                clickrow = -1;
+                                Reference();
+                            }
+                            else {
+                                showTipsMsg(data.Message, 2000, 2);
+                            }
+                        })
+                    }
+                    else
+                        return;
+                })
+            } else {
+                showTipsMsg("您当前未选中任何一行", 2000, 2);
+            }
+        }
+        function sizeformat(value) {
+            if (value) {
+                return (parseInt(value) / 1024 / 1024).toFixed("2") + "MB";
+            }
+        }
+        function Reference() {
+            $("#dg_DataTable").datagrid("reload");
+        }
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+
+        function Info() {
+            var row = $("#dg_DataTable").datagrid("getSelected");
+            if (row) {
+                $("#form_fileName").html(row.fileName);
+                $("#form_fileSize").html(row.fileSize);
+                $("#form_fileTypeName").html(row.fileTypeName);
+                $("#form_materialTypeName").html(row.materialTypeName);
+                $("#form_updateTime").html(row.updateTime);
+                $("#dlg_info").dialog("open");
+            } else {
+                showTipsMsg("您当前并未选中任何一行", 2000, 2);
+            }
+
+        }
+        function onLoadSuccess(data, row)
+        {
+            $(".datagrid-btable tr").css("height", "35px");
+        }
+      
+    </script>
+</div>

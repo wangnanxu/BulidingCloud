@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F5F4B14F-0A62-423B-90F3-C8FEE0C1704F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ML.BC.EnterpriseData</RootNamespace>
+    <AssemblyName>ML.BC.EnterpriseData</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EFCache">
+      <HintPath>..\packages\EntityFramework.Cache.1.0.0\lib\net45\EFCache.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\lib\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\lib\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\CommonConfig.cs" />
+    <Compile Include="Common\CustomFunctions.cs" />
+    <Compile Include="Common\Enums.cs" />
+    <Compile Include="Common\Functions.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Functions.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Department.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Enterprise.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EnterpriseDataModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EnterpriseDataModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EnterpriseDataModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EnterpriseDataModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EnterpriseDataModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EnterpriseProfession.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\EnterpriseProperty.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Extend\BCEnterpriseContext.cs" />
+    <Compile Include="Model\Extend\DBTimeHelper.cs" />
+    <Compile Include="Model\Extend\EFCacheConfiguration.cs" />
+    <Compile Include="Model\Extend\EntityExtention.cs" />
+    <Compile Include="Model\Extend\IEntityHooks.cs" />
+    <Compile Include="Model\FrontUser.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\MaterialType.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\OperationLog.cs" />
+    <Compile Include="Model\Project.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RFAAuthorization.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RFAFunction.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\RFARole.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Scene.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SceneItem.cs" />
+    <Compile Include="Model\SceneType.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SyncState.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\UserLoginLog.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\UserLoginState.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\UserMessageQueueItem.cs" />
+    <Compile Include="Model\UserRole.cs">
+      <DependentUpon>EnterpriseDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MongoDb\DAL\IMongoDbProvider.cs" />
+    <Compile Include="MongoDb\DAL\MongoDbProvider.cs" />
+    <Compile Include="MongoDb\MongoDBEntity.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ML.BC.Infrastructure\ML.BC.Infrastructure.csproj">
+      <Project>{54056842-48b5-4e6e-b882-b05d8bbbf29a}</Project>
+      <Name>ML.BC.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <EntityDeploy Include="Model\EnterpriseDataModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EnterpriseDataModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Common\Functions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Functions.cs</LastGenOutput>
+    </None>
+    <None Include="Model\EnterpriseDataModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EnterpriseDataModel.edmx</DependentUpon>
+      <LastGenOutput>EnterpriseDataModel.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Model\EnterpriseDataModel.edmx.diagram">
+      <DependentUpon>EnterpriseDataModel.edmx</DependentUpon>
+    </None>
+    <None Include="Model\EnterpriseDataModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EnterpriseDataModel.edmx</DependentUpon>
+      <LastGenOutput>EnterpriseDataModel.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Common\InitData.sql" />
+    <Content Include="Common\Schema.sql" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

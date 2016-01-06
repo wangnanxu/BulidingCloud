@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ML.BC.EnterpriseData" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="BCEnterpriseContext" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Departments" EntityType="ML.BC.EnterpriseData.Department" />
+    <EntitySet Name="EnterpriseProfessions" EntityType="ML.BC.EnterpriseData.EnterpriseProfession" />
+    <EntitySet Name="EnterprisePropertys" EntityType="ML.BC.EnterpriseData.EnterpriseProperty" />
+    <EntitySet Name="Enterprises" EntityType="ML.BC.EnterpriseData.Enterprise" />
+    <EntitySet Name="FrontUsers" EntityType="ML.BC.EnterpriseData.FrontUser" />
+    <EntitySet Name="Projects" EntityType="ML.BC.EnterpriseData.Project" />
+    <EntitySet Name="RFAAuthorizations" EntityType="ML.BC.EnterpriseData.RFAAuthorization" />
+    <EntitySet Name="RFAFunctions" EntityType="ML.BC.EnterpriseData.RFAFunction" />
+    <EntitySet Name="RFARoles" EntityType="ML.BC.EnterpriseData.RFARole" />
+    <EntitySet Name="Scenes" EntityType="ML.BC.EnterpriseData.Scene" />
+    <EntitySet Name="UserRoles" EntityType="ML.BC.EnterpriseData.UserRole" />
+    <EntitySet Name="MaterialTypes" EntityType="ML.BC.EnterpriseData.MaterialType" />
+    <EntitySet Name="UserLoginStates" EntityType="ML.BC.EnterpriseData.UserLoginState" />
+    <EntitySet Name="SyncStates" EntityType="ML.BC.EnterpriseData.SyncState" />
+    <EntitySet Name="SceneTypes" EntityType="ML.BC.EnterpriseData.SceneType" />
+    <EntitySet Name="UserLoginLogs" EntityType="ML.BC.EnterpriseData.UserLoginLog" />
+  </EntityContainer>
+  <EntityType Name="Department">
+    <Key>
+      <PropertyRef Name="DepartmentID" />
+    </Key>
+    <Property Name="DepartmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="EnterpriseID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="ParentID" Type="Int32" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Available" Type="Boolean" Nullable="false" />
+    <Property Name="Deleted" Type="Boolean" Nullable="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="EnterpriseProfession">
+    <Key>
+      <PropertyRef Name="EnterpriseProfessionID" />
+    </Key>
+    <Property Name="EnterpriseProfessionID" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
+    <Property Name="Available" Type="Boolean" Nullable="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="EnterpriseProperty">
+    <Key>
+      <PropertyRef Name="EnterprisePropertyID" />
+    </Key>
+    <Property Name="EnterprisePropertyID" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
+    <Property Name="Available" Type="Boolean" Nullable="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="Enterprise">
+    <Key>
+      <PropertyRef Name="EnterpriseID" />
+    </Key>
+    <Property Name="EnterpriseID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ProfessionID" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="PropertyID" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="Province" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="City" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Address" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Telephone" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Fax" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="Byte" Nullable="false" />
+    <Property Name="RegistDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Deleted" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FrontUser">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="EnterpiseID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="DepartmentID" Type="Int32" />
+    <Property Name="Mobile" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="RegistDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="LastDate" Type="DateTime" Precision="3" />
+    <Property Name="LastIP" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="LoginByDesktop" Type="Boolean" Nullable="false" />
+    <Property Name="LoginByMobile" Type="Boolean" Nullable="false" />
+    <Property Name="Closed" Type="Boolean" Nullable="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Picture" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Project">
+    <Key>
+      <PropertyRef Name="ProjectID" />
+    </Key>
+    <Property Name="ProjectID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="EnterpriseID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Departments" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="Managers" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="Roles" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="RegistDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="BeginDate" Type="DateTime" Precision="3" />
+    <Property Name="EndDate" Type="DateTime" Precision="3" />
+    <Property Name="Status" Type="Byte" Nullable="false" />
+    <Property Name="Deleted" Type="Boolean" Nullable="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="RFAAuthorization">
+    <Key>
+      <PropertyRef Name="RoleID" />
+      <PropertyRef Name="FunctionID" />
+    </Key>
+    <Property Name="RoleID" Type="Int32" Nullable="false" />
+    <Property Name="FunctionID" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Deleted" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RFAFunction">
+    <Key>
+      <PropertyRef Name="FunctionID" />
+    </Key>
+    <Property Name="FunctionID" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MyID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="ParentID" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="Desription" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="Available" Type="Boolean" Nullable="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="RFARole">
+    <Key>
+      <PropertyRef Name="RoleID" />
+    </Key>
+    <Property Name="RoleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="OwnerID" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="Description" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Available" Type="Boolean" Nullable="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="Scene">
+    <Key>
+      <PropertyRef Name="SceneID" />
+    </Key>
+    <Property Name="SceneID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="EnterpriseID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="ProjectID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="ParentSceneID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Woker" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+    <Property Name="RegistDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="BeginDate" Type="DateTime" Precision="3" />
+    <Property Name="EndDate" Type="DateTime" Precision="3" />
+    <Property Name="Status" Type="Byte" Nullable="false" />
+    <Property Name="Deleted" Type="Boolean" Nullable="false" />
+    <Property Name="Type" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="Address" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+    <Property Name="LatitudeAndLongitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="HasData" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserRole">
+    <Key>
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="RoleID" />
+    </Key>
+    <Property Name="UserID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="RoleID" Type="Int32" Nullable="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Deleted" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MaterialType">
+    <Key>
+      <PropertyRef Name="MaterialTypeID" />
+    </Key>
+    <Property Name="MaterialTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Available" Type="Boolean" Nullable="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="UserLoginState">
+    <Key>
+      <PropertyRef Name="UserLoginStateID" />
+    </Key>
+    <Property Name="UserLoginStateID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="UserName" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="LoginIP" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
+    <Property Name="Device" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LoginToken" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <Property Name="LoginTime" Type="DateTime" Precision="3" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="SyncState">
+    <Key>
+      <PropertyRef Name="SyncStateID" />
+    </Key>
+    <Property Name="SyncStateID" Type="Int32" Nullable="false" />
+    <Property Name="ActionType" Type="Byte" Nullable="false" />
+    <Property Name="SyncTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UserID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="DeviceID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="SceneType">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ParentID" Type="Int32" />
+    <Property Name="Available" Type="Boolean" Nullable="false" />
+    <Property Name="EnterpriseID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="UpdateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="UserLoginLog">
+    <Key>
+      <PropertyRef Name="UserLoginLogID" />
+    </Key>
+    <Property Name="UserLoginLogID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="true" />
+    <Property Name="IP" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Device" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="Int32" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
+</Schema>

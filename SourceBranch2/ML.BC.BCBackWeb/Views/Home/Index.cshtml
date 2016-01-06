@@ -1,0 +1,50 @@
+﻿ @{
+     string _Name= BCSession.User == null ? "请登录" : @BCSession.User.UserName;
+   string _LastLoginTime = BCSession.User==null?"":BCSession.User.LastLoginTime.ToString();
+   string _LastIP = BCSession.User == null ? "" : BCSession.User.LastIP;
+  
+   }
+
+<div id="Container">
+    <div id="Header">
+        <div id="HeaderLogo">
+            <img style="" src="/content/Images/logo2.png">
+        </div>
+        <div id="Headermenu">
+            <ul id="topnav">
+                <li onclick="LoginOut();" class="list" id="metnav_5">
+                    <a id="nav_4" href="javascript:">
+                        <span class="c4"></span>安全退出
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="MainContent">
+        <div class="navigation leftmenu" id="MenuContent">
+            @Html.Partial("_NavigateMenu")
+        </div>
+        <div id="ContentPannel" class="Content" style="float:none;height:645px;position:relative">
+        </div>
+        <div id="botton_toolbar" class="">
+            <div class="item">
+
+                &nbsp;账号&nbsp;:<a id="LoginAccount"> @_Name </a> <span class="south-separator"> &nbsp;</span>
+            </div>
+            <div class="item">
+                最后登录时间&nbsp;: <a id="UpdateLoginDate" class="datetime" title="">@_LastLoginTime</a>
+                <span class="south-separator">&nbsp;</span>
+            </div>
+            <div class="item">
+
+                最后登录IP&nbsp;: <a id="UpdateLoginIP" title="">@_LastIP</a>
+                <span class="south-separator">&nbsp; </span>
+            </div>
+            <div class="item" style="text-align: right; float: right; padding-right: 30px">
+                <span class="south-separator">&nbsp;</span>版本:V1.0
+            </div>
+        </div>
+    </div>
+    <!--显示顶部消息-->
+    @Html.Partial("~/Views/Shared/TopMsg.cshtml")
+ 

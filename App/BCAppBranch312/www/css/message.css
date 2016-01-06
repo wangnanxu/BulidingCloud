@@ -1,0 +1,112 @@
+/*消息界面*/
+.MyMessageLi {
+	text-align: center;
+	float: right;
+	width: 100%;
+	margin-top: 5px;
+}
+.YouMessageLi {
+	text-align: center;
+	float: left;
+	width: 100%;
+	margin-top: 5px;
+}
+.MessageTitle {
+	font-size: 10px;
+	background: #999999;
+	margin: 0 auto;
+	color: white;
+	text-align: center;
+	border: 1px solid #a1a1a1;
+	border-radius: 5px;
+}
+.MyMessagebody {
+	float: right;
+	width: 90%;
+	margin-top: 2px;
+}
+.YouMessagebody {
+	float: left;
+	width: 90%;
+	margin-top: 5px;
+}
+.MyMessagebody-img {
+	border: solid 1px #00AFEE;
+	border-radius: 8px;
+	float: right;
+	width: 45px;
+	height: 45px;
+}
+.YouMessagebody-img {
+	border: solid 1px #00AFEE;
+	border-radius: 8px;
+	float: left;
+	width: 45px;
+	height: 45px;
+}
+.MyMessagebody-link {
+	float: right;
+	width: 0;
+	height: 0;
+	border-width: 7px 5px 7px 10px;
+	border-style: solid;
+	border-color: transparent transparent transparent #1F2966;
+	position: relative;
+	top: 10px;
+	right: 1px;
+}
+.YouMessagebody-link {
+	float: left;
+	width: 0;
+	height: 0;
+	border-width: 7px 10px 7px 5px;
+	border-style: solid;
+	border-color: transparent #FFFFFF transparent transparent ;
+	position: relative;
+	top: 10px;
+	left: 1px;
+}
+.MyMessagebody-div {
+	float: right;
+	max-width: 70%;
+}
+.YouMessagebody-div {
+	float: left;
+	max-width: 70%;
+}
+.MyMessagebody-pre {
+	color: white;
+	padding: 10px;
+	text-align: left;
+	white-space: pre-wrap;
+	font-size: 15px;
+	border-radius: 10px;
+	background: #1f2966;
+}
+.YouMessagebody-pre {
+	padding: 10px;
+	text-align: left;
+	white-space: pre-wrap;
+	font-size: 15px;
+	border-radius: 10px;
+	background: #ffffff;
+}
+/*添加现场*/
+.SelectItem{
+	width:80%;
+	float: right;
+	margin: 0.5em 0 0 0;
+}
+.SelectLable{
+	width:20%;
+	float: left;
+	font-size: 20px;
+	margin: 1.5em 0 0 0;
+	text-align:center;
+}
+.sendMessagePic{
+	float: right;
+	width:20px;
+	height:20px;
+	margin-top:10px;
+}

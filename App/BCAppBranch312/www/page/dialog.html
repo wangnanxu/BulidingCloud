@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_Dialog">
+			<style type="text/css">
+				.scroll-wrapper {
+					width: 100%;
+					height: auto;
+					/* 提示: 请在此处加上需要设置的大小(dimensions)或位置(positioning)信息! */
+				}
+				iframe {
+					/* 你自己指定的样式 */
+					
+					border: none;
+					position: relative;
+					right: 0;
+					bottom: 0;
+					left: 0;
+					top: 0;
+					-webkit-overflow-scrolling: touch;
+					overflow-y: scroll;
+					height: 100%;
+					width: 100%;
+				}
+			</style>
+			<script type="text/javascript">
+				$(document).on("pageshow", "#Page_Dialog", function() {
+					$("#iframe").attr("src",GetUrlParam("src"));
+					AddPaneScroll("down");
+				});
+			</script>
+			<div data-role="header" data-position="fixed">
+				<a href="#" data-role="button" onclick="ChangePage('material.html')">返回</a>
+				<h1>资料</h1>
+			</div>
+
+			<div data-role="content" style="margin: 0;padding: 0;">
+				<div id="wrapper" style="bottom: 0; border: none;">
+					<div id="scroller">
+						<ul data-role="listview" style="margin: 0;">
+							<iframe id="iframe" src="http://www.jikexueyuan.com/"></iframe>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div data-role="footer" data-position="fixed" style="height: 0;">
+			</div>
+		</div>
+	</body>
+
+</html>

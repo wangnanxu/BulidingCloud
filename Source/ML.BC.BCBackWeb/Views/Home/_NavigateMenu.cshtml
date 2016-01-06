@@ -1,0 +1,41 @@
+﻿@using ML.BC.Web.Framework;
+
+<div class="easyui-accordion" style=" height: auto">
+    @if (HasFunction(Functions.Root_EPManagement))
+    {
+        <div title="企业管理" data-options="iconCls:'icon-EnterpriseManagement'">
+            <div class="sub-menu">
+                @Html.MenuItem(() => HasFunction(Functions.Root_EPManagement_EPList), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bba','{0}', '企业列表', 'icon-EnterpriseList', 'true')", Html.Url("Unit_default", "EnterpriseIndex", "EnterpriseManagement")) }, "EnterpriseList.png", "企业列表")
+                @Html.MenuItem(() => HasFunction(Functions.Root_EPManagement_EPProfession), new { onclick = string.Format("AddTabMenu('599cbed1-45c4-4792-978c-d5bbcd2819e2','{0}', '行业类型', 'icon-IndustryType', 'true')", Html.Url("Unit_default", "Index", "EnterpriseProfession")) }, "IndustryType.png", "行业类型")
+                @Html.MenuItem(() => HasFunction(Functions.Root_EPManagement_EPProperty), new { onclick = string.Format("AddTabMenu('7996cea4-5503-4807-87ba-d2da553c4341','{0}', '企业性质', 'icon-EnterpriseNature', 'true')", Html.Url("Unit_default", "Index", "PropertyManage")) }, "EnterpriseNature.png", "企业性质")
+                @Html.MenuItem(() => HasFunction(Functions.Root_EPManagement_EPRole), new { onclick = string.Format("AddTabMenu('7996cea4-5503-4807-87ba-d2da55564349','{0}', '企业角色', 'icon-EnterpriseRole', 'true')", Html.Url("Account_default", "EnterpriseRoleIndex", "EnterpriseRoleManagement")) }, "EnterpriseRole.png", "企业角色")
+                @Html.MenuItem(() => HasFunction(Functions.Root_EPManagement_EPUser), new { onclick = string.Format("AddTabMenu('c108ef45-b8b6-493e-951a-9050706e2bba','{0}', '企业账号', 'icon-EnterpriseAccount', 'true')", Html.Url("Account_default", "Index", "FrontUser")) }, "EnterpriseAccount.png", "企业账号")
+
+                @Html.MenuItem(() => HasFunction(Functions.Root_EPManagement_EPLog), new { onclick = string.Format("AddTabMenu('8104bfa2-fc85-4459-b533-7f58b7541155','{0}', '企业日志', 'icon-EnterpriseLog', 'true')", Html.Url("Unit_default", "BackLogIndex", "BackLogManagement")) }, "EnterpriseLog.png", "企业日志")
+                @Html.MenuItem(() => HasFunction(Functions.Root_EPManagement_LoginLog), new { onclick = string.Format("AddTabMenu('81x3sfa2-fc85-4459-2445-7f58b2638155','{0}', '登录日志', 'icon-LoginLog', 'true')", Html.Url("Account_default", "LoginLogIndex", "LoginLogManagement")) }, "LoginLog.png", "登录日志")
+             </div>
+        </div>
+    }
+    @if (HasFunction(Functions.Root_EPBillManagement))
+    {
+        <div title="计费管理" data-options="iconCls:'icon-BillingManagement'">
+            <div class="sub-menu">
+            </div>
+        </div>
+    }
+    @if (HasFunction(Functions.Root_SysManagement))
+    {
+        <div title="平台管理" data-options="iconCls:'icon-PlatformManagement'">
+            <div class="sub-menu">
+                @Html.MenuItem(() => HasFunction(Functions.Root_SysManagement_SysUserManagement), new { onclick = string.Format("AddTabMenu('758429ec-3ae9-4a9e-a994-efe7c5395b4a','{0}', '系统用户', 'icon-SystemUser', 'true')", Html.Url("Account_default", "index", "Backuser")) }, "SystemUser.png", "系统用户")
+                @Html.MenuItem(() => HasFunction(Functions.Root_SysManagement_SysRoleManagement), new { onclick = string.Format("AddTabMenu('b29cabd8-ffb6-4d34-9d08-ee1dba2b5b6b','{0}', '系统角色', 'icon-SystemRole', 'true')", Html.Url("Account_default", "RoleIndex", "RoleManagement")) }, "SystemRole.png", "系统角色")
+                @Html.MenuItem(() => HasFunction(Functions.Root_SysManagement_OnlineUser), new { onclick = string.Format("AddTabMenu('e84c0fca-d912-4f5c-a25e-d5765e33b0d2','{0}', '在线人数', 'icon-OnlineCount', 'true')", Html.Url("Account_default", "OnlineCountIndex", "OnlineCount")) }, "OnlineCount.png", "在线人数")
+                @Html.MenuItem(() => HasFunction(Functions.Root_SysManagement_SysLogManagement), new { onclick = string.Format("AddTabMenu('d7a9f7e6-f004-4d39-b54c-0ad4215115a9','{0}', '系统日志', 'icon-SystemLog', 'true')", Html.Url("System_default", "SystemLogIndex", "SystemLog")) }, "SystemLog.png", "系统日志")
+                @Html.MenuItem(() => HasFunction(Functions.Root_SysManagement_SysFunManagement), new { onclick = string.Format("AddTabMenu('12260EAD-584A-4E1D-A830-803F513A7F22','{0}', '系统功能项管理', 'icon-FunctionManagement', 'true')", Html.Url("Account_default", "FunctionTree", "FunctionManagement")) }, "FunctionManagement.png", "系统功能项管理")
+                @Html.MenuItem(() => HasFunction(Functions.Root_SysManagement_EPFunMangement), new { onclick = string.Format("AddTabMenu('937326DD-4563-4D34-A2B2-82D6B2207E1F','{0}', '企业功能项管理', 'icon-EnterpriseFunctionManagement', 'true')", Html.Url("Account_default", "EntFunctionTree", "EnterpriseFunctionManagement")) }, "EPFunctionManagement.png", "企业功能项管理")
+                @Html.MenuItem(() => true, new { onclick = string.Format("AddTabMenu('937326DD-4563-4D34-A2B2-82D6B2207E1F','{0}', '运行统计', 'icon-EnterpriseFunctionManagement', 'true')", Html.Url("Account_default", "CountIndex", "ReportCount")) }, "EPFunctionManagement.png", "运行统计")
+            </div>
+        </div>
+
+    }
+</div>

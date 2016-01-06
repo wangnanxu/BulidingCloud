@@ -1,0 +1,45 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+@model ML.BC.BCBackWeb.Areas.Account.Models.LoginViewModel
+@{Layout = "~/Views/Shared/_LoginLayout.cshtml";}
+ 
+ <div id="thead">
+    <div class="bg1"></div>
+    <div class="bg2"></div>
+    <div class="bg3">
+        <div class="nav">
+            <div class="easyui-panel" title="登录施工云平台（运营后台）" style="width:100%;margin:0px auto;padding:10px 70px 20px 70px">
+                <form id="form_Login" method="post" action="@Html.Url("Account_default", "Login", "Account")">
+                    <div style="margin-bottom:10px">
+                        <input class="easyui-textbox" name="Username" value="" style="width:100%;height:40px;padding:12px" data-options="prompt:'Username',iconCls:'icon-man',iconWidth:38,required:true">
+                    </div>
+                    <div style="margin-bottom:10px">
+                        <input class="easyui-textbox" type="password" name="Password" value="" style="width:100%;height:40px;padding:12px" data-options="prompt:'Password',iconCls:'icon-lock',iconWidth:38,required:true">
+                    </div>
+                    @*<div style="margin-bottom:10px;position :relative">
+                        <input class="easyui-textbox" type="text" name="captcha" id="captcha"  style="width:80px;height:40px;padding:12px" data-options="prompt:'验证码',required:false">
+                        <img src="/Captcha/Refresh" id="CodeImg" width="80" height="38" alt="点击切换验证码" title="点击切换验证码" style="cursor: pointer;position:absolute;top:2px;" onclick="ToggleCode(this.id, '/Captcha/Refresh'); return false;">
+                    </div>*@
+                    <div style="margin-bottom:10px;position :relative">
+                        <input class="easyui-textbox" type="text" name="captcha" value="" style="width:165px;height:40px;padding:12px" data-options="prompt:'验证码',required:true">
+                        <img src="/Captcha/Refresh" id="CodeImg" width="80" height="36" alt="点击切换验证码" title="点击切换验证码" style="cursor: pointer;position:absolute;top:2px;left:80px" onclick="ToggleCode(this.id, '/Captcha/Refresh'); return false;">
+                    </div>
+                    <div>
+                        <a href="#" id="btnLogin" onclick="Login();" class="easyui-linkbutton" style="padding:0px 0px;width:100%;">
+                            <span id="LoginText" style="font-size:16px;font-weight:800">登 录</span>
+                        </a>
+                    </div>
+                </form>
+            </div>     
+        </div>
+    </div>
+    <div class="bg4">
+        <p>
+           <!-- 适用浏览器：IE8、360、FireFox、Chrome、Safari、Opera、傲游、搜狗、世界之窗。-->
+            适用浏览器：IE10、FireFox、Chrome、Safari、Opera。
+        </p>
+    </div>
+</div>
+<div id="bottom">
+</div>
+ 

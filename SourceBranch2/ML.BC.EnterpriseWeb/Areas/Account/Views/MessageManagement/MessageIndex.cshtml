@@ -1,0 +1,380 @@
+﻿@Styles.Render("~/Content/CSS/Message.css")
+<div id="Content" class="Content ClearFloat">
+    <!--标题-->
+    <div class="btnbartitle">
+        <div>
+            系统设置 - <span id="OrganizationName">消息</span>
+        </div>
+    </div>
+    <!--工具栏-->
+    <div class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+        @Html.Button(() => true, "发送消息", new { @class = "tools_btn", onclick = "send()", title = "发送消息" }, new { @class = "btn_Add" }, true, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+    </div>
+   <!--搜索-->
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件：
+                        </th>
+                        
+                        <td>
+                            <input placeholder="起始时间" type="text" style="width: 200px" class="easyui-datetimebox" id="StartTime" name="StartTime" data-options="editable:false,prompt:'起始时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).datetimebox('clear')}}]">
+                        </td>
+                        <td>
+                            <input placeholder="结束时间" type="text" style="width: 200px" class="easyui-datetimebox" id="EndTime" name="EndTime" data-options="editable:false,prompt:'截至时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).datetimebox('clear')}}]">
+                        </td>
+
+                        <td>
+                            <input type="button" onclick="search()" value="搜 索" class="btnSearch" id="btnSearch">
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--发送消息弹出框-->
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitForm();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_send').dialog('close')">
+            取消
+        </a>
+    </div>
+
+    <script type="text/template" id="msg_Item">
+        <div class="msg">
+            <div>
+                <span class="sender">{senderName}</span> <span id="sendTime" class="sendtime">{senderTime}</span>
+            </div>
+            <div class="sendTextDiv">
+                <div class="leftMysendTextDiv"></div>
+                {sendMsg}
+            </div>
+            <div class="sendDetail">
+                <a href="javascript:void(0)" id="{tooltipid}" onclick="showDialog(this)" >查看详情</a>
+                <input type="hidden" value="{messageInfo}">
+            </div>
+        </div>
+    </script>
+    <script type="text/template" id="mymsg_Item">
+        <div class="mymsg">
+
+            <div>
+                 <span id="mysendTime" class="mysendtime">{senderTime}</span> <span class="mysender">{senderName}</span>
+            </div>
+            <div class="mysendTextDiv">
+                <div class="rightMysendTextDiv"></div>
+                {sendMsg}
+            </div>
+            <div class="mysendDetail">
+                <a href="javascript:void(0)" id="{tooltipid}" onclick="showDialog(this)">查看详情</a>
+                <input type="hidden" value="{messageInfo}">
+            </div>
+        </div>
+    </script>
+    <div class="easyui-dialog DataContent" id="messageCount" title="消息记录" style="width :100%; top: 123px; background: rgb(199,221,244); padding-bottom: 40px; overflow: auto; overflow-x: hidden" data-options="draggable:false,onOpen:onOpen,closable:false,maximizable:true">
+        <div id="waitFlash" class="datagrid-mask-msg" style="display: none; left: 50%; height: 16px; margin-left: -85.5px; line-height: 16px;">正在处理，请稍待。。。</div>
+
+        <div id="msgMain" style="padding-left: 20px; padding-top: 10px;width:97%;height:80%">
+        </div>
+        <div id="pagerl" class="easyui-pagination pager" data-options="onRefresh:getData,onSelectPage:onSelectPage,pageList:[100,200,300,400,500,1000]" style="position:absolute;background-color:white;border: 1px solid #ddd;bottom: 5px; left: 5px; right: 5px"> </div>
+    </div>
+    <div id="dlg_detail" class="easyui-dialog" title="消息-详细" data-options="model:true,closed:true,width:300,height:'auto'">
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">发送者:</td>
+                    <td>
+                        <label id="senderName" ></label>
+                    </td>   
+                </tr>
+                <tr>
+                    <td class="FixedColumn">发送时间:</td>
+                    <td>
+                         <label id="senderTime"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        接收者:
+                    </td>
+                    <td>
+                        <input class="easyui-combotree" id="recive_list" data-options="multiple:true,lines:true,url:'@Html.Url("Account_default","GetUser","MessageManagement")',method:'get',cascadeCheck:false,onlyLeafCheck:true,onLoadSuccess:onLoad,onClick:onClick,onCheck:onCheck,panelWidth:200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">消息内容:</td>
+                    <td>
+                        <textarea id="sendMessage" name="sendtext" style="width:200px;height:100px"></textarea>
+                    </td>
+                </tr>
+                              
+            </table>
+    </div>
+    <div id="dlg_send" class="easyui-dialog" title="消息-发送" data-options="buttons: '#dlg-buttons',modal:true,width:300,height:'auto',closed:true">
+        <form id="send_form">
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        发送给:
+                    </td>
+                    <td>
+                        <input class="easyui-combotree" id="send_id" data-options="multiple:true,lines:true,url:'@Html.Url("Account_default","GetUser","MessageManagement")',method:'get',cascadeCheck:false,onlyLeafCheck:true,onLoadSuccess:onLoad,onClick:onClick,panelWidth:200,required:true,novalidate:true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">消息内容:</td>
+                    <td>
+                        <textarea id="send_txt" name="sendtext" style="width:200px;height:100px" class="easyui-validatebox" data-options="required:true,novalidate:true"></textarea>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+    <script type="text/javascript">
+        var sessionUserID = "@BCSession.User.UserID" == null ? "" : "@BCSession.User.UserID";
+
+        var sessionUserName = "@BCSession.User.UserName" == null ? "" : "@BCSession.User.UserName";
+        function search() {
+            var parameter = {};
+            parameter.BeginDate = $("#StartTime").datebox('getValue');
+            parameter.EndDate = $("#EndTime").datebox("getValue");
+                var jsonstring = JSON.stringify(parameter);
+                var option = $("#pagerl").pagination("options");
+                $("#messageCount").panel("options").queryParams = { jsonstring: jsonstring, rows: option.pageSize, page: option.pageNumber };
+                $("#msgMain").html("");
+                getData();
+        }
+        function showDialog(target)
+        {
+            if (target)
+            {
+                $.each($(".tree-checkbox"), function (key, value) {
+                    var a = value;
+                })
+                $("#dlg_detail").dialog("open");
+                var list = $(target).next("[type='hidden']");
+                var detail = eval("(" + list[0].value + ")");
+                $("#senderName").html(detail.senderName);
+                $("#senderTime").html(detail.sendTime);
+                $("#sendMessage").html(detail.sendMessage);
+                var reciveList = [];
+                $.each(detail.sendList, function (key, value) {
+                    reciveList.push(value.split(",")[0]);
+                })
+                $("#recive_list").combotree("setValues", reciveList);
+
+            }
+        }
+        function submitForm() {
+            $("#send_form").form('submit', {
+                url: '@Html.Url("Account_default","SendMessage","MessageManagement")',
+                onSubmit: function (para) {
+                    var checkdata = $("#send_id").combotree("tree").tree("getChecked");
+                    para.userid = "";
+                    var index = 0;
+                    $.each(checkdata, function (key, value)  {
+                        if (value.type == 1)
+                            para.userid += value.id + ",";
+                    })
+                    para.userid = para.userid.substr(0, para.userid.length - 1);
+                    return $("#send_form").form("enableValidation").form('validate');
+                },
+                success: function (data) {
+                    data = eval("(" + data + ")");
+                    if (data.Success) {
+                        $("#dlg_send").dialog('close');
+                        showTipsMsg(data.Message, 2000, 0);
+                        getData();
+                    } else {
+                        showTipsMsg(data.Message, 2000, 2);
+                    }
+
+                }
+            })
+            }
+
+            function onClick(node) {
+                //选择所有人
+                if (node.type == 3) {
+                    var allcheck = true;
+                    var all = $("#send_id").combotree("tree").tree("getChecked");
+                    if (all.length > 0)//全不选
+                    {
+                        $("#send_id").combotree("setValues", []);
+                    }
+                    else//全选
+                    {
+                        var chidren = $("#send_id").combotree("tree").tree("getChildren");
+                        var list = [];
+                        $.each(chidren, function (key, value) {
+                            if (value.type == 1)
+                                list.push(value.id);
+                        })
+                        $("#send_id").combotree("setValues", list);
+                    }
+                }
+                else if (node.type == 0) {
+                    var allcheck = true;
+                    var chideren = $("#send_id").combotree("tree").tree("getChildren", node.target);
+                    if (chideren.length > 0) {
+                        $.each(chideren, function (key, value) {
+                            if (value.type == 0)
+                                return true;
+                            if (value.checked == false) {
+                                allcheck = false;
+                                return false;//==break; return true==continiu
+                            }
+                        })
+                        if (!allcheck) {
+                            $.each(chideren, function (key, value) {
+                                $($(value.target).find("span[class='tree-checkbox tree-checkbox0']")[0]).prop("class", "tree-checkbox tree-checkbox1");
+
+                            })
+                        } else {
+                            $.each(chideren, function (key, value) {
+                                $($(value.target).find("span[class='tree-checkbox tree-checkbox1']")[0]).prop("class", "tree-checkbox tree-checkbox0");
+                            })
+                        }
+                        //手动选择
+                        var checkall = $("#send_id").combotree("tree").tree("getChecked");
+                        var list = [];
+                        $.each(checkall, function (key, value) {
+                            list.push(value.id);
+                        })
+                        $("#send_id").combotree("setValues", list);
+
+                    }
+                }
+
+            }
+            function onLoad(node, data) {
+                var alldata = $("#send_id").combotree("tree").tree("getChildren");
+                $.each(alldata, function (key, value) {
+                    if (value.type == "0" && value.children.length == 0) {
+                        var targer = $("#" + value.domId);
+                        $("#send_id").combotree("tree").tree("remove", targer);
+                    }
+                })
+                var allnode = $("#send_id").combotree("tree").tree("getChildren");
+                if (allnode.length > 0)
+                { 
+                //删除部门没有子部门或者部门下面没有人员的checkbox
+                $.each(allnode, function (key, value) {
+                 
+                    if (value.type == 0) {
+                        if ($($("#send_id").combotree("tree").tree("getChildren")[key].target).find("span[class='tree-checkbox tree-checkbox0']")[0])
+                            $($($("#send_id").combotree("tree").tree("getChildren")[key].target).find("span[class='tree-checkbox tree-checkbox0']")[0]).remove();
+                    } else
+                        if (value.type == 3) {
+                            $($($("#send_id").combotree("tree").tree("getChildren")[key].target).find("span[class='tree-checkbox tree-checkbox0']")[0]).remove();
+                        }
+                })
+                    //在发送消息的树把自己删除
+                var mytarget = $("#send_id").combotree("tree").tree("find", (sessionUserID));
+                    if(mytarget)
+                    $("#send_id").combotree("tree").tree("remove",mytarget.target);
+                }
+            }
+            function send() {
+                $("#dlg_send").dialog("open");
+                document.onkeydown = function (e) {
+                    if (e.keyCode = 13)
+                    {
+                        window.event.keyCode = 505;
+                    }
+                }
+                $("#send_id").combotree('setValues', []);
+                $("#send_txt").val("");
+            }
+
+            function onOpen() {
+                
+                $($("div[class='panel window easyui-fluid']")[0]).prop("style")["padding-bottom"] = "38px";
+                var parameter = {};
+                parameter.BeginDate = $("#StartTime").datebox('getValue');
+                parameter.EndDate = $("#EndTime").datebox("getValue");
+                var jsonstring = JSON.stringify(parameter);
+                var option = $("#pagerl").pagination("options");
+                option.pageSize = option.pageList[0];
+                $("#messageCount").panel("options").queryParams = { jsonstring: jsonstring, rows: option.pageSize, page: option.pageNumber };
+                getData();
+                var noreadNum = top.$("#noRead").html();//获取未读条数
+                if (noreadNum)
+                { 
+                var title = $("#messageCount").panel("options").title;
+                $("#messageCount").panel("setTitle", title+"<span style='margin-left:200px;'><a href='javascript:void(0)' onclick='turnNoRead("+noreadNum+")' >您当前有"+noreadNum+"条未读消息,点击查看 </a></span>")
+                }
+                top.$("#noRead").remove();
+            }
+            function turnNoRead(num)
+            {
+                if (num)
+                {
+                    var target = $("#msgMain").children().eq(num - 1);
+                    var _top = $(target).offset().top + $("#messageCount").scrollTop();
+                    $("#messageCount").scrollTop(_top-170-360);//顶部搜索栏和功能区
+                }
+            }
+            
+            function onSelectPage(page,rows)
+            {
+                var para = $("#messageCount").panel("options").queryParams;
+                para.page = page;
+                para.rows = rows;
+                $("#messageCount").panel("options").queryParams = para;
+                getData();
+            }
+            function getData()
+            {
+                //加载动画
+                $("#waitFlash")[0].style["display"] = "block";
+                $.getJSON('@Html.Url("Account_default", "GetList", "MessageManagement")', $("#messageCount").panel("options").queryParams, function (data) {
+                    var itemstring = "";
+                    if(data!=null)
+                    if ( data.rows.length > 0)
+                        $("#msgMain").html("");
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var value = data.rows[i];
+                        if (value.Sender == sessionUserName) {
+                            var item = $("#mymsg_Item").html();
+                            item = item.replace("{senderName}", value.Sender);
+                            item = item.replace("{senderTime}", value.SendTime);
+                            item = item.replace("{sendMsg}", value.Message);
+                            item = item.replace("{messageInfo}", "{senderName:'" + value.Sender + "',sendTime:'" + value.SendTime + "',sendMessage:'" + value.Message + "',sendList:" + JSON.stringify(value.UserList).replace(/\"/g, "'") + "}");//手动转成JSON格式
+                            itemstring += item;
+                        } else { 
+                        var item = $("#msg_Item").html();
+                        item = item.replace("{senderName}", value.Sender);
+                        item = item.replace("{senderTime}", value.SendTime);
+                        item = item.replace("{sendMsg}", value.Message);
+                        item = item.replace("{messageInfo}", "{senderName:'" + value.Sender + "',sendTime:'" + value.SendTime + "',sendMessage:'" + value.Message + "',sendList:" + JSON.stringify(value.UserList).replace(/\"/g, "'") + "}");//手动转成JSON格式
+                        itemstring += item;
+                        }
+                    }
+                    $("#msgMain").append(itemstring);
+                    $("#pagerl").pagination("refresh", {
+                        total: data.total
+                    });
+                    $("#waitFlash").hide();
+                    $.parser.parse("#msgMain");
+                    $("#messageCount").scrollTop(0);
+                });
+            }
+        function onCheck(node, checked)
+        {
+            if (checked == true) {
+                $($(node.target).find("[class='tree-checkbox tree-checkbox1']")[0]).prop("class", "tree-checkbox tree-checkbox0")
+            } else {
+                $($(node.target).find("[class='tree-checkbox tree-checkbox0']")[0]).prop("class", "tree-checkbox tree-checkbox1")
+            }
+        }
+       
+    </script>
+</div>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_ShowMessage">
+			<div data-role="header" data-position="fixed">
+				<h1>
+						消息
+					</h1>
+				<a href="#" data-role="button" data-icon="action" class="ui-btn-right" onclick="SendMessage()">发送</a>
+			</div>
+			<div data-role="content">
+				<div id="wrapper" class="MessageBottom">
+					<div id="scroller">
+						<div id="pullDown">
+							<span class="pullDownIcon"></span><span class="pullDownLabel">下拉刷新...</span>
+						</div>
+						<ul id="temp_Message">
+							<!--<li class="ui-li-message">
+								<div class="MyMessageLi">
+									<div class="MyMessageLi">
+											<span class="MessageTitle">我 2015</span>
+									</div>
+									<div class="MyMessageBody">
+										<img src='' class="MyMessagebody-img"/>
+										<div class="MyMessagebody-link">
+										</div>
+										<div class="MyMessagebody-div">
+											<pre class="MyMessagebody-pre">你还好吗,电视剧阿富汗的身份护山大话</pre>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li class="ui-li-message">
+								<div class="YouMessageLi">
+									<div class="YouMessageLi">
+											<span class="MessageTitle">李四 2015-23</span>
+									</div>
+									<div class="YouMessageBody">
+											<img src='' class="YouMessagebody-img" />
+											<div class="YouMessagebody-link">
+										</div>
+										<div class="YouMessagebody-div">
+											<pre class="YouMessagebody-pre">很好<a href="#" onclick="ResponseMessage(el,userid)" style='color: cornflowerblue;'>[回复]</a></pre>
+												
+										</div>
+									</div>
+									
+								</div>
+							</li>-->
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul id="dfooterul">
+						<li><a href="#" data-icon="comment" class="ui-btn-active ui-state-persist">消息</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('project.html')" data-icon="cloud" data-transition="none">项目</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('material.html')" data-icon="shop" data-transition="none">资料</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('userInformation.html')" data-icon="user" data-transition="none">个人</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

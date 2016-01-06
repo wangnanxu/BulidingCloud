@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{459D8BA9-D0FE-4030-9804-5D225D45BE66}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ML.BC.Services</RootNamespace>
+    <AssemblyName>ML.BC.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Bson, Version=0.0.0.0, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=0.0.0.0, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Account\Dtos\UserLoginLogDto.cs" />
+    <Compile Include="Account\Dtos\UserLoginStateDto.cs" />
+    <Compile Include="Account\EnterpriseAccountService.cs" />
+    <Compile Include="Account\AccountService.cs" />
+    <Compile Include="Account\Dtos\EnterpriseRoleDto.cs" />
+    <Compile Include="Account\Dtos\FrontUserDto.cs" />
+    <Compile Include="Account\Dtos\FunctionDto.cs" />
+    <Compile Include="Account\Dtos\SessionUserDto.cs" />
+    <Compile Include="Account\Dtos\UserDto.cs" />
+    <Compile Include="Account\EnterpriseFunctionManagementService.cs" />
+    <Compile Include="Account\EnterpriseRoleManagementService.cs" />
+    <Compile Include="Account\FrontUserRoleManagementService.cs" />
+    <Compile Include="Account\FunctionManagementService.cs" />
+    <Compile Include="Account\IEnterpriseAccountService.cs" />
+    <Compile Include="Account\IAccountService.cs" />
+    <Compile Include="Account\IEnterpriseFunctionManagementService.cs" />
+    <Compile Include="Account\IEnterpriseRoleManagementService.cs" />
+    <Compile Include="Account\IEnterpriseUserManagementService.cs" />
+    <Compile Include="Account\IFrontUserRoleManagementService.cs" />
+    <Compile Include="Account\IFunctionManagementService.cs" />
+    <Compile Include="Account\IPermissionControlService.cs" />
+    <Compile Include="Account\IRoleFunctionManagementService.cs" />
+    <Compile Include="Account\RoleFunctionManagementService.cs" />
+    <Compile Include="Account\Dtos\AuthorizationsDto.cs" />
+    <Compile Include="Account\Dtos\RolesDto.cs" />
+    <Compile Include="Account\Dtos\UserRolesDto.cs" />
+    <Compile Include="Account\IRolesManagementService.cs" />
+    <Compile Include="Account\IUserRolesService.cs" />
+    <Compile Include="Account\RolesManagementService.cs" />
+    <Compile Include="Account\UserRolesService.cs" />
+    <Compile Include="Account\PermissionControlService.cs" />
+    <Compile Include="Common\AppSyncService.cs" />
+    <Compile Include="Common\Dtos\OperationLogDto.cs" />
+    <Compile Include="Common\Dtos\SearchLogConditionDto.cs" />
+    <Compile Include="Common\Dtos\SyncStateDto.cs" />
+    <Compile Include="Common\IAppSyncService.cs" />
+    <Compile Include="Common\IOperationLogService.cs" />
+    <Compile Include="Common\ISyncStateManagementService.cs" />
+    <Compile Include="Common\IUniqeIdGenerator.cs" />
+    <Compile Include="Common\OperationLogService.cs" />
+    <Compile Include="Common\SyncStateManagementService.cs" />
+    <Compile Include="Common\UniqeIdGenerator.cs" />
+    <Compile Include="Communication\ChatMessageService.cs" />
+    <Compile Include="Communication\DistinctByMessageID.cs" />
+    <Compile Include="Communication\Dtos\ChatMessageDto.cs" />
+    <Compile Include="Communication\IChatMessageService.cs" />
+    <Compile Include="IServiceBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="KnowledgeBase\DistinctBy.cs" />
+    <Compile Include="KnowledgeBase\Dto\MaterialTypeDto.cs" />
+    <Compile Include="KnowledgeBase\IKnowledgaeList.cs" />
+    <Compile Include="KnowledgeBase\Dto\KnowledgeDto.cs" />
+    <Compile Include="KnowledgeBase\IMaterialTypeManagementService.cs" />
+    <Compile Include="KnowledgeBase\KnowledgeList.cs" />
+    <Compile Include="KnowledgeBase\MaterialTypeManagementService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportForm\DepartmentInfoFormService.cs" />
+    <Compile Include="ReportForm\Dto\DepartmentInfoFormDto.cs" />
+    <Compile Include="ReportForm\Dto\InfoStatisticsDto.cs" />
+    <Compile Include="ReportForm\Dto\ProjectSceneCompletionStatisticsDto.cs" />
+    <Compile Include="ReportForm\Dto\PersonStatisDto.cs" />
+    <Compile Include="ReportForm\Dto\ProjectStatisDtos.cs" />
+    <Compile Include="ReportForm\Dto\RectificationStatisticalDto.cs" />
+    <Compile Include="ReportForm\Dto\ReviewStatisticsDto.cs" />
+    <Compile Include="ReportForm\Dto\ScanDto.cs" />
+    <Compile Include="ReportForm\IDepartmentInfoFormService.cs" />
+    <Compile Include="ReportForm\IInfoStatistics.cs" />
+    <Compile Include="ReportForm\InfoStatistics.cs" />
+    <Compile Include="ReportForm\IProjectSceneCompletionStatistics.cs" />
+    <Compile Include="ReportForm\IPersonStatisticsService.cs" />
+    <Compile Include="ReportForm\IProjectStatisticsService.cs" />
+    <Compile Include="ReportForm\IRectificationStatistical.cs" />
+    <Compile Include="ReportForm\IReviewStatistics.cs" />
+    <Compile Include="ReportForm\IScan.cs" />
+    <Compile Include="ReportForm\ProjectSceneCompletionStatistics.cs" />
+    <Compile Include="ReportForm\PersonStatisticsService.cs" />
+    <Compile Include="ReportForm\ProjectStatisticsService.cs" />
+    <Compile Include="ReportForm\RectificationStatistical.cs" />
+    <Compile Include="ReportForm\ReviewStatistics.cs" />
+    <Compile Include="ReportForm\Scan.cs" />
+    <Compile Include="Scene\Dtos\ProjectDto.cs" />
+    <Compile Include="Scene\Dtos\ProjectAndSceneSyncDto.cs" />
+    <Compile Include="Scene\Dtos\ProjectStatisDtos.cs" />
+    <Compile Include="Scene\Dtos\RoleIdName.cs" />
+    <Compile Include="Scene\Dtos\SceneItemDto.cs" />
+    <Compile Include="Scene\Dtos\ScenesDto.cs" />
+    <Compile Include="Scene\Dtos\SceneTypeDto.cs" />
+    <Compile Include="Scene\Dtos\UserIdName.cs" />
+    <Compile Include="Scene\IProjectSceneManagementService.cs" />
+    <Compile Include="Scene\ISceneItemManagementService.cs" />
+    <Compile Include="Scene\ISceneTypeManagementService.cs" />
+    <Compile Include="Scene\ZipHelper.cs" />
+    <Compile Include="Scene\ProjectSceneManagementService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scene\SceneItemManagementService.cs" />
+    <Compile Include="Scene\SceneTypeManagementService.cs" />
+    <Compile Include="Setting\EnterpriseDataLimit.cs" />
+    <Compile Include="Setting\IEnterpriseDataLimit.cs" />
+    <Compile Include="Unit\Dtos\DepartmentBase.cs" />
+    <Compile Include="Unit\Dtos\DepartmentDto.cs" />
+    <Compile Include="Unit\Dtos\EnterpriseDto.cs" />
+    <Compile Include="Unit\Dtos\EnterpriseProfessionDto.cs" />
+    <Compile Include="Unit\Dtos\EnterprisePropertyDto.cs" />
+    <Compile Include="Unit\Dtos\EnterpriseSyncDto.cs" />
+    <Compile Include="Unit\EnterpriseDepartmentManagementService.cs" />
+    <Compile Include="Unit\EnterpriseManagementService.cs" />
+    <Compile Include="Unit\EnterpriseProfessionManagementService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Unit\EnterprisePropertyManagementService.cs" />
+    <Compile Include="Account\FrontUserManagementService.cs" />
+    <Compile Include="Unit\IEnterpriseDepartmentManagementService.cs" />
+    <Compile Include="Unit\IEnterpriseManagementService.cs" />
+    <Compile Include="Unit\IEnterpriseProfessionManagementService.cs" />
+    <Compile Include="Unit\IEnterprisePropertyManagementService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Account\IFrontUserManagementService.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ML.BC.BCBackData\ML.BC.BCBackData.csproj">
+      <Project>{cc45f817-8cf4-43f8-ad88-e4ecc133a49e}</Project>
+      <Name>ML.BC.BCBackData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ML.BC.EnterpriseData\ML.BC.EnterpriseData.csproj">
+      <Project>{f5f4b14f-0a62-423b-90f3-c8fee0c1704f}</Project>
+      <Name>ML.BC.EnterpriseData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ML.BC.Infrastructure\ML.BC.Infrastructure.csproj">
+      <Project>{54056842-48b5-4e6e-b882-b05d8bbbf29a}</Project>
+      <Name>ML.BC.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="EnterpriseDataLimit.xml" />
+    <Content Include="Log4Net.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

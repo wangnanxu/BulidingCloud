@@ -1,0 +1,136 @@
+﻿
+.msg {
+    padding-top: 15px;
+    height: auto;
+}
+
+.sender {
+    font-size: 12px;
+}
+
+.sendtime {
+    padding-left: 6px;
+    font-size: 10px;
+    color: rgb(140,140,140);
+}
+
+.sendTextDiv {
+    position:relative;
+    margin-left: 30px;
+    margin-top: 5px;
+    padding-top: 2px;
+    font-size: 14px;
+    display: inline-block;
+    border-radius: 10px;
+    height: auto;
+    max-width: 80%;
+    width: auto;
+    background: rgb(166,212,242);
+    line-height: 26px;
+    padding-right: 10px;
+    box-shadow: 2px 2px 8px 0px rgb(195,195,195);
+    text-align:left;
+    z-index:1;
+    padding-left:10px;
+}
+
+.leftMysendTextDiv {
+    position: absolute;
+    border-bottom:10px solid transparent;
+    border-top: 3px solid transparent;
+    border-right: 10px solid rgb(166,212,242);
+    border-left: 0px;
+    transform: rotate(33deg);
+    -webkit-transform:rotate(33deg);
+   -ms-transform:rotate(33deg);
+    -moz-transform:rotate(33deg);
+    -o-transform:rotate(33deg);
+    display: inline-block;
+    top: -4px;
+    left: -5px;
+}
+
+.sendDetail {
+    padding-top: 4px;
+    padding-left: 42px;
+}
+
+    .sendDetail a {
+        color: rgb(140,140,140);
+    }
+
+.mymsg {
+    text-align: right;
+    padding-top: 15px;
+    height: auto;
+}
+
+.mysender {
+    font-size: 12px;
+}
+
+.mysendtime {
+    padding-right: 6px;
+    font-size: 10px;
+    color: rgb(140,140,140);
+}
+
+.mysendTextDiv {
+    position:relative;
+    margin-right: 30px;
+    margin-top: 5px;
+    padding-top: 2px;
+    text-align: left;
+    font-size: 14px;
+    display: inline-block;
+    padding-right: 10px;
+    border-radius: 10px;
+    height: auto;
+    max-width: 80%;
+    width: auto;
+    background: rgb(229,233,240);
+    line-height: 25px;
+    box-shadow: 2px 2px 8px 0px rgb(195,195,195);
+    padding-left:10px;
+
+}
+
+.rightMysendTextDiv {
+    position: absolute;
+    border-bottom: 10px solid transparent;
+    border-top: 3px solid transparent;
+    border-right: 10px solid rgb(229,233,240);
+    border-left: 0px;
+    transform: rotate(123deg);
+    -webkit-transform:rotate(123deg);
+    -ms-transform:rotate(123deg);
+    -moz-transform:rotate(123deg);
+    -o-transform:rotate(123deg);
+    display: inline-block;
+    top: -6px;
+    right: -2px;
+}
+
+
+
+.mysendDetail {
+    padding-top: 4px;
+    padding-right: 40px;
+}
+
+    .mysendDetail a {
+        color: rgb(140,140,140);
+    }
+
+.noReadMessage {
+    position: absolute;
+    border-radius: 50%;
+    background: red;
+    width: 22px;
+    height: 18px;
+    left: 43px;
+    top: 7px;
+    background: rgb(200,0,255);
+    line-height: 17px;
+    display:inline-block;
+}

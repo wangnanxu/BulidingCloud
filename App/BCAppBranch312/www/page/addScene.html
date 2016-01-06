@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
+		<script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+		<script src="js/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+		<title></title>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_AddScene">
+			<div data-role="header" data-position="fixed">
+				<a href="#" data-role="button" onclick="BackScenes()">返回</a>
+				<h1>添加现场</h1>
+				<a id="scene_add" href="#" data-role="button" data-icon="action" class="ui-btn-right" onclick="AddSceneComplete();">添加</a>
+				<a id="scene_update" href="#" data-role="button" data-icon="action" class="ui-btn-right" onclick="UpdateSceneComplete();">完成</a>
+			</div>
+			<div data-role="content">
+				<div id="wrapper" class="SceneBottom">
+					<div id="scroller">
+						<ul id="temp_AddScene">
+							<li>
+								<div class="ui-field-contain">
+									<div class="SelectLable">
+										<label for="select-native-1">项目/现场</label>
+									</div>
+									<div class="SelectItem">
+										<select id="id_parent" name="select-native-1">
+											<option value=''>请选择项目/现场</option>
+										</select>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="ui-field-contain">
+									<div class="SelectLable">
+										<label for="proname">现场名称</label>
+									</div>
+									<div class="SelectItem">
+										<input id="id_name" name="proname" type="text" placeholder="现场名称" value="">
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="ui-field-contain">
+									<div class="SelectLable">
+										<label for="address">现场地址</label>
+									</div>
+									<div class="SelectItem">
+										<input id="id_address" name="address" type="text" placeholder="现场地址" value="">
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="ui-field-contain">
+									<div class="SelectLable">
+										<label for="select-native-1">现场类型</label>
+									</div>
+									<div class="SelectItem" >
+										<select id="id_scenetype" name="select-native-1" data-native-menu="false" multiple="multiple">
+											<option value=''>请选择</option>
+										</select>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="ui-field-contain">
+									<div class="SelectLable">
+										<label for="status">现场状态</label>
+									</div>
+									<div class="SelectItem">
+										<select id="id_status" name="select-native-1">
+											<option value='1'>未开始</option>
+											<option value='2'>进行中</option>
+										</select>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="ui-field-contain">
+									<div class="SelectLable">
+										<label for="beginDate">开始时间</label>
+									</div>
+									<div class="SelectItem">
+										<input id="id_beginDate" type="date" data-clear-btn="false" name="beginDate" value="">
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="ui-field-contain">
+									<div class="SelectLable">
+										<label for="endDate">结束时间</label>
+									</div>
+									<div class="SelectItem">
+										<input id="id_endDate" type="date" data-clear-btn="false" name="endDate" value="">
+									</div>
+								</div>
+							</li>
+							<li>
+								<div id="id_fenpei" class="ui-field-contain">
+									<div class="SelectItem">
+										<label for="status">重新分配人员<input id="id_isShow" type="checkbox" onclick="ToggleShowPerson()" ></label>	
+									</div>
+								</div>
+							</li>
+							<li>
+								<div id="id_ScenePerson">
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

@@ -1,0 +1,206 @@
+﻿@Scripts.Render("~/Content/Js/JqueryUI/echarts-all.js")
+@Scripts.Render("~/Content/Js/JqueryUI/esl.js")
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            报表管理 - <span id="OrganizationName">项目现场浏览统计</span>
+        </div>
+    </div>
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+    </div>
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件:
+                        </th>
+                        <td>
+                            <input id="departmentUser" class="easyui-combotree" data-options="cascadeCheck:false,lines:true,url:'@Html.Url("ReportForm_default", "GetUser", "ScanCount")',method:'get',prompt:'请选择要查看的人员',onLoadSuccess:onLoadSuccess,onLoadError:onLoadError,onlyLeafSelect:true,onClick:onClick" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="SceneProject" style="width:40%;height:400px;float:left;padding-top:50px;padding-right:100px"></div>
+    <div id="SceneProjectPercent" style="width:40%;height:400px;float:left;padding-top:50px;padding-right:100px"></div>
+</div>
+
+<script type="text/javascript">
+
+    var SceneProjectOption = {
+        title: {
+            text: '项目现场浏览统计',//主标题
+            x: 'left'//水平安放位置，默认为全图居中，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
+        },
+        tooltip: {
+            trigger: 'axis',//坐标轴辅助线
+            axisPonter: {
+                type: 'shadow'
+            }
+        },
+        legend: {
+            data: ['张三'],
+            x: 'center',
+            y: 'top'
+        },
+        toolbox: {
+            show: true,
+            feature: {
+
+                magicType: { show: true, type: ['line', 'bar'] },
+                restore: { show: true },
+                saveAsImage: { show: true }
+            }
+        },
+
+        calculable: true,
+        xAxis: [
+            {
+                type: 'category',
+                data: ['项目数', '已浏览项目数', '现场数', '已浏览现场数'],
+                scale: true,
+
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                splitNumber: 10,
+
+            }
+        ],
+        series: [
+            {
+                name: '张三',
+                type: 'bar',
+                data: [2.0, 4.9, 7.0, 50.2],
+                barWidth: 30,
+               
+            }
+        ]
+    };
+
+
+    var SceneProjectPercentOption = {
+        
+        title: {
+            text: '项目现场浏览率统计',//主标题
+            x: 'left'//水平安放位置，默认为全图居中，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）
+        },
+        tooltip: {
+            trigger: 'axis',//坐标轴辅助线
+            axisPonter: {
+                type: 'shadow'
+            },
+            formatter: function (para)
+            {
+                var a = para;
+                return para[0].name+":"+parseFloat( para[0].data*100).toFixed(2)+"%"
+            }
+        },
+        legend: {
+            data: ['张三'],
+            x: 'center',
+            y: 'top'
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                magicType: { show: true, type: ['line', 'bar'] },
+                restore: { show: true },
+                saveAsImage: { show: true }
+            }
+        },
+
+        calculable: true,
+        xAxis: [
+            {
+                type: 'category',
+                data: [ '项目浏览率', '现场浏览率'],
+                scale: true,
+
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                splitNumber: 10,
+                max: 1,
+                min:0
+            }
+        ],
+        series: [
+            {
+                name: '张三',
+                type: 'bar',
+                data: [0.5,0.5],
+                barWidth: 30,
+            }
+        ]
+    };
+   
+    function onLoadSuccess(node, data) {
+        //去除所有人选项
+        $("#departmentUser").combotree("tree").children().eq(0).remove();
+        $("#departmentUser").combotree("clear");
+        var alldata= $("#departmentUser").combotree("tree").tree("getChildren");
+        $.each(alldata, function (key, value) {
+            if (value.type == "0" && value.children.length == 0) {
+                var targer = $("#" + value.domId);
+                $("#departmentUser").combotree("tree").tree("remove", targer);
+            }
+        })
+    }
+    function onClick(node)
+    {
+        if (node.type == "0")
+            {
+            $("#departmentUser").combotree("showPanel");
+            $("#departmentUser").combotree("clear");
+        } else if (node.type = "1")
+        {
+            $.getJSON('@Html.Url("ReportForm_default","GetList","ScanCount")', {user: $("#departmentUser").combotree("getValue")}, function (data) {
+                if (data.Success) {
+                    SceneProjectOption.series[0].data = data.Value;
+                    SceneProjectOption.series[0].name = $("#departmentUser").combotree("getText");
+                    SceneProjectOption.legend.data[0] = $("#departmentUser").combotree("getText");
+                    var countOption = echarts.init(document.getElementById("SceneProject"));
+                    countOption.setOption(SceneProjectOption);
+                    //统计浏览率
+                    SceneProjectPercentOption.series[0].name = $("#departmentUser").combotree("getText");
+                    SceneProjectPercentOption.legend.data[0] = $("#departmentUser").combotree("getText");
+                    if (data.Value[0] != 0 && data.Value[2] != 0) {
+                        SceneProjectPercentOption.series[0].data = [data.Value[1] / data.Value[0], data.Value[3] / data.Value[2]];
+                    } else if (data.Value[0] == 0 && data.Value[2] == 0) {
+                        SceneProjectPercentOption.series[0].data = [0, 0];
+                    }
+                    else if (data.Value[0] == 0) {
+                        SceneProjectPercentOption.series[0].data = [0, data.Value[3] / data.Value[2]];
+                    } else if (data.Value[2] == 0) {
+                        SceneProjectPercentOption.series[0].data = [data.Value[1] / data.Value[0], 0];
+                    }
+
+                    var percentOption = echarts.init(document.getElementById("SceneProjectPercent"));
+                    percentOption.setOption(SceneProjectPercentOption);
+                } else {
+                    showTipsMsg(data.Message, 2000, 2);
+                }
+            })
+        }
+    }
+    function onLoadError() {
+        showTipsMsg("部门人员数据获取失败", 2000, 2);
+    }
+
+
+
+       
+        
+    
+
+</script>

@@ -1,0 +1,13 @@
+﻿@model ML.BC.Web.ViewModels.LayoutViewModel
+@{
+    
+    Layout = "~/Views/Shared/_IframeLayout.cshtml";
+ 
+    ViewBag.Title = "Error";
+}
+<hgroup class="title">
+    <h1 class="error">错误信息：</h1>
+    <h2 class="error">@Model.Error</h2>
+</hgroup>
+ 
+ 

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.png" rel="shortcut icon" type="image/png" />
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/Js/EasyUI/themes/gray/easyui.css")
+    @Styles.Render("~/Content/Css/Login.css")
+    @Styles.Render("~/Content/Css/comm.css")
+    @Styles.Render("~/Content/Js/EasyUI/themes/icon.css")
+
+
+    <style type="text/css">
+        .panel-title {
+            text-align: center;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="Loading" class="Loading" style="display:block"></div>
+    @RenderBody();
+    @Scripts.Render("~/Content/Js/jquery.min.js")
+    @Scripts.Render("~/Content/Js/EasyUI/jquery.easyui.min.js")
+    @Scripts.Render("~/Content/Js/EasyUI/locale/easyui-lang-zh_CN.js")
+    @Scripts.Render("~/Content/Js/FunctionJS.js")
+    @*@Scripts.Render("~/Content/Js/Login.js")*@
+
+    <script>
+        $(function () {
+            if (self != top) {
+                Loading(true);
+                top.window.location.href = "@Html.Url("Account_default", "Login", "Account")";
+                return;
+            }
+            $.parser.onComplete = function (context) {
+                loadinghide();
+            }
+        });
+
+        window.onload = function () {
+        if ($.parser.auto == false) {
+            $.parser.parse(); //解析元素
+        }
+    }
+
+    document.onkeydown = function (e) {
+        if (!e) e = window.event;
+        if ((e.keyCode || e.which) == 13) {
+            $("#btnLogin").linkbutton().click();
+        }
+    }
+
+    function Login() {
+        $("#form_Login").form('submit', {
+            onSubmit: function (pmdata) {
+                return $(this).form('enableValidation').form('validate');//提交时先验证
+            },
+            success: function (data) {
+                var result = $.parseJSON(data);
+
+                if (result && result.Success) {
+                    window.location.href = "/";
+                }
+                else {
+                    showTipsMsg(result.Message, 2000, 2)
+                    $("#CodeImg").click();
+                }
+            }, error: function () {
+
+            }
+
+        });
+    }
+    </script>
+    @RenderSection("scripts", false)
+    <!--显示顶部消息-->
+    @*@Html.Partial("~/Views/Shared/TopMsg.cshtml")*@
+
+    @Html.Partial("TopMsg")
+</body>
+</html>

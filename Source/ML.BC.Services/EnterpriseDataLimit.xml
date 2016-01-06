@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<setting>
+  <users>500</users>
+  <project>100</project>
+  <scene>1000</scene>
+  <memory>5</memory>  
+  </setting>

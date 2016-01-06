@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ML.BC.BCBackData.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="BackUsers">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="32" />
+    <Property Name="Password" Type="varchar" MaxLength="32" />
+    <Property Name="Mobile" Type="varchar" MaxLength="32" />
+    <Property Name="RegistDate" Type="datetime" Nullable="false" />
+    <Property Name="LastDate" Type="datetime" />
+    <Property Name="LastIP" Type="varchar" MaxLength="32" />
+    <Property Name="Closed" Type="bit" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RFAAuthorizations">
+    <Key>
+      <PropertyRef Name="RoleID" />
+      <PropertyRef Name="FunctionID" />
+    </Key>
+    <Property Name="RoleID" Type="int" Nullable="false" />
+    <Property Name="FunctionID" Type="varchar" MaxLength="256" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RFAFunctions">
+    <Key>
+      <PropertyRef Name="FunctionID" />
+    </Key>
+    <Property Name="FunctionID" Type="varchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="MyID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="ParentID" Type="varchar" MaxLength="256" Nullable="false" />
+    <Property Name="Desription" Type="varchar" MaxLength="256" />
+    <Property Name="Available" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RFARoles">
+    <Key>
+      <PropertyRef Name="RoleID" />
+    </Key>
+    <Property Name="RoleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="OwnerID" Type="varchar" MaxLength="256" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="256" />
+    <Property Name="Available" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserRoles">
+    <Key>
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="RoleID" />
+    </Key>
+    <Property Name="UserID" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="RoleID" Type="int" Nullable="false" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="false" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="MLBCBCBackDataStoreContainer">
+    <EntitySet Name="BackUsers" EntityType="Self.BackUsers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RFAAuthorizations" EntityType="Self.RFAAuthorizations" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RFAFunctions" EntityType="Self.RFAFunctions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RFARoles" EntityType="Self.RFARoles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

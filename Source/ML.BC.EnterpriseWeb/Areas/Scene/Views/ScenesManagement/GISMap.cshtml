@@ -1,0 +1,541 @@
+﻿@using ML.BC.Web.Framework;
+
+
+
+
+<!--script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=1D0ahYGmZWsBfXrS7fw2WRih"-->
+<script type="text/javascript" src="/Content/Js/api-offline.js"></script>
+<script type="text/javascript" src="/Content/Js/MarkerClusterer_min.js"></script>
+<script type="text/javascript" src="/Content/Js/TextIconOverlay.js"></script>
+<script type="text/javascript" src="/Content/Js/BMapLib_MarkerManager.js"></script> 
+@section CSS{
+    <link href="/Content/Css/SceneItem.css" rel="stylesheet" />
+}
+<style>
+
+    .frm-find td, .frm-find  th {
+    background:#f7f7f7;
+    }
+    .frm-find td {
+        padding-bottom:0px;
+    }
+</style>
+
+<div id="Content" class="Content ClearFloat">
+    <!--标题-->
+    <div class="btnbartitle">
+        <div>
+            项目管理 - <span id="OrganizationName">GIS地图</span>
+        </div>
+    </div>
+
+    <!--工具栏-->
+    <div class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true,false)
+
+        <div class='tools_separator'> </div>
+        <table border="0" class="frm-find">
+            <tbody>
+                <tr>
+
+
+                    <th>
+                        查询条件：
+                    </th>
+
+                    <td>
+                        <input id="proj" class="easyui-combobox" name="ProjectID" data-options="
+                            editable:false,
+					        multiple:false,
+                            multiline:false,
+					        url: './GetProjList',
+                            method:'get',
+                            valueField:'Id',
+					        textField:'Name',
+                            lines:true,
+					        panelHeight:'auto',
+                            prompt:'请选择一个项目',
+                            onSelect: loadScenes,
+                            loadFilter: pLoadFilter
+                            
+			">
+                    </td>
+                    <td><div class='tools_separator'> </div></td>
+
+                    <td>
+
+                        <input placeholder="现场名称关键词" type="text" style="width: 150px" class="easyui-textbox" id="scene" name="scene" data-options="prompt:'现场名',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]">
+                    </td>
+
+                    <td>
+                        <input placeholder="项目名称关键词" type="text" style="width: 150px" class="easyui-textbox" id="projs" name="proj" data-options="prompt:'项目名',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]">
+                    </td>
+                    <td>
+                        <input type="button" onclick="search()" value="搜 索" class="btnSearch" id="btnSearch">
+
+                    </td>
+                    <td><div class='tools_separator'> </div></td>
+                    <th>
+                        状态筛选：
+                    </th>
+                    <td>
+                        <span class="stlabel" style="color: red;">准备</span><input id="ck1" checked="checked" type="checkbox" onclick="checkStatus(1)" />
+                        <span class="stlabel" style="color: rgb(247, 111, 14);">开始</span><input id="ck2" checked="checked" type="checkbox" onclick="checkStatus(2)" />
+                        <span class="stlabel" style="color: green;">结束</span><input id="ck3" checked="checked" type="checkbox" onclick="checkStatus(3)" />
+
+                    </td>
+                    
+
+                </tr>
+            </tbody>
+        </table>
+
+        <!--地图数据加载动画-->
+        <img src="/Content/Images/loadimg.gif" id="Loading-small" class="Loading-small" style=" display: inline-block; position: relative; height: 30px; width: 30px; z-index: 999; top: 3px; left: -6px;">
+        <!--地图数据加载动画-->
+
+    </div>
+    <!--搜索栏-->
+    <div class="btnbarcontetn">
+        <div>
+            
+        </div>
+    </div>
+
+    <!--调试用数据面板-->
+    <span id="debug" style="display:none">
+    debug信息 :缩放级别:<span id="level"></span>
+    中心位置:<span id="position"></span>
+    点击位置:<span id="clkposition"></span>
+    </span>
+    <!--调试用数据面板-->
+
+    <!--施工数据查看对话框-->
+    <div id="dlg_details" class="easyui-dialog" title="现场施工数据" style="width:100%; height: 100%; padding:10px;" data-options="modal:true,draggable:false">
+        <!--对话框数据加载动画-->
+        <img src="/Content/Images/loadimg.gif" id="Loading-small-dlg" class="Loading-small-dlg" style="display: block; position: absolute; height: 30px; width: 30px; z-index: 99999; top: 7px; left: 2px; float: left; ">
+        <!--对话框数据加载动画-->
+        <div id="detail-content">
+
+        </div>
+        <!--页码容器-->
+        <div id="pager" class="easyui-pagination pager" style="position:absolute;background-color:white;border: 1px solid #ddd;bottom: 5px; left: 5px; right: 5px"> </div>
+    </div>
+    <!--施工数据查看对话框-->
+
+
+    <!--引用SI显示-->
+    @Html.Partial("_SceneItemViewShare")
+    <!--引用SI显示-->
+
+
+    <!--地图容器-->
+    <div id="map" class="DataContent"></div>
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+        //地图参数配置
+        var MinLabelShowLevel = 12;//显示标签所需最小地图级别
+        var MinZoom = 3;//最小缩放级别 3-19
+        var MaxZoom = 19;//最大缩放级别 3-19
+        var InitLong = 106.551548;//初始地图经纬度106.551548,29.640552
+        var InitLat = 29.640552;
+        var InitZoom = 9;//初始缩放级别
+
+        //服务url配置   
+        var ScenesUrl = '@Html.Url("Scene_default", "GetScenesList", "ScenesManagement")';//现场数据url
+        var SIurl = '@Html.Url("Scene_default", "GetSceneItemList", "ScenesManagement")';//施工数据url
+
+        //全局变量
+        var q = {};//query参数
+        var map;//地图对象
+        var curSceneID;//当前打开的现场 另一共享视图使用
+        var tmarkersv = [];//已加入地图的marker储存 
+        var MarkerCluster = undefined;//聚合储存 暂未使用
+        var labels = [];//标签储存 储存当前已经加入到map的标签
+        var isShowLabel = false;//标签显示标志
+
+        var MapCacheDatas = {};//所有数据缓存
+        MapCacheDatas['ready'] = [];
+        MapCacheDatas['begin'] = [];
+        MapCacheDatas['end'] = [];
+
+        //程序入口 绘制地图
+        genMap();        
+        getData(q);
+        
+        
+        //-----------------------现场数据相关js----------------
+        //数据结构
+        var cache = {
+            ready: [ {label:'label',marker:'marker'}, {}],
+            begin: [ {}, {}],
+            end:   [ {}, {}]
+        }
+        //var cache = {};
+        //cache[ready] = [];
+        //cache[begin] = [];
+        //cache[end] = [];
+        //cache[ready][0] = { label: labe, marker: marker };
+
+        //获取搜索参数
+        function getQueryParams() {
+            var scene = document.getElementById("scene").value;
+            var proj = document.getElementById("projs").value;
+            var obj = { SceneName: scene, ProjectName: proj ,page:1,rows:9999};
+            return obj;
+        }
+
+
+        function pLoadFilter(datas) {
+            return datas.Value;
+        }
+
+        //按query参数获取现场数据 并提交显示
+        function getData(query) {
+            showLoading();//显示加载动画
+            query.from = "map";
+            $.ajax({
+                type: "post",
+                url: ScenesUrl,
+                data: query,
+                dataType: "json",
+                success: function (datas) {
+                    hideLoading();//隐藏加载动画
+                    if (datas.rows.length > 0) {
+                        map.centerAndZoom(new BMap.Point(InitLong, InitLat), InitZoom);
+                        //成功获取到数据 开始绘制地图点
+                        PaintMap(datas.rows);
+                    }
+                    else {
+                        showTipsMsg("获取到的数据为空,服务器消息:" + datas.Message, 4000, 2);
+                    }
+                },
+                error: function () {
+                    hideLoading();//隐藏加载动画
+                    showTipsMsg("网络错误,数据获取失败", 4000, 2);
+                }
+            });
+        }
+
+
+
+        //搜索-增加查询参数，重新加载表格
+        function search() {
+            //查询参数直接添加在queryParams中
+            var q = getQueryParams();
+            getData(q);
+        }
+
+        //筛选项目
+        function loadScenes(rec) {
+            q = { ProjectID: rec.Id ,page:1,rows:9999};
+            getData(q);
+        }
+
+        //使用空query参数刷新表格数据
+        function Reload(rec) {
+            var q = {page:1,rows:999};
+            getData(q);
+        }
+
+
+
+
+
+        //--------------地图相关js--------------------------
+        //不同状态所用图片
+        var statusIcons = [
+        new BMap.Icon("/Content/Images/status1.png", new BMap.Size(39, 25), {
+            anchor: new BMap.Size(21, 25),
+            imageOffset: new BMap.Size(0, 0)
+        }),
+        new BMap.Icon("/Content/Images/status2.png", new BMap.Size(39, 25), {
+            anchor: new BMap.Size(21, 25),
+            imageOffset: new BMap.Size(0, 0)
+        }),
+        new BMap.Icon("/Content/Images/status3.png", new BMap.Size(39, 25), {
+            anchor: new BMap.Size(21, 25),
+            imageOffset: new BMap.Size(0, 0)
+        })];
+   
+        //生成地图
+        function genMap() {
+
+            //重庆行政区域的大致边界
+            //var stroke = " 109.756569, 30.833813;110.019586, 31.455209;109.091946, 31.935736;108.350037, 31.867271;108.084754, 31.266928;107.49359, 30.814422;106.705194, 30.104892;106.26916, 30.21754;105.798909, 30.433043;105.7388, 30.006006;105.3178, 29.492325;105.76495, 28.991609;106.392552, 28.55749;106.566526, 28.518583;107.051752, 28.88206;107.592714, 29.172382;108.382032, 28.773116;108.75904, 28.232649;109.307217, 28.753279;108.888848, 29.540374;108.452009, 29.770327;108.583852, 30.483564";
+            //var isstroke = 0;
+            //var ply = new BMap.Polygon(stroke, { strokeWeight: 5, strokeColor: "#ff0000", fillOpacity: 0.1 });
+
+            map = new BMap.Map("map", { minZoom: MinZoom, maxZoom: MaxZoom }); // 创建Map实例
+            
+            map.centerAndZoom(new BMap.Point(InitLong, InitLat), InitZoom); // 初始化地图,设置中心点坐标和地图级别
+            map.addControl(new BMap.MapTypeControl({ mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP] })); //添加地图类型控件
+            map.setCurrentCity("重庆"); // 设置地图显示的城市 此项是必须设置的
+            map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+            var top_left_control = new BMap.ScaleControl({ anchor: BMAP_ANCHOR_TOP_LEFT }); // 左上角，添加比例尺
+            var top_left_navigation = new BMap.NavigationControl({ enableGeolocation: true }); //缩放控件
+            map.addControl(top_left_control);
+            map.addControl(top_left_navigation);
+            
+            //缩放监听
+            map.addEventListener('zoomend', function()
+            {
+                debugInfo();
+                var zomm = map.getZoom();
+                if (zomm >= MinLabelShowLevel) showLabels();
+                else hideLabels();
+            })
+            //移动监听
+            map.addEventListener('moveend', function () {
+                debugInfo();
+            })
+            //点击监听
+            map.addEventListener('click', function (e) {
+                $("#clkposition").text(e.point.lng + "," + e.point.lat);
+            })
+            //map.addOverlay(ply); //添加覆盖物
+            $(".anchorBL").remove();
+            $('.BMap_cpyCtrl').remove();
+           
+        }
+
+        //更新显示调试信息
+        function debugInfo() {
+            $('.BMap_cpyCtrl').remove();
+            $(".anchorBL").remove();
+            var pos = map.getCenter();
+            var zomm = map.getZoom();
+            $("#level").text(zomm);
+            $("#position").text(pos.lng+","+pos.lat);
+        }
+
+
+        //在地图上绘制现场点 参数:要显示的数据 现场数组
+        function PaintMap(datas) {
+            $(".anchorBL").remove();
+            labels = [];
+            isLabelsShow = false;
+  
+            //清理原有显示
+            if (MarkerCluster == undefined) { }
+            else MarkerCluster.clearMarkers();
+            map.clearOverlays();
+            //清理原有数据
+            MapCacheDatas['ready'] = [];
+            MapCacheDatas['begin'] = [];
+            MapCacheDatas['end'] = [];
+            //处理新数据
+            for (var i in datas) {
+                var scene = datas[i];
+                //获取数据
+                //if (scene.ParentSceneID == "-1") continue;
+                var id = scene.SceneID;
+                if ( !scene.LatitudeAndLongitude || scene.LatitudeAndLongitude.indexOf('|')<0 ) scene.LatitudeAndLongitude = "|";
+                var pos = scene.LatitudeAndLongitude.split("|");
+                var lng = pos[1];
+                var lat = pos[0];
+                var address = scene.Address == null ? "" : scene.Address;
+                if (!lat || lat == "0") {
+                    lat = 29 + Math.random(1);
+                    address = "无GPS坐标,随机生成位置."
+                }
+                if (!lng || lng == "0") {
+                    lng = 106 + Math.random(1);
+                }
+                var name = scene.Name;                
+                var projname = scene.ProjectName;
+                var point = new BMap.Point(lng, lat);
+                var title = "现场:" + name + "  |  项目:" + projname + "  |  地址:" + address;
+                var status = scene.Status;//123 准备开始结束
+                //生成两种地图标记
+                var mk = new BMap.Marker(point, {
+                    title: title,
+                    icon: statusIcons[status - 1]
+                });
+                var hasData = scene.HasData;
+                addClickHandler(mk, id, title,hasData);
+                var label = new BMap.Label("现场:" + name + "<br>项目:" + projname + "<br>地址:" + address, { offset: new BMap.Size(Math.random()*20, Math.random()*30) });
+                addClickHandler(label, id, title,hasData);
+                var couple = { label: label, marker: mk };//成对储存
+                //按状态分类储存
+                switch (status) {
+                    case 1:
+                        MapCacheDatas['ready'].push(couple);
+                        break;
+                    case 2:
+                        MapCacheDatas['begin'].push(couple);
+                        break;
+                    case 3:
+                        MapCacheDatas['end'].push(couple);
+                        break;
+                    default:
+                        MapCacheDatas['ready'].push(couple);
+
+                }
+                _paint();//really paint
+
+                
+            }
+            //for end
+            //MarkerCluster = new BMapLib.MarkerClusterer(map, {
+            //    markers: tmarkersv,
+            //    girdSize: 50,
+            //    maxZoom: 11,
+            //    isAverangeCenter: false
+            //});
+        } //fun end
+
+        //check box callback
+        function checkStatus(v) {
+            switch (v) {
+                case 1:
+                    showReady = !showReady;
+                    break;
+                case 2:
+                    showBegin = !showBegin;
+                    break;
+                case 3:
+                    showEnd = !showEnd;
+                    break;
+            }
+            _paint();
+        }
+
+
+
+
+        //需要显示的标志
+        var showReady = true;
+        var showBegin = true;
+        var showEnd = true;
+        //根据选择状态 显示分类标记 重新绘制map标记 清除已有的
+        function _paint() {
+            map.clearOverlays();
+            labels = [];
+            if (showReady)
+            {
+                _painter(MapCacheDatas['ready']);
+            }
+            if (showBegin) {
+                _painter(MapCacheDatas['begin']);
+            }
+            if (showEnd) {
+                _painter(MapCacheDatas['end']);
+            }
+
+        }
+        //接收couple数组 并添加到地图上 不刷新已有的 真正执行绘制的函数
+        function _painter(datas) {
+            for (var i in datas) {
+                var mk = datas[i].marker;
+                var label = datas[i].label;
+                map.addOverlay(mk);
+                mk.enableDragging();
+                mk.setLabel(label);
+                if (map.getZoom() < MinLabelShowLevel) {
+                    label.hide();
+                }
+                tmarkersv.push(mk);//已加入地图的marker
+                labels.push(label);//已加入地图的lable
+            }
+        }
+
+
+       
+
+        //注册点击事件
+        function addClickHandler(mk,sceneid,title,hasData) {
+            mk.addEventListener("click", function (e) {
+                //显示施工详情
+                showInfo(sceneid,title,hasData);
+            });
+
+        }
+
+        //显示label
+        function showLabels() {
+            if (!isShowLabel) {
+                
+                for (var i in labels) {
+                    var label = labels[i];
+                    label.show();
+                }
+                isShowLabel = true;
+            }
+        }
+        //隐藏label
+        function hideLabels() {
+            if (isShowLabel) {
+                
+                for (var i in labels) {
+                    var label = labels[i];
+                    label.hide();
+                }
+                isShowLabel = false;
+            }
+        }
+
+        //调试用
+        function genDataAndPaint(amount) {
+            if (!amount || amount < 1) amount = 10;
+            for (var i = 0; i < amount; i++) {
+                var lat = 29 + Math.random(1);
+                var lng = 106 + Math.random(1);
+                var point = new BMap.Point(lng, lat);
+                var mk = new BMap.Marker(point);
+                mk.enableDragging();
+                map.addOverlay(mk);
+            }
+
+        }
+        function showDebug() {
+            $("#debug").show();
+        }
+        function hideDebug() {
+            $("#debug").hide();
+        }
+
+        //打开详情对话框
+
+        function showInfo(sceneid, title, hasData) {
+            if (!hasData)
+            {
+                showTipsMsg("该现场无数据!", 2000, 2);
+                return;
+            }
+            //打开面板
+            curSceneID = sceneid;
+            $("#dlg_details").dialog('setTitle', title);
+            $("#dlg_details").dialog('open');
+            $("#detail-content > .scene-item").remove();
+            //获取并加载数据
+            showLoadingDlg();//显示加载动画
+            loadSIs(sceneid);
+            
+        }
+
+        //-------附加ui功能--------------
+        function showLoading() {
+            $("#Loading-small").show();
+        }
+        function hideLoading() {
+            $("#Loading-small").hide();
+        }
+        function showLoadingDlg() {
+            $("#Loading-small-dlg").show();
+        }
+        function hideLoadingDlg() {
+            $("#Loading-small-dlg").hide();
+        }
+        function ajaxCallback(r) {
+            $("#Loading-small-dlg").hide();
+        }
+
+
+
+
+    </script>
+    }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css" />
+		<script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+		<script src="js/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+		<title></title>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_SendSpace">
+			<div data-role="header" data-position="fixed">
+				<a href="#" onclick="GotoSceneItem()">[取消]</a>
+				<h1></h1>
+				<a href="#" onclick="AddComplate();">[完成]</a>
+			</div>
+			<div data-role="content">
+				<div class="ui-field-contain" style="border-bottom: solid 1px #00AFEE; padding-bottom: 20px;">
+					<label for="description">描述:</label>
+					<textarea cols="40" rows="8" name="description" id="description"></textarea>
+				</div>
+				<div class="sendpic" id="div_addpic">
+					<!--<a href='#img1' class="removetag" data-rel='popup' data-position-to='window' data-transition='fade'>
+						<img class='popphoto' src='../img/word.png' alt='pic' style='width:100px'>
+					</a>
+					<div data-role='popup' class="removetag" id='img1' data-overlay-theme='b' data-theme='b' data-corners='false'>
+						<a href='#' data-rel='back' class='ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right'>Close</a>
+						<img class='popphoto' src='../img/word.png' style='max-height:512px;' alt=''>
+					</div>
+					<a href='#img2' class="removetag" data-rel='popup' data-position-to='window' data-transition='fade'>
+						<img class='popphoto' src='../img/excel.gif' alt='pic' style='width:100px'>
+					</a>
+					<div data-role='popup' class="removetag" id='img2' data-overlay-theme='b' data-theme='b' data-corners='false'>
+						<a href='#' data-rel='back' class='ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right'>Close</a>
+						<img class='popphoto' src='../img/excel.gif' style='max-height:512px;' alt=''>
+					</div>-->
+					
+					<a href="#popupMenu" id="a_addpic" data-rel="popup" data-transition="fade">
+						<img class="popphoto" id="img_addpic" src="../img/add.png" alt="Paris, France" style="width:50px">
+					</a>
+					<div data-role="popup" data-position-to="window" id="popupMenu" data-theme="b">
+						<ul data-role="listview" data-inset="true" style="min-width:210px;">
+							<li data-role="list-divider">选择图片</li>
+							<li><a href="#" data-rel="back" onclick="GetByCamera();">照相</a>
+							</li>
+							<li><a href="#" data-rel="back" onclick="GetByLocal();">本地相册</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+	</body>
+
+</html>

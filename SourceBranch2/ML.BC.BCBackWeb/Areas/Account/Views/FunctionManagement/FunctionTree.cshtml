@@ -1,0 +1,397 @@
+﻿@using ML.BC.Web.Framework;
+<div id="FunctionData" style="height:500px;overflow:auto;display:none"></div>
+
+<div id="Content" class="Content ClearFloat">
+    <!--顶部标题-->
+    <div class="btnbartitle">
+        <div>
+            平台管理 - <span id="OrganizationName">系统功能项管理</span>
+        </div>
+    </div>
+    <!--操作工具条-->
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_SysManagement_SysFunManagement_AddFun), "新增", new { @class = "tools_btn", onclick = "append()" }, new { @class = "btn_Add" }, false, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_SysManagement_SysFunManagement_EditFun), "编辑", new { @class = "tools_btn", onclick = "edit()" }, new { @class = "btn_Edit" }, false, true)
+
+
+        @Html.Button(() => HasFunction(Functions.Root_SysManagement_SysFunManagement_DeleteFun), "删除", new { @class = "tools_btn", onclick = "DeleteNode()" }, new { @class = "btn_Delete" }, false, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+
+    </div>
+
+   
+    <!-- 弹出框  新增-->
+    <div id="add_dialog" class="easyui-dialog dlg_DataInfo" title="功能-新增" data-options="buttons: '#dlg-buttons'">
+        <form id="add_form" class="easyui-form frm" method="post" data-options="">
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        功能名称[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " id="dname" type="text" name="Name" data-options="required:true">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        MyId[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " id="did" type="text" name="MyID" data-options="required:true">
+                        <input hidden="hidden" id="funcId" type="text" name="FunctionID">
+                        <input hidden="hidden" id="PareId" type="text" name="ParentID">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        描述[*]:
+                    </td>
+                    <td>
+                        <input id="dinfo" class="easyui-textbox" type="text" name="Desription" data-options="required:true">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        有效[*]:
+                    </td>
+                    <td>
+                        <select class="easyui-combobox" data-options="editable:false,panelHeight:'auto',required:true" name="Available">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+
+                        </select>
+                        @*<input name="Available" class="ava" id="dcheck" style="width: auto" type="checkbox" value="true" />
+                            <input type="text" name="FunctionID" id="fid" style="display:none" value="111" />
+                            <input type="text" name="ParentID" id="pid" style="display:none" value="111" />*@
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><center><a href="javascript:void(0)" style="width:50px" class="easyui-linkbutton" onclick="submitform();">提交</a></center>  </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <!--右键菜单-->
+    <div id="mm" class="easyui-menu" style="width:120px;">
+        <div onclick="append()" data-options="iconCls:'icon-add'">新建</div>
+        <div onclick="removeIt()" data-options="iconCls:'icon-remove'">删除</div>
+        <div onclick="edit()" data-options="iconCls:'icon-edit'">编辑</div>
+        <div class="menu-sep"></div>
+        <div onclick="collapse()">收回</div>
+        <div onclick="expand()">展开</div>
+    </div>
+    <!--树形表格-->
+    <div id="func-table" class="DataContent" style="height:auto">
+        <table id="tg" class="easyui-treegrid DataContent" title="所有功能" style="width: auto; overflow: scroll" data-options="rownumbers: true,animate: true,collapsible: false,fitColumns: true,url: '@Html.Url("Account_default", "GetFunclistByJson", "FunctionManagement")',method: 'get',idField: 'id',treeField: 'Name',onLoadSuccess:onLoadSuccess, onClickRow: onClickRow">
+            <thead>
+                <tr>
+                    <th data-options="field:'Name',width:100,editor:'text'">功能名称</th>
+                    <th data-options="field:'MyID',width:60,align:'right',editor:'text'"><span class="red-star" style="color:red">*</span>MyID</th>
+                    <th data-options="field:'FunctionID',width:200,editor:'text'">功能Id</th>
+                    <th data-options="field:'Desription',width:200,editor:'text'">描述</th>
+                    <th data-options="field:'Available',width:20 ,formatter:format,align:'center'">
+                        可用
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+
+    <script type="text/javascript">
+        var funcurl = "";
+        var deleteurl = "@Html.Url("Account_default", "DeleteFunc", "FunctionManagement")";
+        var updateurl = "@Html.Url("Account_default", "UpdateFunc", "FunctionManagement")";
+        var addurl = "@Html.Url("Account_default", "AddFunc", "FunctionManagement")";
+        var action;
+        var id;
+        //ajax操作成功回调 服务器操作不一定成功 需判断返回数据
+        function SuccessCallBack(actionl, idl) {
+            window.action = actionl;
+            window.id = idl;
+            return function (data, state) {
+                //data.Value 操作结果代码
+                //data.Success 操作是否成功
+                //data.Message 错误信息
+                var action = window.action;
+                var id = window.id;
+                closetips();
+                switch (action) {
+                    case 'new':
+                        if (data.Success == true) {
+                            $('#add_dialog').dialog("close");
+                            tips("成功!");
+                            replace();
+                        }
+                        else {
+                            tips("Ajax失败,请检查网络!");
+                            $('#tg').treegrid('remove', id);
+                        }
+                        break;
+
+                    case 'update':
+                        if (data.Success == true) {
+                            $('#ttt').dialog("close");
+                            tips("成功!");
+                            replace();
+                        }
+                        else {
+                            tips("Ajax失败,请检查网络!");
+                        }
+                        break;
+
+                    case 'delete':
+                        if (data.Success == true) {
+                            $('#tg').treegrid('remove', id);
+                            tips("成功!");
+                            replace();
+                        }
+                        else {
+                            tips("Ajax失败,请检查网络!");
+                        }
+                        break;
+                }
+                //$.parser.parse();
+
+            }
+
+        }
+        //ajax操作失败回调
+        function ErrorCallBack(actionl, idl) {
+            window.action = actionl;
+            window.id = idl;
+            $('#ttt').dialog({ closed: true });
+            return function (xpr, msg, obj) {
+                var action = window.action;
+                var id = window.id;
+                closetips();
+                switch (action) {
+                    case 'new':
+                        tips("失败!网络/服务器错误，信息：" + msg);
+
+                        $('#tg').treegrid('select', id);
+                        $('#tg').treegrid('beginEdit', id);
+                        break;
+
+                    case 'update':
+                        tips("失败!网络/服务器错误，信息：" + msg);
+                        $('#tg').treegrid('select', id);
+                        break;
+
+                    case 'delete':
+                        tips("失败!网络/服务器错误，信息：" + msg);
+                        $('#tg').treegrid('select', id);
+                        break;
+                }
+                //$.parser.parse();
+            }
+
+        }
+        //格式化布尔值
+        function format(value) {
+            if (value == true) {
+
+                return '<span iconCls="icon-ok">是</span>';
+            } else {
+                return '<span iconCls="icon-cancel">否</span>';
+            }
+        }
+        //右键菜单
+        function onContextMenu(e, row) {
+            e.preventDefault();
+            $(this).treegrid('select', row.id);
+            $('#mm').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+            });
+        }
+
+        //开始编辑
+        var editingId;
+        function edit() {
+            isNew = false;
+            var row = $('#tg').treegrid('getSelected');
+            if (row) {
+                curSeleNodeID = row.FunctionID;
+                if (row.FunctionID == "Root") { tips("不能编辑Root"); return; }
+                var model = {};
+                model.FunctionID = row.FunctionID;
+                model.Name = row.Name;
+                model.MyID = row.MyID;
+                model.Desription = row.Desription;
+                model.Available = row.Available + "";
+                $('#add_form').form('load', model);
+                $("#add_dialog").dialog({ title: '功能-编辑' })
+                $('#add_dialog').dialog('open');
+                editingId = row.id;
+                
+            } else {
+                IsEditData("");
+                return;
+            }
+        }
+        //提交修改
+        function submitform() {         
+          
+            
+            $("#add_form").form("submit", {
+                url: isNew?addurl:updateurl,
+                onsubmit: function () {                   
+                    return $("#add_form").form('enableValidation'), form('validate');
+                },
+                success: function (data) {
+                    var su = eval("("+data+")");
+                    if (su.Success) {
+                        $("#add_dialog").dialog("close");
+                        replace();
+                        tips("成功");
+                    }
+                    else {
+                        tips("失败");
+                    }
+                }
+            })
+        }
+       
+        //新增节点的数据构造
+        var idIndex = 100;
+        var curSeleNodeID;
+        var isNew;
+        function append() {
+            isNew = true;
+            var row = $('#tg').treegrid('getSelected');
+            if (row) {
+                curSeleNodeID = row.FunctionID;
+                var data = {};
+;
+                data.ParentID = curSeleNodeID;
+
+
+                $('#add_form').form('clear');
+                $("#add_dialog").dialog({ title: '功能-新增' });
+                $('#add_form').form('load',data);
+                $('#add_dialog').dialog('open');
+            } else {
+                tips("请选择父级功能行");
+                return;
+            }          
+
+        }
+
+
+        //删除节点
+        function DeleteNode() {
+            var node = $('#tg').treegrid('getSelected');
+            if (node) {
+                if (node.FunctionID == "Root") { tips("不能编辑Root"); return; }
+
+                $.messager.confirm("系统提示", "删除功能及其所有下级功能,操作不可恢复,您确认删除?", function (a) {
+                    if (a) {
+                        var data = {};
+                        data.FunctionID = node.FunctionID;
+                        var pdata = { funcJsonStr: JSON.stringify(data) }
+                        tips("删除节点,发送数据中,请稍候....");
+                        //todo delete ajax id=node.FunctionID
+                        $.ajax({
+                            type: "post",
+                            url: deleteurl,
+                            data: pdata,
+                            dataType: "json",
+                            success: SuccessCallBack('delete', node.id),
+                            error: ErrorCallBack('delete', node.id)
+                        });
+                    }
+
+                });
+
+            }
+        }
+        //展开收缩节点
+        function collapse() {
+            var node = $('#tg').treegrid('getSelected');
+            if (node) {
+                $('#tg').treegrid('collapse', node.id);
+            }
+        }
+        function expand() {
+            var node = $('#tg').treegrid('getSelected');
+            if (node) {
+                $('#tg').treegrid('expand', node.id);
+            }
+        }
+        //加载提示信息框
+        function tips(msgstr) {
+            showTipsMsg(msgstr, 1000, 0);
+            //$("#ft-tips").html(msgstr);
+            //$("#ft-tips").show();
+        }
+        function closetips() {
+            $("#ft-tips").hide();
+            $('#ttt').dialog('close');
+        }
+        function search() {
+
+            tips("获取搜索的数据中...");
+            var name = $(".easyui-searchbox")[0].value;
+            $.get('./GetFunclistByJson', { name: name }, function (data) {
+                $('#tg').treegrid('loadData', data);
+            }, 'json');
+            closetips();
+        }
+
+        function replace() {
+            var q = { q: Math.random() };
+            $("#tg").treegrid("reload",q);
+        }
+        var total;
+        function onLoadSuccess(x, y) {
+            if (y.total) {
+                total = y.total - 1;
+                $("#fc-tiper").html("共" + total + "个功能项.");
+            } else {
+                $("#fc-tiper").html("正在添加新功能...");
+            }
+        }
+    </script>
+    <script>
+        var FunctionDataUrl = '@Html.Url("Account_default", "GetFunclistByJson", "FunctionManagement")';
+        function GetFunctionData()
+        {
+            $.post(FunctionDataUrl, "", function (json) {
+                initFunctionData(json);
+            });
+        }
+
+        function initFunctionData(json)
+        {
+            var html = [];
+            var tmp = 'public static string {Name} = "{Value}";';
+            var result = eval(json);
+            var data = result.rows;
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    var m = tmp.replace("{Name}", data[i].FunctionID.replace(/\./g, "_")).replace("{Value}", data[i].FunctionID);
+                    html.push(m);
+                }
+            }
+            $("#FunctionData").html(html.join("<br/>"));
+        }
+       
+        var clickrow = 0;
+
+        function onClickRow(row) {
+            if (row.id == clickrow) {
+                $("#tg").treegrid("unselect", row.id);
+                clickrow = 0;
+                return;
+            }
+            clickrow = row.id;
+        }
+
+    </script>
+</div>

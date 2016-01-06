@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.BC.Infrastructure", "ML.BC.Infrastructure\ML.BC.Infrastructure.csproj", "{54056842-48B5-4E6E-B882-B05D8BBBF29A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.BC.Services", "ML.BC.Services\ML.BC.Services.csproj", "{459D8BA9-D0FE-4030-9804-5D225D45BE66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.BC.Web.Framework", "ML.BC.Web.Framework\ML.BC.Web.Framework.csproj", "{318E798F-C3CF-4255-9996-03F9F3C690E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.BC.EnterpriseData", "ML.BC.EnterpriseData\ML.BC.EnterpriseData.csproj", "{F5F4B14F-0A62-423B-90F3-C8FEE0C1704F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.BC.BCBackData", "ML.BC.BCBackData\ML.BC.BCBackData.csproj", "{CC45F817-8CF4-43F8-AD88-E4ECC133A49E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.BC.BCBackWeb", "ML.BC.BCBackWeb\ML.BC.BCBackWeb.csproj", "{9E822C32-951A-402D-9610-823A2A9B69B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.BC.EnterpriseWeb", "ML.BC.EnterpriseWeb\ML.BC.EnterpriseWeb.csproj", "{68032D15-D0C8-44DD-AF1F-582A995C1D9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.BC.Schedule", "ML.BC.Schedule\ML.BC.Schedule.csproj", "{F2360BFF-058D-4C7E-803A-66418255E0F4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54056842-48B5-4E6E-B882-B05D8BBBF29A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54056842-48B5-4E6E-B882-B05D8BBBF29A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54056842-48B5-4E6E-B882-B05D8BBBF29A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54056842-48B5-4E6E-B882-B05D8BBBF29A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{459D8BA9-D0FE-4030-9804-5D225D45BE66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459D8BA9-D0FE-4030-9804-5D225D45BE66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459D8BA9-D0FE-4030-9804-5D225D45BE66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459D8BA9-D0FE-4030-9804-5D225D45BE66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{318E798F-C3CF-4255-9996-03F9F3C690E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{318E798F-C3CF-4255-9996-03F9F3C690E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{318E798F-C3CF-4255-9996-03F9F3C690E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{318E798F-C3CF-4255-9996-03F9F3C690E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5F4B14F-0A62-423B-90F3-C8FEE0C1704F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5F4B14F-0A62-423B-90F3-C8FEE0C1704F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5F4B14F-0A62-423B-90F3-C8FEE0C1704F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5F4B14F-0A62-423B-90F3-C8FEE0C1704F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC45F817-8CF4-43F8-AD88-E4ECC133A49E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC45F817-8CF4-43F8-AD88-E4ECC133A49E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC45F817-8CF4-43F8-AD88-E4ECC133A49E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC45F817-8CF4-43F8-AD88-E4ECC133A49E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E822C32-951A-402D-9610-823A2A9B69B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E822C32-951A-402D-9610-823A2A9B69B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E822C32-951A-402D-9610-823A2A9B69B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E822C32-951A-402D-9610-823A2A9B69B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68032D15-D0C8-44DD-AF1F-582A995C1D9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68032D15-D0C8-44DD-AF1F-582A995C1D9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68032D15-D0C8-44DD-AF1F-582A995C1D9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68032D15-D0C8-44DD-AF1F-582A995C1D9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2360BFF-058D-4C7E-803A-66418255E0F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2360BFF-058D-4C7E-803A-66418255E0F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2360BFF-058D-4C7E-803A-66418255E0F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2360BFF-058D-4C7E-803A-66418255E0F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Security.Cryptography.5.0.505.0\lib\NET35
+	EndGlobalSection
+EndGlobal

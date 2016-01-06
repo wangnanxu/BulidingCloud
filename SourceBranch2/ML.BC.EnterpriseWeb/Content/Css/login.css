@@ -1,0 +1,131 @@
+﻿* {
+	font-size: 10pt;
+}
+
+body {
+	margin: 0px;
+	padding: 0px;
+	font-family: 微软雅黑,宋体,Arial,Helvetica,Verdana,sans-serif;
+	color: #000000;
+ overflow-y: hidden;
+
+ }
+
+html, body {
+	margin: 0px auto;
+	padding: 0px;
+	height: 100%;
+	overflow-y: hidden;
+}
+
+ul, ol, li, dl {
+	list-style: none;
+}
+
+img {
+	border: none;
+}
+
+body {
+	font-size: 14px;
+	font-family: Arial;
+	color: #656565;
+	background: url(/Content/Images/Login/bj.jpg) top center no-repeat #cde9f4;
+	background-attachment:fixed;
+}
+ #thead {
+	width:100%;
+	margin: 0 auto;
+	overflow: hidden;
+	position: relative;
+background: url(/Content/Images/Login/bj.jpg) top center no-repeat #cde9f4;
+position:fixed;
+
+}
+
+	#thead .bg1 {
+ 		height: 185px;
+	}
+
+	#thead .bg2 {
+		height: 76px;
+	}
+
+	#thead .bg3 {
+		height: 267px;
+	}
+
+		#thead .bg3 .nav {
+			margin:0px auto;
+			width:400px;
+			margin-top: 5px;
+		}
+
+	#thead .bg4 {
+		background: url(/Content/Images/Login/c_06.jpg) no-repeat;
+		height: 185px;
+		text-align: center;
+		padding-top: 30px;
+	}
+
+.s8 {
+	z-index: 3000;
+	position: absolute;
+	left: 44.3%;
+	top: 450px;
+	cursor: pointer;
+	vertical-algin: top;
+}
+
+.load {
+	position: absolute;
+	z-index: 3000;
+	left: 65%;
+	top: 465px;
+	display: none;
+}
+
+.sign {
+	margin-left: 20px;
+	border: medium none;
+	width: 130px;
+	height: 40px;
+	border-style: none;
+	background: none;
+	background-image: url("/Content/Images/Login/137.png" );
+	cursor: pointer;
+}
+
+	.sign:hover {
+		background-position: 0 -40px;
+	}
+
+.sign_hover {
+	background-position: 0 -40px;
+}
+
+.signload {
+	margin-left: 20px;
+	border: medium none;
+	width: 130px;
+	height: 40px;
+	border-style: none;
+	background: none;
+	background-image: url("/Content/Images/Login/login-v2-load.png" );
+}
+
+#bottom {
+ }
+
+* {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+a, img {
+	border: 0;
+	text-decoration: none;
+}
+
+ 

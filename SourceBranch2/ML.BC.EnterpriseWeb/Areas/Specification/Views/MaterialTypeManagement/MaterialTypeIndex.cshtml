@@ -1,0 +1,208 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+
+<div id="Content" class="Content ClearFloat">
+   
+    <div class="btnbartitle">
+        <div>
+            知识管理 - <span id="OrganizationName">知识分类</span>
+        </div>
+    </div>
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_DataManagement_DataTypeManagement_Add), "新增", new { @class = "tools_btn", onclick = "append()" }, new { @class = "btn_Add" }, false, true)
+        @Html.Button(() => HasFunction(Functions.Root_DataManagement_DataTypeManagement_Edit), "编辑", new { @class = "tools_btn", onclick = "edit()" }, new { @class = "btn_Edit" }, false, true)
+        @Html.Button(() => HasFunction(Functions.Root_DataManagement_DataTypeManagement_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)   
+    </div>
+    <!--搜索-->
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" style="height: 45px;" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件:
+                        </th>
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入名称',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="Name" id="searchName" />
+                        </td>
+
+                        <td>
+                            <input type="button" onclick="SearchByName()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table id="dg_DataTable" class="easyui-datagrid DataContent"
+           data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,url:'@Html.Url("Specification_default", "GetMaterialList", "MaterialTypeManagement")',onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'MaterialTypeID',width:50">
+                    编号
+                </th>
+                <th data-options="field:'Name',width:80">
+                    名称
+                </th>
+                <th data-options="field:'Avaliable',width:50,formatter:format">
+                    是否有效
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitForm();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_DataInfo').dialog('close')">
+            取消
+        </a>
+    </div>
+    <!--添加修改类型-->
+    <div id="dlg_DataInfo" class="easyui-dialog dlg_DataInfo" title="知识分类-新增" data-options="buttons: '#dlg-buttons',modal:true">
+        <form id="FormData" class="easyui-form frm" method="post" data-options="">
+            <table cellpadding="5">
+                <tr>
+
+                    <td class="FixedColumn">
+                        名称[*]:<input type="hidden" name="MaterialTypeID" id="MaterialTypeID" value="1" />
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" id="txtName" name="Name" data-options="required:true"></input>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        是否可用:
+                    </td>
+                    <td>
+                        <input id="ava" class="easyui-combobox" name="Avaliable" value="" data-options="data:[{value:true,text:'是'},{value:false,text:'否'}],editable:false,panelHeight:'auto'">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+        var funcurl = "";
+        var addurl = '@Html.Url("Specification_default", "AddMaterialType", "MaterialTypeManagement")';
+        var updateurl = '@Html.Url("Specification_default", "UpdateMaterialType", "MaterialTypeManagement")';
+        var deleteurl = '@Html.Url("Specification_default", "DeleteMaterialType", "MaterialTypeManagement")';
+        function append()
+        {
+            funcurl = addurl;
+            $("#dlg_DataInfo").dialog({ title: "知识分类-新增" });
+            $("#FormData").form("clear");
+            $("#MaterialTypeID").val("1");//设置一个值不然报错
+                $("#dlg_DataInfo").dialog("open");
+        }
+        function edit() {
+            funcurl = updateurl;
+            var row = $("#dg_DataTable").datagrid("getSelected");
+            
+            if (row) {
+                $("#dlg_DataInfo").dialog({ title: "知识分类-编辑" });
+                var model = {};
+                model.MaterialTypeID = row.MaterialTypeID;
+                model.Name = row.Name;
+                $('#dlg_DataInfo').form('load', model);
+                $("#ava").combobox("select", row.Avaliable);
+            } else {
+                IsEditData("");
+                return;
+            }
+        }
+        function Delete()
+        {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+
+                var MaterialTypeID = row.MaterialTypeID; //获取字段
+                $.messager.confirm("系统提示", "您确认删除?", function (a) {
+                    if (!a) return;
+                    $.getJSON("@Html.Url("Specification_default", "DeleteMaterialType", "MaterialTypeManagement")", { MaterialTypeID: MaterialTypeID }, function (data) {
+                      
+                        if (data.Success) {
+                            showTipsMsg(data.Message, 2000, 0);
+                            clickrow = -1;
+                            Reload();
+                        } else {
+                            showTipsMsg(data.Message, 2000, 2);
+                        }
+                    });
+                });
+            } else {
+                IsDelData("");
+                return;
+            }
+        }
+        function submitForm()
+        {
+            $("#FormData").form("submit", {
+                url:funcurl,
+                onSubmit: function () {
+                    return $("#FormData").form("enableValidation").form("validate");
+                },
+                success:function(data)
+                {
+                    var a = eval("(" + data + ")");
+                    if (a.Success) {
+                        showTipsMsg(a.Message, 2000, 0);
+                        clickrow = -1;
+                        Reload();
+                    }
+                    else {
+                        showTipsMsg(a.Message, 2000, 2);
+                    }
+                }
+            });
+        }
+
+        function format(value) {
+            if (value == true) {
+                return '<span iconCls="icon-ok">是</span>';
+            } else {
+                return '<span iconCls="icon-cancel">否</span>';
+            }
+        }
+        function SearchByName()
+        {
+            var paraName = $('#searchName').textbox("getValue");
+            $('#dg_DataTable').datagrid('options').queryParams = { "Name": paraName };
+            $('#dg_DataTable').datagrid("reload");
+        }
+        function Reload()
+        {
+            $('#dg_DataTable').datagrid('options').queryParams = {};
+            $('#dg_DataTable').datagrid("reload");
+            $("#searchName").textbox('setValue', "");
+            $("#dlg_DataInfo").dialog('close');
+        }
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+        //搜索翻页触发
+        @*$(document).ready(function () {
+            var p = $("#dg_DataTable").datagrid('getPager');
+            var options = $('#dg_DataTable').datagrid('getPager').data("pagination").options;
+            $(p).pagination({
+                onSelectPage: function (pageSize, pageNumber) {
+                    $.get('@Html.Url("Specification_default", "GetMaterialList", "MaterialTypeManagement")', { Name: $('#searchName').textbox("getValue"), rows: pageNumber, page: pageSize }, function (data) {
+                        $("#dg_DataTable").datagrid("loadData", data);
+                    })
+                }
+            });
+        })*@
+    </script>
+}

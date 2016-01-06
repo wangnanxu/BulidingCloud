@@ -1,0 +1,122 @@
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="msapplication-tap-highlight" content="no" />
+		<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/zTreeStyle.css" />
+		<link rel="stylesheet" type="text/css" href="css/scroll.css" />
+		<link rel="stylesheet" type="text/css" href="css/chatItem.css" />
+		<link rel="stylesheet" type="text/css" href="css/material.css"/>
+		<script src="js/jquery-1.11.0.min.js"></script>
+		<script src="js/jquery.mobile-1.4.5.min.js"></script>
+		<!--服务器通讯层-->
+		<script src="js/Communication/handlePost.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Communication/upload.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Communication/download.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 百度定位 -->
+		<script src="http://api.map.baidu.com/api?v=2.0&ak=6m9QsQ0h1Bcuf96n9SFvHdC9" type="text/javascript"></script>
+		<!--数据层-->
+		<script src="js/Model/database.js" type="text/javascript" charset="utf-8"></script>
+		<!--控制层-->
+		<script src="js/Control/comm/index.js" type="text/javascript"></script>
+		<script src="js/Control/comm/handlePostData.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/comm/commControlFun.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/device/floder.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/device/camera.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/syncData.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/addScene_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/addSceneMessage_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/login_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/material_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/project_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/scene_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/sceneItem_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/sceneItem_C1.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/sendMessage_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/showMessage_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/userInformation_C.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Control/device/fileSystem.js" type="text/javascript" charset="utf-8"></script>
+		<!--显示层-->
+		<script src="js/View/comm/ChangePage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/comm/fastclick.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/comm/jquery.ztree.core-3.5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/comm/jquery.ztree.excheck-3.5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/comm/iscroll-probe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/comm/addScroll.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/addScene_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/addSceneMessage_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/login_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/material_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/project_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/scene_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/sceneItem_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/sceneItem_V1.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/sendMessage_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/showMessage_V.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/userInformation_V.js" type="text/javascript" charset="utf-8"></script>
+		<!--样式-->
+		<script src="js/View/comm/html5.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/comm/css3-mediaqueries.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/login.css" />
+		<link rel="stylesheet" type="text/css" href="css/message.css" />
+		<link rel="stylesheet" type="text/css" href="css/scenemessage.css" />
+		<script src="js/View/comm/jquery.swipebox.min.js"></script>
+		<link rel="stylesheet" href="css/swipebox.css">
+		<title>施工云平台(BC)</title>
+		<script src="js/Communication/download_New.js" type="text/javascript" charset="utf-8"></script>
+		
+		<link rel="stylesheet" type="text/css" href="js/View/comm/dist/photoswipe.css" />
+		<link rel="stylesheet" type="text/css" href="js/View/comm/dist/default-skin/default-skin.css"/>
+		<script src="js/View/comm/dist/photoswipe.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/View/comm/dist/photoswipe-ui-default.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body class="platform-android platform-cordova platform-webview">
+		<div data-role="page" id="Page_Login">
+			<div data-role="content" class="Contain">
+				<div class="login_logo">
+					<img src="img/BCLogo.png" />
+				</div>
+				<div class="login_body">
+					<div class="login_body_b">
+						<div class="login_body_img">
+							<img src="img/loginaccount.png " />
+						</div>
+						<div class="login_body_input">
+							<input type="text" data-role="none" class="login_input" name="account " id="account" placeholder="请输入账号 " value="">
+						</div>
+						<div class='clear'></div>
+					</div>
+					<div class="login_body_t ">
+						<div class="login_body_img">
+							<img src="img/loginpassword.png " />
+						</div>
+						<div class="login_body_input">
+							<input type="password" data-role="none" class="login_input" name="password " id="password" placeholder="请输入密码 " value="">
+						</div>
+						<div class='clear'></div>
+					</div>
+				</div>
+				<div class="login_button button_a" onclick="Login()">
+					<a href="#" class="login_button_a" data-role="none" data-transition="none">登录</a>
+				</div>
+				<!--<div class="login_button button_b">
+					<a href="#" data-role="none" class="login_button_a" data-role="button " data-transition="none " onclick="OpenBrowser();">桌面版 </a>
+				</div>
+				<div class="UserOut">
+					<button class="ui-btn" onclick="ChangePage('page/test.html');">进入测试数据页</button>
+				</div>-->
+			</div>
+		</div>
+		<div id="overlay">
+			
+		</div>
+		<script type="text/javascript " src="cordova.js "></script>
+	</body>
+
+</html>

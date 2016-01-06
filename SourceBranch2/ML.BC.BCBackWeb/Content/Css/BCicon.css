@@ -1,0 +1,134 @@
+/*32x32*/
+.icon-eye{
+	background:url('/Content/Images/32/eye.png') no-repeat center center;
+}
+ .icon-cog{
+	background:url('/Content/Images/32/cog.png') no-repeat center center;
+}
+ .icon-featured{
+	background:url('/Content/Images/32/featured.png') no-repeat center center;
+} .icon-storage1{
+	background:url('/Content/Images/32/storage1.png') no-repeat center center;
+}
+.icon-people{
+	background:url('/Content/Images/32/people.png') no-repeat center center;
+}
+.icon-_customers{
+	background:url('/Content/Images/32/_customers.png') no-repeat center center;
+}
+.icon-Role{
+	background:url('/Content/Images/32/20131012030416621.png') no-repeat center center;
+}
+.icon-organisation{
+	background:url('/Content/Images/32/chart_organisation.png') no-repeat center center;
+}
+/*-------------运营后端-------------------*/
+.icon-Index {
+background:url('/Content/Images/32/index.png') no-repeat center center;
+}
+.icon-EnterpriseManagement{
+	background:url('/Content/Images/32/EnterpriseManagement.png') no-repeat center center;
+}
+.icon-EnterpriseList{
+	background:url('/Content/Images/32/EnterpriseList.png') no-repeat center center;
+}
+.icon-IndustryType{
+	background:url('/Content/Images/32/IndustryType.png') no-repeat center center;
+}
+.icon-EnterpriseNature{
+	background:url('/Content/Images/32/EnterpriseNature.png') no-repeat center center;
+}
+.icon-EnterpriseRole{
+	background:url('/Content/Images/32/EnterpriseRole.png') no-repeat center center;
+}
+.icon-EnterpriseAccount{
+	background:url('/Content/Images/32/EnterpriseAccount.png') no-repeat center center;
+}
+.icon-EnterpriseLog{
+	background:url('/Content/Images/32/EnterpriseLog.png') no-repeat center center;
+}
+.icon-LoginLog{
+	background:url('/Content/Images/32/LoginLog.png') no-repeat center center;
+}
+.icon-BillingManagement{
+	background:url('/Content/Images/32/BillingManagement.png') no-repeat center center;
+}
+/*平台管理*/
+.icon-PlatformManagement{
+	background:url('/Content/Images/32/PlatformManagement.png') no-repeat center center;
+}
+.icon-SystemUser{
+	background:url('/Content/Images/32/SystemUser.png') no-repeat center center;
+}
+
+.icon-SystemRole{
+	background:url('/Content/Images/32/SystemRole.png') no-repeat center center;
+}
+.icon-OnlineCount{
+	background:url('/Content/Images/32/OnlineCount.png') no-repeat center center;
+}
+.icon-SystemLog{
+	background:url('/Content/Images/32/SystemLog.png') no-repeat center center;
+}
+.icon-FunctionManagement{
+	background:url('/Content/Images/32/FunctionManagement.png') no-repeat center center;
+}
+.icon-EnterpriseFunctionManagement{
+	background:url('/Content/Images/32/EnterpriseFunctionManagement.png') no-repeat center center;
+}
+/*---------企业后端-------------*/
+/*系统设置*/
+.icon-SystemSettings{
+	background:url('/Content/Images/32/SystemSettings.png') no-repeat center center;
+}
+.icon-UserManagement{
+	background:url('/Content/Images/32/UserManagement.png') no-repeat center center;
+}
+.icon-RoleManagement{
+	background:url('/Content/Images/32/RoleManagement.png') no-repeat center center;
+}
+.icon-OrganizationStructure{
+	background:url('/Content/Images/32/OrganizationStructure.png') no-repeat center center;
+}
+.icon-EnterpriseLog2{
+	background:url('/Content/Images/32/EnterpriseLog.png') no-repeat center center;
+}
+
+
+.icon-SceneType{
+	background:url('/Content/Images/32/SceneType.png') no-repeat center center;
+}
+/*项目管理*/
+.icon-ProjectManagement{
+	background:url('/Content/Images/32/ProjectManagement.png') no-repeat center center;
+}
+.icon-ProjectList{
+	background:url('/Content/Images/32/ProjectList.png') no-repeat center center;
+}
+.icon-SceneList{
+	background:url('/Content/Images/32/SceneList.png') no-repeat center center;
+}
+.icon-GISMap{
+	background:url('/Content/Images/32/GISMap.png') no-repeat center center;
+}
+.icon-DataManagement{
+	background:url('/Content/Images/32/DataManagement.png') no-repeat center center;
+}
+.icon-DataList{
+	background:url('/Content/Images/32/DataList.png') no-repeat center center;
+}
+.icon-DataType{
+	background:url('/Content/Images/32/DataType.png') no-repeat center center;
+}
+/*报表管理*/
+.icon-ReportManagement{
+	background:url('/Content/Images/32/DataType.png') no-repeat center center;
+}
+.icon-SceneData{
+	background:url('/Content/Images/32/SceneData.png') no-repeat center center;
+}
+.icon-SceneExamine{
+	background:url('/Content/Images/32/SceneExamine.png') no-repeat center center;
+}
+/*.tabs-icon{ background-size:16px 16px}
+ 16x16*/

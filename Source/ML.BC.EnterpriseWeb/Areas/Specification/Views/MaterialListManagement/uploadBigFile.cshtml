@@ -1,0 +1,201 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>uploadBigFile</title>
+    <script src="/Content/Js/jquery.min.js"></script>
+    <script src="~/Content/Js/webuploader.js"></script>
+    <link href="~/Content/Css/webuploader.css" rel="stylesheet" />
+</head>
+<style>
+    .item {
+        display: inline-block;
+    }
+    .txtbox {
+        width: 100px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+       
+    }
+
+        .txtbox:hover {
+            overflow:visible;
+            text-overflow: initial;
+        }
+    .wraper {
+        width: 500px;
+        height: 100px;
+        margin: 50px auto;
+    }
+
+    .f-left {
+        float: left;
+        width: 50%;
+        background: red;
+        border: 1px solid green;
+        box-sizing: border-box;
+    }
+
+    .f-right {
+        float: right;
+        width: 50%;
+        background: blue;
+        border: 1px solid green;
+        box-sizing: border-box;
+    }
+</style>
+<body>
+    <div>
+        <div id="uploader" class="wu-example">
+            <!--用来存放文件信息-->
+
+            <div class="btns">
+                <div id="picker">选择文件</div>
+                <button id="ctlBtn" class="btn btn-default">开始上传</button>
+            </div>
+        </div>
+        <div id="thelist" class="uploader-list"></div>
+    </div>
+    <div class="wraper">
+        <div class="f-left">50%</div>
+        <div class="f-right">50%</div>
+    </div>
+    <span class="txtbox">的撒的撒的撒的撒爱的的阿萨德撒爱迪生的撒爱的阿萨德爱上的撒的撒</span>
+    <script type="text/javascript">
+        var BASE_URL = "/Content";
+        // 文件上传
+        jQuery(function () {
+
+            var $ = jQuery,
+                $list = $('#thelist'),
+                $btn = $('#ctlBtn'),
+                state = 'pending',
+                uploader;
+
+            uploader = WebUploader.create({
+
+                // 不压缩image
+                resize: false,
+
+                // swf文件路径
+                swf: BASE_URL + '/css/Uploader.swf',
+
+                // 文件接收服务端。
+                server: '@Html.Url("Specification_default","Upload","MaterialListManagement")',
+
+                // 选择文件的按钮。可选。
+                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                pick: '#picker',
+
+                chunked: true,
+                chunkSize: 3242880,
+            });
+            var filedom = null;
+            // 当有文件添加进来的时候
+            uploader.on('fileQueued', function (file) {
+                filedom = file;
+                $list.append('<div id="' + file.id + '" >' +
+                    '<span>' + file.name + '</span>' +
+                   '<div class="progress1" style="display:inline-block;width: 133px;height: 15px;position: relative;left: 0;top: 3px;border: solid 1px;overflow:hidden" >' +
+                  ' <div class="progress-bar"  style="background-color: rgb(164, 155, 199);width: 0%;height: 100%;position: absolute;top: 0px;left: 0px;"></div></div>' +
+                    '<p class="state">等待上传...</p>' +
+                '</div>');
+            });
+
+            // 文件上传过程中创建进度条实时显示。
+            uploader.on('uploadProgress', function (file, percentage) {
+                var $li = $('#' + file.id);
+                var $percent = $li.find('.progress-bar');
+
+                // 避免重复创建
+                if (!$percent.length) {
+                    $percent = $('<div style="width: 133px;height: 15px;position: relative;left: 100%;top: -17px;border: solid 1px;overflow:hidden">' +
+                  ' <div class="progress-bar" role="progressbar" style="background-color: rgb(164, 155, 199);width: 0%;height: 100%;position: absolute;top: 0px;left: 0px;"></div></div>' +
+                    '<p class="state">等待上传...</p>'
+                  ).appendTo($li).find('.progress-bar');
+                }
+
+                $li.find('p.state').text('上传中');
+
+                var $li = $('#' + filedom.id);
+
+                if ($percent.width() <= $percent.parent(".progress1").width())
+                    $percent.animate({
+                        width: "+=" + percentage * 100 + "%"
+                    }, 1000)
+            });
+
+            uploader.on('uploadSuccess', function (file,data) {
+                $('#' + file.id).find('p.state').text('已上传');
+                var a=eval("("+data+")")
+            });
+
+            uploader.on('uploadError', function (file) {
+                $('#' + file.id).find('p.state').text('上传出错');
+            });
+
+            uploader.on('uploadComplete', function (file) {
+                $('#' + file.id).find('.progress').fadeOut();
+            });
+
+            uploader.on('uploadBeforeSend', function (block, data, headers) {
+                if (block.chunk + 1 != block.chunks)//分片
+                {
+                    data.isChunk = true;
+                    data.byteLength = data.size;
+                    data.ext = block.file.ext;
+                    data.start = block.start;
+                    data.end = block.end;
+                }
+                else {
+                    if ( block.chunk + 1 == block.chunks && block.chunk>1)//分片结束
+                    {
+                        data.isChunk = true;
+                        data.byteLength = data.size;
+                        data.ext = block.file.ext;
+                        data.start = block.start;
+                        data.end = block.end;
+                    } else { 
+                    data.isChunk = false;
+                    data.byteLength = data.size;
+                    data.ext = block.file.ext;
+                    }
+                }
+            });
+            uploader.on('all', function (type) {
+                if (type === 'startUpload') {
+                    state = 'uploading';
+                } else if (type === 'stopUpload') {
+                    state = 'paused';
+                } else if (type === 'uploadFinished') {
+                    state = 'done';
+                }
+
+                if (state === 'uploading') {
+                    $btn.text('暂停上传');
+                } else {
+                    $btn.text('开始上传');
+                }
+            });
+
+            $btn.on('click', function () {
+                if (state === 'uploading') {
+                    uploader.stop();
+                } else {
+
+                    uploader.upload();
+                }
+            });
+        });
+
+
+
+    </script>
+</body>
+</html>

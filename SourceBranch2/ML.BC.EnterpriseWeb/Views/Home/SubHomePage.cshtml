@@ -1,0 +1,25 @@
+﻿@{Layout = "~/Views/Shared/_IframeLayout.cshtml";}
+<div style="height:99.9%;">
+    <div style="width:100%;height:670px">
+        <div style="background: url('/Content/Images/subhomepage.jpg') no-repeat; width: 100%; height: 100%; background-position: 0 0; background-size: 100%; "></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+        $.getJSON("./GetMessageCount", "", function (data) {
+            if (data.Success) {
+                if (data.Value > 0)
+                {
+                    if (data.Value > 99)
+                        data.Value = 99;
+                    top.$("#nav_1").append("<b id='noRead' class='noReadMessage'>" + data.Value + "</b>");
+                }
+               
+            } else {
+                showTipsMsg("获取失败",2000,2);
+            }
+        })
+    })
+</script>

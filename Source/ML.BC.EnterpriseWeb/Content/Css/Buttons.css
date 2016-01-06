@@ -1,0 +1,34 @@
+﻿.btn_Refresh {
+	background: url('/content/Images/16/arrow_refresh.png') 50% 4px no-repeat;
+}
+.btn_Add{
+background: url('/content/Images/16/application_add.png') 50% 4px no-repeat;
+}
+.btn_Edit{
+background: url('/content/Images/16/application_edit.png') 50% 4px no-repeat;
+}
+.btn_Delete{
+background: url('/content/Images/16/application_delete.png') 50% 4px no-repeat;
+}
+.btn_Info{
+background: url('/content/Images/16/page_white_find.png') 50% 4px no-repeat;
+}
+.btn_ResetPassword{
+background: url('/content/Images/16/group_key.png') 50% 4px no-repeat;
+}
+ /*分配角色*/
+.btn_AllotRole{
+background: url('/content/Images/16/AllotRole.png') 50% 4px no-repeat;
+}
+/*引入*/
+.btn_Enter{
+background: url('/content/Images/16/enter.png') 50% 4px no-repeat;
+}
+/*引出*/
+.btn_Out{
+background: url('/content/Images/16/out.png') 50% 4px no-repeat;
+}
+/*返回*/
+.btn_Back{
+background: url('/content/Images/16/back.png') 50% 4px no-repeat;
+}

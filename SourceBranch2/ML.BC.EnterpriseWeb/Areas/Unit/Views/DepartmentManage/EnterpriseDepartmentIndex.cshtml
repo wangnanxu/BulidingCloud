@@ -1,0 +1,420 @@
+﻿@using ML.BC.Web.Framework;
+
+<div id="Content" class="Content ClearFloat">
+    <!--顶部标题-->
+    <div class="btnbartitle">
+        <div>
+            系统设置 - <span id="OrganizationName">组织结构</span>
+        </div>
+    </div>
+    <!--操作工具条-->
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_SystemSetting_OrganizationManagement_Add), "新增", new { @class = "tools_btn", onclick = "append()" }, new { @class = "btn_Add" }, false, true)
+        
+        @Html.Button(() => HasFunction(Functions.Root_SystemSetting_OrganizationManagement_Edit), "编辑", new { @class = "tools_btn", onclick = "edit()" }, new { @class = "btn_Edit" }, false, true)
+        
+        @Html.Button(() => HasFunction(Functions.Root_SystemSetting_OrganizationManagement_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+         
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true,false)
+    </div>
+  
+
+    <!--弹出框-->
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton " onclick="javascript:submitform();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#func_dialog').dialog('close')">
+            取消
+        </a>
+    </div>
+    <div id="func_dialog" class="easyui-dialog dlg_DataInfo" title="部门-新增"
+         data-options="
+ 				buttons: '#dlg-buttons'
+         ">
+
+        <form id="form_department" class="easyui-form frm" action="Url" method="post" data-options="">
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        所属部门:
+                    </td>
+                    <td>
+                        <input class="easyui-combotree" id="department" name="Department" data-options=" valueField: 'id',textField: 'text',panelHeight:'auto'">
+                        <label id="lbl_ParentDepartmentName" style="display:none">空</label>
+                    
+</td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        部门名称[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " id="name" type="text" name="Name" data-options="required:true">
+                    </td>
+                </tr>
+                @*<tr>
+                        <td class="FixedColumn">
+                            部门Id[*]:
+                        </td>
+                        <td>
+                            <input class="easyui-textbox " id="did" type="text" name="MyID" data-options="required:true,validType:'email'">
+                        </td>
+                  </tr>*@
+                <tr>
+                    <td class="FixedColumn">
+                        描述:
+                    </td>
+                    <td>
+                        <input id="info" class="easyui-textbox" type="text" name="Description" data-options="">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        是否有效:
+                    </td>
+                    <td>
+                        <input class="easyui-combobox" id="ava" name="Available" value="" data-options="data:[{value:true,text:'是'},{value:false,text:'否'}],editable:false,panelHeight:'auto'">
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+    <!--右键菜单-->
+    <div id="mm" class="easyui-menu" style="width:120px;">
+        <div onclick="append()" data-options="iconCls:'icon-add'">新建</div>
+        <div onclick="removeNode()" data-options="iconCls:'icon-remove'">删除</div>
+        <div onclick="edit()" data-options="iconCls:'icon-edit'">编辑</div>
+        <div class="menu-sep"></div>
+        <div onclick="collapse()">收回</div>
+        <div onclick="expand()">展开</div>
+    </div>
+    <!--树形表格-->
+    <div id="func-table" class="DataContent" style="height:auto">
+        <table id="tg" class="easyui-treegrid DataContent" style="width: auto; overflow: scroll" data-options="rownumbers: true,animate: true,collapsible: false,fitColumns: true,url: '@Html.Url("Unit_default", "GetDepartmentlist", "DepartmentManage")',method: 'get',idField: 'id',treeField: 'Name',onClickRow:onClickRow,onLoadSuccess:onLoadSuccess">
+            <thead>
+                <tr>
+                    <th data-options="field:'Name',width:100,editor:'text'">部门名称</th>
+                    @*<th data-options="field:'MyID',width:60,align:'right',editor:'text'"><span class="red-star" style="color:red">*</span>MyID</th>*@
+                    <th data-options="field:'Description',width:200,editor:'text'">描述</th>
+                    <th data-options="field:'Available',width:20,formatter:format,align:'center'">
+                        是否有效
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script type="text/javascript">
+        var deleteurl = "@Html.Url("Unit_default", "DeleteDepartment", "DepartmentManage")";
+        var updateurl = "@Html.Url("Unit_default", "UpdateDepartment", "DepartmentManage")";
+        var addurl = "@Html.Url("Unit_default", "AddDepartment", "DepartmentManage")";
+        var funcurl = "";
+        var allowShowAll = '@(HasFunction(Functions.Root_SystemSetting_OrganizationManagement_ShowAll) || !BCSession.User.DepartmentID.HasValue)';
+        //格式化布尔值
+        function format(value) {
+            if (value == true) {
+
+                return '<span iconCls="icon-ok">是</span>';
+            } else {
+                return '<span iconCls="icon-cancel">否</span>';
+            }
+        }
+        //刷新
+        function Refresh() {
+            $("#tg").treegrid("reload");
+        }
+        function edit() {
+            $("#department").next().show();
+            $('#lbl_ParentDepartmentName').hide();
+            var row = $('#tg').treegrid('getSelected');
+            if (row) {
+            //从服务器获取树 数据
+            //$.get("./GetMyDepartment", { did: row.id }, function (data) {
+            //    $("#alldepartment").combotree("loadData", data);
+            //})
+            //本地加载树结构 去除当前节点及其子节点
+            var treedata = $("#tg").treegrid("getChildren");
+            var root = [];//第一个children为所有parentid=0
+            var roots = $("#tg").treegrid("getRoots");
+            $.each(roots, function (rot1, rot2) {
+                var rootnode = {};
+                rootnode.id = rot2.id;
+                rootnode.text = rot2.Name;
+                rootnode.children = [];
+                if (rot2.id != row.id) {
+                    rootnode.children = gettree(treedata, rot2);
+                    root.push(rootnode);
+                }
+            })
+            //有最高权限的时候
+            if (allowShowAll == "True")
+                {
+            var nul = {};
+            nul.id = 0;
+            nul.text = '空';
+            root.push(nul);
+            }
+            $("#department").combotree("loadData", root);
+            var model = {};
+            model.Name = row.Name;
+            model.Description = row.Description;
+                //有最高权限的时候
+            if (allowShowAll == "True") {
+                if (row._parentId != 0) {
+                    var selectnode = $("#department").combotree("tree").tree("find", row._parentId);
+                    $("#department").combotree("tree").tree('select', selectnode.target);
+                    $('#department').combotree("setValue", selectnode.text);
+                }
+                else {
+                    var selectnode = $("#department").combotree("tree").tree("find", 0);
+                    $("#department").combotree("tree").tree('select', selectnode.target);
+                    $('#department').combotree("setValue", selectnode.text);
+                }
+            }
+            else {
+                if (row._parentId != 0) {
+                    var selectnode = $("#department").combotree("tree").tree("find", row._parentId);
+                    $("#department").combotree("tree").tree('select', selectnode.target);
+                    $('#department').combotree("setValue", selectnode.text);
+                }
+                else {
+                    $("#department").next().hide();
+                    $('#lbl_ParentDepartmentName').show();
+                }
+            }
+            funcurl = updateurl;
+            $("#func_dialog").dialog({title:'部门管理-编辑'});
+            $('#form_department').form('load', model);
+            $("#ava").combobox("select", row.Available);
+        } else {
+                IsEditData("");
+        return;
+        }
+        }
+        //递归转换成树结构 修改用
+        function gettree(root, node) {
+            var sublist = [];
+            sublist[0] = {};
+            if (node == undefined)
+                return;
+            var index = 0;
+            for (var i = 0; i < root.length; i++) {
+                if (root[i].ParentID == node.id)//找到参数的直接子节点
+                {
+                    sublist[index++] = root[i];
+                }
+            }
+            if (sublist[0].id == undefined)
+                return;
+            var result = [];
+            for (var j = 0; j < sublist.length; j++) {
+                var row = $("#tg").treegrid('getSelected');
+                if (sublist[j].id != row.id) {
+                    var ret = {};
+                    ret.id = sublist[j].id;
+                    ret.text = sublist[j].Name;
+                    ret.children = [];
+                    ret.children = gettree(root, sublist[j]);
+                    result.push(ret);
+                }
+            }
+            return result;
+        }
+        //递归转换成树结构 增加用
+        function getmytree(root, node) {
+            var sublist = [];
+            sublist[0] = {};
+            if (node == undefined)
+                return;
+            var index = 0;
+            for (var i = 0; i < root.length; i++) {
+                if (root[i]._parentId == node.id)//找到参数的直接子节点
+                {
+                    sublist[index++] = root[i];
+                }
+            }
+            if (sublist[0].id == undefined)
+                return;
+            var result = [];
+            for (var j = 0; j < sublist.length; j++) {
+
+                var ret = {};
+                ret.id = sublist[j].id;
+                ret.text = sublist[j].Name;
+                ret.children = [];
+                ret.children = getmytree(root, sublist[j]);
+                result.push(ret);
+
+            }
+            return result;
+        }
+        //提交表单
+        function submitform()
+        {
+           
+            $("#form_department").form("submit", {
+                url: funcurl,
+                onSubmit: function (para) {
+                    if (funcurl == updateurl) {
+                        var row = $('#tg').treegrid('getSelected');
+                        var odata = {};
+                        odata.Name = $("#name").val();
+                        odata.Description = $("#info").val();
+                        odata.EnterpriseID = row.EnterpriseID;
+                        odata.Available = row.Available;
+                        odata.DepartmentID = row.DepartmentID;
+                        if (allowShowAll == "True") {
+                                var selectnode = $("#department").combotree('tree').tree("getSelected");
+                                odata.ParentID = parseInt(selectnode.id);
+                        } else {
+                            var selectnode = $("#department").combotree('tree').tree("getSelected");
+                            //判断是否选择的根节点
+                            if (selectnode == null)
+                                odata.ParentID = row.ParentID;
+                            else
+                                odata.ParentID = selectnode.id;
+                        }
+                        odata.Available = $("#ava").combobox("getValue");
+                        var pdata = { funcJsonStr: JSON.stringify(odata) };
+                        para.funcJsonStr = pdata.funcJsonStr;
+                    }
+                    else  if (funcurl == addurl) {
+                        var row = $('#tg').treegrid("getSelected");
+                        var data = {};
+                        data.Name = $('#name').val();
+                      
+                            var selectnode = $("#department").combotree('tree').tree("getSelected");
+                            data.ParentID = parseInt(selectnode.id);;
+
+                        data.EnterpriseID = "";
+                        data.Deleted = false;
+                        data.Description = $('#info').val();
+                        data.Available = $("#ava").combobox("getValue");
+                        var pdata = { funcJsonStr: JSON.stringify(data) };
+                        para.funcJsonStr = pdata.funcJsonStr;
+                    }
+                    return $("#form_department").form("enableValidation").form("validate");
+                },
+                success: function (data) {
+                    var a = eval("(" + data + ")");
+                    if (a.Success) {
+                        showTipsMsg(a.Message, 2000, 0);
+                        $("#func_dialog").dialog('close');
+                        Refresh();
+                    }
+                    else {
+                        showTipsMsg(a.Message, 2000, 2);
+                    }
+                }
+            })
+        }
+        function append() {
+            $("#department").next().show();
+            $('#lbl_ParentDepartmentName').hide();
+            $('#form_department').form('clear');
+            var row = $('#tg').treegrid('getSelected');
+            var treedata = $("#tg").treegrid("getChildren");
+            var root = [];//第一个children为所有parentid=0
+            var roots = $("#tg").treegrid("getRoots");
+            $.each(roots, function (rot1, rot2) {
+                var rootnode = {};
+                rootnode.id = rot2.id;
+                rootnode.text = rot2.Name;
+                rootnode.children = [];
+                rootnode.children = getmytree(treedata, rot2);
+                root.push(rootnode);
+
+            })
+            if (allowShowAll == "True") {
+                var nul = {};
+                nul.id = 0;
+                nul.text = '空';
+                root.push(nul);
+            }
+            $("#department").combotree("loadData", root);
+            if (row)
+            {
+                var selectnode = $("#department").combotree("tree").tree("find",row.id);
+                $("#department").combotree("tree").tree('select', selectnode.target);
+                $('#department').combotree("setValue",row.Name);
+            }
+            funcurl = addurl;
+            $('#func_dialog').dialog({title:'部门管理-新增'});
+        }
+        //删除节点
+        function Delete() {
+            var node = $('#tg').treegrid('getSelected');
+            if (node) {
+                $.messager.confirm("系统提示", "删除功能及其所有下级功能,操作不可恢复,您确认删除?", function (a) {
+                    if (a) {
+                        var data = {};
+                        data.DepartmentID = node.DepartmentID;
+                        var pdata = { funcJsonStr: JSON.stringify(data) }
+                        
+                        $("#tg").treegrid("unselect", node.id);
+                        $.getJSON(deleteurl,  pdata , function (dt) {
+                            if (dt.Success) {
+                                showTipsMsg("删除成功", 2000, 0);
+                                clickrow = 0;
+                                Refresh();
+                            } else {
+                                showTipsMsg(dt.Message, 2000, 2);
+                            }
+                        })
+                       
+                    }
+                });
+
+            }
+            else {
+                showTipsMsg("请选择要操作的行", 2000, 2);
+            }
+        }
+        var total;
+        function onLoadSuccess(x, y) {
+            if (y.rows.length <= 0)
+            {
+                showTipsMsg("没有任何数据",2000,2);
+            }
+            //获取父部门信息
+            if(allowShowAll=="False")
+                $.getJSON("@Html.Url("Unit_default", "GetParentInfo", "DepartmentManage")", { DepartmentID: $("#tg").treegrid('getRoot').id }, function (data) {
+                    
+                    //data = $.parseJSON(data);
+                    if(data!=null)
+                        $("#lbl_ParentDepartmentName").text(data.Value);
+                    else 
+                        $("#lbl_ParentDepartmentName").text("空");
+                },'json')
+            if (y.total) {
+                total = y.total - 1;
+                $("#fc-tiper").html("共" + total + "个功能项.");
+            } else {
+                $("#fc-tiper").html("正在添加新功能...");
+            }
+
+        }
+       
+        var clickrow = 0;
+
+        function onClickRow(row)
+                {
+                    if (row.id==clickrow)
+                    {
+                        $("#tg").treegrid("unselect", row.id);
+                        clickrow = 0;
+                        return;
+                    }
+                    clickrow = row.id;
+                }
+
+        
+    </script>
+
+    @section CSS{
+        @*@Styles.Render("~/Content/Css/Department_tree.css");*@
+     }
+</div>

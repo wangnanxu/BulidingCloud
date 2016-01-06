@@ -1,0 +1,527 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+
+@section CSS{
+
+    <link href="/Content/Js/PersonalInfoMana/themes/base/jquery.ui.all.css" rel="stylesheet" type="text/css" />
+
+
+
+    <style>
+        #avatar img {
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            border: 1px solid gray;
+            float: left;
+            margin: 49px;
+        }
+
+        .form_container {
+            display: inline-block;
+            margin-left: 50px;
+            margin-top: 50px;
+        }
+
+        .info_line td, .edit_line td {
+            padding-right: 20px;
+        }
+
+            .info_line td span {
+                padding-left: 15px;
+            }
+
+        input.easyui-textbox.info-edit.textbox-f {
+            height: 30px;
+            color: rgb(24, 24, 182);
+        }
+
+        a.easyui-linkbutton.info-edit.l-btn.l-btn-small {
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            padding-top: 5px;
+            margin-left: 33px;
+        }
+
+        span.l-btn-text {
+            font-size: 13px;
+        }
+
+        tr {
+            height: 50px;
+        }
+
+        input.textbox-text.validatebox-text {
+        }
+
+        span.textbox {
+            height: 30px !important;
+        }
+
+        #avatar_container {
+            display: none;
+            position: relative;
+            top: -27px;
+            left: 260px;
+        }
+
+        #divCut {
+            width: 200px;
+            height: 200px;
+            border: solid 1px red;
+        }
+
+        #divContent {
+            width: 450px;
+            height: 450px;
+            border: 1px solid gray;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        #divFileProgressContainer {
+            height: 30px;
+            left: -222px;
+            position: relative;
+            width: 250px;
+            display: inline-block;
+            top: -140px;
+        }
+
+        #flash {
+            position: relative;
+            display: inline-block;
+            right: 481px;
+            top: -101px;
+        }
+
+        #btnCut {
+            display: inline-block;
+            right: 480px;
+            position: relative;
+            top: -108px;
+            background-color: rgb(152, 216, 233);
+            border: none;
+            height: 22px;
+            margin-top: 13px;
+        }
+
+        #pic_btn {
+            display: inline-block;
+            position: relative;
+            left: -18%;
+            top: 255px;
+            height: 30px;
+            width: 100px;
+            text-align: center;
+            font-size: 14px;
+            color: blue;
+        }
+    </style>
+
+}
+
+<div id="Content" class="Content ClearFloat">
+    <!--标题-->
+    <div class="btnbartitle">
+        <div>
+            <span id="OrganizationName">个人信息</span>
+        </div>
+    </div>
+    <!--工具栏-->
+    <div class="tools_bar">
+
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+
+
+        @Html.Button(() => HasFunction("功能ID"), "修改个人资料", new { @class = "tools_btn", onclick = "edit()" }, new { @class = "btn_Edit" }, false, true)
+
+
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+
+    </div>
+
+    <div class="DataContent">
+
+
+        <div id="avatar"><img id="avatar_img" src="@ViewBag.Avatar" /></div>
+        <a href="javascript:;" onclick="javascript:UpdateAvatar()">
+            <span id="pic_btn">修改头像</span>
+        </a>
+
+
+        <!--信息-->
+        <div id="info">
+            <div class="form_container">
+                <table cellpadding="5">
+                    <tr class="info_line">
+                        <td class="FixedColumn">
+                            ID:
+                        </td>
+                        <td>
+                            <span>@ViewBag.ID</span>
+
+                        </td>
+                    </tr>
+                    <tr class="info_line">
+                        <td class="FixedColumn">
+                            姓名:
+                        </td>
+                        <td>
+                            <span id="info_username" class="info-show">@ViewBag.UserName</span>
+
+                        </td>
+                    </tr>
+                    <tr class="info_line">
+                        <td class="FixedColumn">
+                            注册日期:
+                        </td>
+                        <td>
+                            <span>@ViewBag.RegistDate</span>
+
+                        </td>
+                    </tr>
+
+                    <tr class="info_line">
+                        <td class="FixedColumn">
+                            上次登录:
+                        </td>
+                        <td>
+                            <span>@ViewBag.LastDate</span>
+                        </td>
+                    </tr>
+                    <tr class="info_line">
+                        <td class="FixedColumn">
+                            联系方式:
+                        </td>
+                        <td>
+                            <span class="info-show">@ViewBag.Mobile</span>
+
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+        <!--编辑-->
+        <div class="form_container" id="edit" style="display:none">
+            <form id="FormInfo" class="easyui-form frm" method="post" data-options="novalidate:true">
+
+                <table cellpadding="5">
+
+                    <tr class="edit_line">
+                        <td class="FixedColumn">
+                            姓名:
+                        </td>
+                        <td>
+
+                            <input class="easyui-textbox " type="text" value="@ViewBag.UserName" name="UserName" data-options="required:true" />
+                        </td>
+                    </tr>
+                    <tr class="edit_line">
+                        <td class="FixedColumn">
+                            联系方式:
+                        </td>
+                        <td>
+
+                            <input class="easyui-textbox " type="text" value="@ViewBag.Mobile" name="Mobile" data-options="required:true">
+
+                        </td>
+                    </tr>
+                    <tr class="edit_line">
+                        <td class="FixedColumn">
+                            旧密码:
+                        </td>
+                        <td>
+
+                            <input class="easyui-textbox" type="password" name="Password">
+
+                        </td>
+                    </tr>
+                    <tr class="edit_line">
+                        <td class="FixedColumn">
+                            新密码:
+                        </td>
+                        <td>
+
+                            <input class="easyui-textbox" type="password" name="newPassword">
+
+                        </td>
+                    </tr>
+                    <tr class="edit_line">
+                        <td class="FixedColumn">
+                            确认新密码:
+                        </td>
+                        <td>
+
+                            <input class="easyui-textbox" type="password" name="newPassword2">
+
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div id="dlg-buttons-save" class="info-edit">
+                <a href="javascript:void(0)" class="easyui-linkbutton info-edit" onclick="javascript:submitForm();">
+                    保存
+                </a> <a href="javascript:void(0)" class="easyui-linkbutton info-edit" onclick="javascript:cancel()">
+                    取消
+                </a>
+            </div>
+        </div>
+
+        @*头像上传*@
+        <div id="avatar_container">
+            <div id="swfu_container" style="margin: 0px 10px;">
+
+
+
+                <div id="divContent">
+
+                    <div id="divCut"></div>
+                </div>
+                <!--预览-->
+                <img id="imgSrc" src="" />
+
+                <div id="divFileProgressContainer"></div>
+
+                <a id="flash">
+                    <span id="spanButtonPlaceholder"></span>
+                </a>
+
+
+
+                <input type="button" value="保存头像" id="btnCut" />
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+@section scripts{
+
+    <script src="/Content/Js/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="/Content/Js/PersonalInfoMana/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+    <script src="/Content/Js/PersonalInfoMana/handlers.js" type="text/javascript"></script>
+    <script src="/Content/Js/PersonalInfoMana/swfupload.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var swfu;
+        window.onload = function () {
+            swfu = new SWFUpload({
+                // Backend Settings
+                //修改执行上传操作的文件(aspx或ashx)
+                upload_url: '@Html.Url("Account_default", "ProcessImage", "PersonalInfoManagment")?actionx=up',
+                post_params: {},
+
+                // File Upload Settings
+                file_size_limit: "2 MB",
+                file_types: "*.jpg",
+                file_types_description: "JPG Images",
+                file_upload_limit: 0,    // Zero means unlimited
+
+                // Event Handler Settings - these functions as defined in Handlers.js
+                //  The handlers are not part of SWFUpload but are part of my website and control how
+                //  my website reacts to the SWFUpload events.
+                swfupload_preload_handler: preLoad,
+                swfupload_load_failed_handler: loadFailed,
+                file_queue_error_handler: fileQueueError,
+                file_dialog_complete_handler: fileDialogComplete,
+                upload_progress_handler: uploadProgress,
+                upload_error_handler: uploadError,
+                //指定图片上传成功后执行的方法为我们自己定义的ShowData
+                upload_success_handler: ShowData,
+                upload_complete_handler: uploadComplete,
+
+                // Button settings
+                button_image_url: "/Content/Js/PersonalInfoMana/btn.png",
+                button_placeholder_id: "spanButtonPlaceholder",
+                button_width: 120,
+                button_height: 22,
+                button_text: '<span class="button">上传图片(&lt;2MB)</span>',
+                button_text_style: '.button { font-family: Helvetica, Arial, sans-serif; font-size: 14pt; } .buttonSmall { font-size: 10pt; }',
+                button_text_top_padding: 1,
+                button_text_left_padding: 5,
+
+                // Flash Settings
+                flash_url: "/Content/Js/PersonalInfoMana/swfupload.swf", // Relative to this file
+                flash9_url: "/Content/Js/PersonalInfoMana/swfupload_FP9.swf", // Relative to this file
+
+                custom_settings: {
+                    upload_target: "divFileProgressContainer"
+                },
+
+                // Debug Settings
+                debug: false
+            });
+        }
+        //上传成功后执行,将img标签的src设置为返回的图片保存好的路径
+        var d;//保存上传成功图片的路径信息
+        function ShowData(file, serverData) {
+            serverData = serverData.replace(/"/g, "");
+            d = serverData.split(":");
+            if (d[0] == "ok") {
+                $("#divContent").css("backgroundImage", "url(" + d[1] + "?" + Math.random() + ")");
+            }
+            else {
+                showTipsMsg("图片上传有误,请重新上传", 2000, 0);
+            }
+        };
+        $(function () {
+            $("#divCut").draggable({ containment: 'parent' });
+            $("#btnCut").click(
+                //上传头像
+                function () {
+                    if (!d || !d[1]) return;
+                    var y = $("#divCut").offset().top - $("#divContent").offset().top;
+                    var x = $("#divCut").offset().left - $("#divContent").offset().left;
+                    var width = $("#divCut").width();
+                    var height = $("#divCut").height();
+                    $.post("@Html.Url("Account_default", "ProcessImage", "PersonalInfoManagment")",
+                        { "actionx": "cut", "x": parseInt(x), "y": parseInt(y), "width": parseInt(width), "height": parseInt(height), "imgSrc": d[1] },
+                        function (data) {
+
+                            showTipsMsg("成功", 2000, 0);
+                            $("#avatar_img").attr("src", data + "?" + Math.random());
+                            $("#info").show();
+                            $("#edit").hide();
+                            $("#avatar_container").hide();
+                            $("#pic_btn").html("修改头像");
+                            $("#pic_btn").click(UpdateAvatar);
+                            //Replace();
+                        });
+                });
+        });
+
+        function UpdateAvatar() {
+            $("#info").hide();
+            $("#edit").hide();
+            $("#avatar_container").show();
+            $("#pic_btn").html("取消");
+            $("#pic_btn").click(function () {
+                $("#info").show();
+                $("#edit").hide();
+                $("#avatar_container").hide();
+                $("#pic_btn").html("修改头像");
+                $("#pic_btn").click(UpdateAvatar);
+                return false;
+            });
+            return false;
+        }
+    </script>
+
+    <script type="text/javascript">
+
+
+        //url: '@Html.Url("Account_default", "GetList", "BackUser")'
+
+
+        function privateCallSxid() {
+
+        };
+
+        //编辑
+        function edit() {
+            $("#info").hide();
+            $("#edit").show();
+
+           
+            $("#avatar_container").hide();
+            $("#pic_btn").html("修改头像");
+            $("#pic_btn").click(UpdateAvatar);
+            //var model = {};
+            //var row = $('#dg_DataTable').datagrid('getSelected');
+            //if (row) {
+            //    model = row;
+            //    //$.messager.alert('Info', row.itemid + ":" + row.productid + ":" + row.attr1);
+            //    for (var i in row.Roles) {
+            //        model.Roles[i] = row.Roles[i] + "";
+            //    }
+            //    if (model.DepartmentID == null) model.DepartmentID = "";
+            //    model.Closed = model.Closed + "";
+            //    $("#FormData2").form('load', model);
+            //    //加载数据到表单
+            //    $("#dlg_DataInfo2").dialog('open');
+
+
+
+            //    $(".combobox-checkbox").prop('checked', false);
+            //    for (var i in row.Roles) {
+            //        var str = ".v" + row.Roles[i];
+            //        $(str).prop('checked', true);
+            //    }
+
+
+
+        }
+
+        function cancel() {
+            $("#edit").hide();
+            $("#info").show();
+        }
+
+        //提交表单
+        function submitForm() {
+            var url = '@Html.Url("Account_default", "UpdateInfo", "PersonalInfoManagment")';
+
+            $('#FormInfo').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    // alert(1);
+                    return $("#FormInfo").form('enableValidation').form('validate');
+                },
+                success: function (data) {
+                    if (typeof (data) != "undefined") {
+                        data = $.parseJSON(data);
+                        if (data.Value == true) {
+                            //$("#dlg_DataInfo").dialog('close');
+                            showTipsMsg("完成," + data.Message, 2000, 0);
+                            Replace();
+
+
+                        } else {
+                            //alert(data.Message);
+                            showTipsMsg("失败," + data.Message, 2000, 2);
+
+                        }
+                    }
+
+                }
+            });
+        }
+
+        //提交表单
+        function submitForm2() {
+            var url = '@Html.Url("Account_default", "UpdateUser", "EnterpriseUser")';
+
+            $('#FormData2').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('enableValidation').form('validate');
+                },
+                success: function (data) {
+                    if (typeof (data) != "undefined") {
+                        data = $.parseJSON(data);
+                        if (data.Success == true) {
+                            $("#dlg_DataInfo2").dialog('close');
+                            showTipsMsg("系统提示:更新用户成功!", 2000, 0);
+                            Reload();
+                        } else {
+                            alert(data.Message);
+                            showTipsMsg(data.Message, 2000, 2);
+
+                        }
+                    }
+
+                }
+            });
+
+        }
+
+
+    </script>
+}

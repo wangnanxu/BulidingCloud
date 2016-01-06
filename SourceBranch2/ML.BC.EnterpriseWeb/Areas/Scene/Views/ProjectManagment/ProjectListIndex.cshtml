@@ -1,0 +1,628 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+
+<div id="Content" class="Content ClearFloat">
+    <div class="btnbartitle">
+        <div>
+            项目管理 - <span id="OrganizationName">项目清单</span>
+        </div>
+    </div>
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_ProjectManagement_ProjectListManagement_Add), "新增", new { @class = "tools_btn", onclick = "append()" }, new { @class = "btn_Add" }, false, true)
+        @Html.Button(() => HasFunction(Functions.Root_ProjectManagement_ProjectListManagement_Edit), "编辑", new { @class = "tools_btn", onclick = "edit()" }, new { @class = "btn_Edit" }, false, true)
+        @Html.Button(() => HasFunction(Functions.Root_ProjectManagement_ProjectListManagement_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+        @Html.Button(() => HasFunction(Functions.Root_ProjectManagement_ProjectListManagement_Info), "查看详细", new { @class = "tools_btn", onclick = "info()" }, new { @class = "btn_Info" }, false, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+    </div>
+    <!--搜索-->
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件:
+                        </th>
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入编号',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="projectid" id="searchID" />
+                        </td>
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入名称',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="projectname" id="searchName" />
+                        </td>
+                        <td>
+                            <input class="easyui-textbox" data-options="prompt:'请输入管理员名称',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]" name="manager" id="searchManager" />
+                        </td>
+                        <td>
+                            <input class="easyui-combobox" id="searchStatus" name="searchstatus" value="" data-options="prompt:'当前状态',data:[{value:1,text:'未开始'},{value:2,text:'进行中'},{value:3,text:'已结束'},{value:4,text:'所有'}],editable:false,panelHeight:'auto',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]">
+                        </td>
+                        <td>
+                            <input type="button" onclick="Search()" value="搜 索" class="btnSearch" id="btnSearch">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table id="dg_DataTable" class="easyui-datagrid DataContent"
+           data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,url:'@Html.Url("Scene_default", "GetList", "ProjectManagment")',onLoadSuccess:onLoadSuccess,  onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'ProjectID',width:50">
+                    编号
+                </th>
+                <th data-options="field:'Name',width:60">
+                    名称
+                </th>
+                <th data-options="field:'ProjectCode',width:60">
+                        项目编码
+                    </th>
+                <th data-options="field:'DepartmentName',width:90">
+                    部门名称
+                </th>
+                <th data-options="field:'ManagerName',width:90">
+                    管理员
+                </th>
+                <th data-options="field:'RoleName',width:90">
+                    角色
+                </th>
+                <th data-options="field:'RegistDate',width:50,formatter:dateformat">
+                    注册日期
+                </th>
+                <th data-options="field:'BeginDate',width:50,formatter:dateformat">
+                    开始日期
+                </th>
+                <th data-options="field:'EndDate',width:50,formatter:dateformat">
+                    结束日期
+                </th>
+                <th data-options="field:'Status',width:50,align:'center',formatter:format">
+                    状态
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <!--弹出框-->
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitForm();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_DataInfo').dialog('close')">
+            取消
+        </a>
+    </div>
+    <div id="dlg_DataInfo" class="easyui-dialog dlg_DataInfo" title="企业项目-添加" data-options="buttons: '#dlg-buttons',modal:true">
+        <form id="FormData" class="easyui-form frm" method="post" data-options="novalidate:true">
+            <table cellpadding="5" id="tb_project">
+
+                <tr>
+
+                    <td class="FixedColumn">
+                        项目名称[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" id="txtName" name="Name" data-options="required:true"></input>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        项目编码[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" id="projectCode" name="ProjectCode" data-options="required:true"></input>
+                    </td>
+                </tr>
+
+                <tr>
+
+                    <td class="FixedColumn">
+                        所属部门[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-combotree" id="Department" name="Departments" data-options=" url: './GetDepartment',method: 'get',valueField: 'text',textField: 'id',multiple: 'true',multiline:'true',required:true,panelHeight: 'auto',cascadeCheck: false,lines: true,onCheck:onChange,height:24,onShowPanel:departmentshow">
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        管理员[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-combobox" id="Management" name="Managers" data-options="multiple:true,multiline:true,novalidate:true,editable:false,valueField: 'UserID',textField: 'Name',panelHeight:'auto',required:true,onLoadSuccess:LoadSuccess,onSelect:onSelect,onUnselect:onUnselect,height:24,onShowPanel:managershow,icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).combobox('clear');$(e.data.target).combobox('panel').find(':checked').prop('checked',false)}}]">
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        角色[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-combobox" id="Roles" name="Roles" data-options="url: './GetRoleList',method: 'get',valueField: 'RoleID',textField: 'Name',formatter: checkformat,editable:false,multiple:true,multiline:true,panelHeight:'auto',required:true,onLoadSuccess:LoadSuccess,onSelect:onSelect,onUnselect:onUnselect,height:24,onShowPanel:roleshow">
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        开始时间[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-datebox " type="text" id="BeginDate" name="BeginDate" data-options="required:true,editable:false"></input>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        结束时间[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-datebox " type="text" id="EndDate" name="EndDate" data-options="required:true,editable:false"></input>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        状态:
+                    </td>
+                    <td>
+                        <input class="easyui-combobox" id="Status" name="Status" data-options="data:[{value:1,text:'未开始'},{value:2,text:'进行中'},{value:3,text:'已结束'}],editable:false,panelHeight:'auto',required:true">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <!--详细信息-->
+    <div id="Datainfo" class="easyui-dialog dlg_DataInfo" title="企业项目-详细信息" data-options="modal:true,width:300">
+        <form class="easyui-form frm">
+
+            <table cellpadding="5" id="tb_project">
+                <tr>
+                    <td class="FixedColumn">
+                        名称:
+                    </td>
+                    <td>
+                        <label id="lbl_Name" data-options="required:true"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        项目编码:
+                    </td>
+                    <td>
+                        <label id="lbl_ProjectCode" data-options="required:true"></label>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        所属部门:
+                    </td>
+                    <td>
+                        <label id="lbl_Department"></label>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        管理员:
+                    </td>
+                    <td>
+                        <label id="lbl_Managers"></label>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        角色:
+                    </td>
+                    <td>
+                        <label id="lbl_Roles"></label>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        注册时间:
+                    </td>
+                    <td>
+                        <label id="lbl_Regist"></label>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        开始时间:
+                    </td>
+                    <td>
+                        <label id="lbl_Start"></label>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="FixedColumn">
+                        结束时间:
+                    </td>
+                    <td>
+                        <label id="lbl_End"></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        状态:
+                    </td>
+                    <td>
+                        <label id="lbl_Status"></label>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+</div>
+    @section scripts{
+        <script type="text/javascript">
+            var funcurl = "";
+            var addurl = '@Html.Url("Scene_default", "AddProject", "ProjectManagment")';
+            var updateurl = '@Html.Url("Scene_default", "UpdateProject", "ProjectManagment")';
+            var deleteurl = '@Html.Url("Scene_default", "DeleteProject", "ProjectManagment")';
+            var selectflag = false;
+            var departmentall = '@HasFunction(Functions.Root_SystemSetting_OrganizationManagement_ShowAll)';
+            var getmanager = '@HasFunction(Functions.Root_SystemSetting_UserManagement_List)';
+            var getrole = '@HasFunction(Functions.Root_SystemSetting_RoleManagement_List)';
+            var getdepartment = '@HasFunction(Functions.Root_SystemSetting_OrganizationManagement_List)';
+            function append() {
+                $("#tb_project").children().children().eq(3).removeAttr("style");
+                $("#Management").combobox("loadData", []);
+                var option = $("#Roles").combobox("options");
+                var roledata = $("#Roles").combobox("getData");
+                $("#tb_project").children().children().eq(4).show();
+                $.each(roledata, function (key, value) {
+                    $("#Roles").combobox("unselect",value.RoleID);
+                })
+                $("#BeginDate").datebox("readonly", "");
+                $("#EndDate").datebox("readonly", "");
+                $("#Status").combobox("readonly", "");
+                funcurl = addurl;
+                $("#FormData").form("clear");
+                $("#dlg_DataInfo").dialog({ title: '项目清单：新增' });
+            }
+            function edit() {
+                selectflag = false;
+                $('#FormData').form('clear');
+               //隐藏角色框
+                $("#tb_project").children().children().eq(4).css("display", "none");
+                funcurl = updateurl;
+                var row = $("#dg_DataTable").datagrid("getSelected");
+                if (row) {
+                    $("#BeginDate").datebox("readonly", "");
+                    $("#EndDate").datebox("readonly", "");
+                    $("#Status").combobox("readonly", "");
+                    var model = {};
+                    model.ProjectID = row.ProjectID;
+                    model.EnterpriseID = row.EnterpriseID;
+                    model.Name = row.Name;
+                    model.Roles = row.Roles;
+                    model.ProjectCode = row.ProjectCode;
+                    $("#dlg_DataInfo").dialog({ title: '项目清单：编辑' });
+                    $('#FormData').form('load', model);
+                    //兼容IE
+                    $("#RegistDate").datebox("setValue", dateformat(row.RegistDate));
+                    $("#BeginDate").datebox("setValue", dateformat(row.BeginDate));
+                    $("#EndDate").datebox("setValue", dateformat(row.EndDate));
+              
+                    var departmentlist = [];
+                    var temp = row.Departments.split('|');
+                    var departmentstring = "";
+                    $.each(temp, function (key, value) {
+                        departmentlist.push(parseInt(value));
+                        departmentstring += value+",";
+                    })
+                    departmentstring = departmentstring.substring(0, departmentstring.length - 1);
+                    
+                    $("#Department").combotree("setValues", departmentlist);
+                   
+                    $("#Department").combotree("setText", row.DepartmentName.join(','));
+                    
+                    $("#Status").combobox("setValue", row.Status);
+                    var managelist = [];
+                    temp = row.Managers.split('|');
+                    $.each(temp, function (key, value) {
+                        managelist.push(value);
+                    })
+                    if (getmanager == "True")
+                    {
+                    $("#Management").combobox({
+                        url: './GetManager',
+                        method: 'get',
+                        valueField: 'UserID',
+                        textField: 'Name',
+                        formatter: checkformat,
+                        queryParams: { departmentlist: departmentstring }
+                    })
+                    selectflag = true;
+                  
+                    $("#Management").combobox("setValues", managelist);
+                    $("#Management").combobox("setText", row.ManagerName.join(','));
+                    }
+                  
+                    if (row.Status != 1) {
+                        $("#BeginDate").datebox("readonly", "readonly");
+                        $("#EndDate").datebox("readonly", "readonly");
+                       // $("#Status").combobox("readonly", "readonly");
+                    }
+                    $("#Management").combobox("setValues", managelist);
+                    $("#Management").combobox("setText", row.ManagerName.join(','));
+                } else {
+                    IsEditData("");
+                    return;
+                }
+            }
+            function Delete() {
+                var row = $('#dg_DataTable').datagrid('getSelected');
+                funcurl = deleteurl;
+                if (row) {
+                   
+                    var ProjectID = row.ProjectID; //获取字段
+                    $.messager.confirm("系统提示", "您确认删除?", function (a) {
+                        if (!a) return;
+                        if (row.Status != 1) {
+                            if (row.Status == 2)
+                                showTipsMsg("进行中的项目不能被删除", 2000, 2);
+                            if (row.Status == 3)
+                                showTipsMsg("结束的项目不能被删除", 2000, 2);
+                            return;
+                        }
+                        $.getJSON(funcurl, { ProjectID: ProjectID }, function (data) {
+                            if (data.Success) {
+                                showTipsMsg(data.Message, 2000, 0);
+                                clickrow = -1;
+                                Reload();
+                            } else {
+                                showTipsMsg(data.Message, 2000, 2);
+                            }
+                        });
+                    });
+                } else {
+                    IsDelData("");
+                    return;
+                }
+            }
+            function submitForm() {
+                var begindate = new Date($("#BeginDate").datebox('getValue'));
+                var enddate = new Date($("#EndDate").datebox('getValue'));
+                if (begindate - enddate > 0)
+                {
+                    showTipsMsg("请输入正确的时间范围", 2000, 2);
+                    return;
+                }
+                $("#FormData").form("submit", {
+                    url: funcurl,
+                    onSubmit: function (para) {
+                        if (funcurl == updateurl) {
+                            var row = $("#dg_DataTable").datagrid("getSelected");
+                            para.ProjectID = row.ProjectID;
+                        }
+                        return $("#FormData").form("enableValidation").form("validate");
+                    },
+                    success: function (data) {
+                        var a = eval("(" + data + ")");
+                        if (a.Success) {
+                            $("#dlg_DataInfo").dialog('close');
+                            showTipsMsg(a.Message, 2000, 0);
+                            clickrow = -1;
+                            Reload();
+                        }
+                        else {
+                            showTipsMsg(a.Message, 2000, 2);
+                        }
+                    }
+                });
+            }
+            function checkformat(value) {
+                if (value != undefined) {
+                    var opts = $(this).combobox('options');
+                    return '<input type="checkbox" class="combobox-checkbox">' + value[opts.textField];
+                }
+            }
+            function format(value) {
+                if (value == 1) {
+                    return '<span iconCls="icon-ok">未开始</span>';
+                } else if (value == 2) {
+                    return '<span iconCls="icon-cancel">进行中</span>';
+                } else if (value == 3) {
+                    return '<span iconCls="icon-cancel">已结束</span>';
+                }
+            }
+            //服务器端的日期格式转换成客户端格式
+            function dateformat(value) {
+                //将日期转换为2005-5-5格式
+                if (value != undefined) {
+                    var num1 = value.split('(');
+                    var num2 = num1[1].split(')');
+                    var a = new Date(parseInt(num2[0]));
+                    var b = a.toLocaleDateString();
+                    var c = new RegExp("[/年月]", "g");
+                    b = b.replace(c, "-");
+                    return b.replace("日","");
+                }
+            }
+            function Search() {
+                var options = $('#dg_DataTable').datagrid('getPager').data("pagination").options;
+                showTipsMsg("正在搜索中，请稍后......", 2000, 0);
+                var parameter = { "projectid": $('#searchID').textbox("getValue"), "projectname": $("#searchName").textbox("getValue"), "manager": $("#searchManager").textbox("getValue"), "searchstatus": $('#searchStatus').combobox("getValue") };
+                $("#dg_DataTable").datagrid('options').queryParams = parameter;
+                $("#dg_DataTable").datagrid("reload");
+            }
+            function Reload() {
+                $('#searchID').textbox("setValue", "");
+                $('#searchName').textbox("setValue", "");
+                $('#searchManager').textbox("setValue", "");
+                $('#searchStatus').textbox("setValue", "");
+                $("#dg_DataTable").datagrid('options').queryParams = {};
+                $("#dg_DataTable").datagrid("reload");
+                $('input.combobox-checkbox')._propAttr('checked', false);
+            }
+            function LoadSuccess() {
+                var opts = $(this).combobox('options');
+                var target = this;
+                var values = $(target).combobox('getValues');
+                $.map(values, function (value) {
+                    var el = opts.finder.getEl(target, value);
+                    el.find('input.combobox-checkbox')._propAttr('checked', true);
+                })
+            }
+            function onSelect(row) {
+                
+                var opts = $(this).combobox('options');
+                var el = opts.finder.getEl(this, row[opts.valueField]);
+                el.find('input.combobox-checkbox')._propAttr('checked', true);
+                el.find('input.combobox-checkbox').parent().css("background-color", "white").css("color", "black");
+                
+            }
+            function onUnselect(row) {
+                var opts = $(this).combobox('options');
+                var el = opts.finder.getEl(this, row[opts.valueField]);
+                el.find('input.combobox-checkbox')._propAttr('checked', false);
+            }
+            function info()
+            {
+                var row = $("#dg_DataTable").datagrid("getSelected");
+                if (row)
+                {
+                    $("#lbl_Name").html(row.Name);
+                    $("#lbl_Department").html(row.DepartmentName.join('，'));
+                    $("#lbl_ProjectCode").html(row.ProjectCode);
+                    $("#lbl_Managers").html(row.ManagerName.join('，'));
+                    $("#lbl_Roles").html(row.RoleName.join('，'));
+                    $("#lbl_Start").html(dateformat(row.BeginDate));
+                    $("#lbl_End").html(dateformat(row.EndDate));
+                    $("#lbl_Start").html(dateformat(row.BeginDate));
+                    $("#lbl_Regist").html(dateformat(row.RegistDate));
+                    $("#lbl_Status").html(format(row.Status));
+                    $.getJSON('@Html.Url("Scene_default","AddScan","ProjectManagment")', { projectId: row.ProjectID,type:0 }, function (data) {
+                        if (!data.Success) {
+                            showTipsMsg(data.Message, 2000, 2);
+                        }
+                    })
+                    $("#Datainfo").dialog('open');
+                }
+                else
+                {
+                    showTipsMsg("您当前并为选中任何一行",2000,2);
+                }
+            }
+         
+            function onChange(node) {
+                //等把combotree选择完成后自动选择管理员
+                if (selectflag || funcurl == addurl) {
+              
+                    var departmentlist = $("#Department").combotree("getValues");
+                    var departmentpara = "";
+                    if (departmentlist.length == 0)
+                    {
+                        $("#Management").combobox("loadData", []);
+                        $("#Management").combobox('clear');
+                    }
+                    if (isNaN(departmentlist[0]))
+                    {
+
+                    }
+                    else
+                    {
+                        $.map(departmentlist, function (departmentid) {
+                            departmentpara += departmentid + ",";
+                        })
+                        var managerData = $("#Management").combobox("getValues");
+                        
+                        departmentpara = departmentpara.substring(0, departmentpara.length - 1);
+
+                        $.ajaxSetup({
+                            async: false
+                        })
+                        $("#Management").combobox({
+                            url: './GetManager',
+                            method: 'get',
+                            valueField: 'UserID',
+                            textField: 'Name',
+                            formatter: checkformat,
+                            queryParams: { departmentlist: departmentpara }
+                        })
+                        //只有在修改时才需要自动选择
+                        if (funcurl == updateurl) {
+                            var row = $("#dg_DataTable").datagrid("getSelected");
+                            var manager = row.ManagerName;
+                            var managerdata = eval($("#Management").combobox("getData"));
+                            for (var i = 0; i < manager.length; i++) {
+                                for (var j = 0; j < managerdata.length; j++) {
+                                    if (managerdata[j].Name == manager[i]) {
+                                        $("#Management").combobox("select", managerdata[j].UserID);
+                                        //$("#" + managerdata[j].Name + "").prop("checked", "checked");
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        $.ajaxSetup({
+                            async: true
+                        })
+                    }
+                }
+            }
+
+            function onLoadSuccess(data)
+            {
+                if (data.rows.length <= 0) {
+                    showTipsMsg("没有任何数据", 2000, 2);
+                } else {
+                    for (var i = 0; i <$($(".datagrid-btable")[1]).find("tr").length; i++) {
+                        var td = $($(".datagrid-btable")[1]).find("tr")[i].children;
+                        td[3].title = data.rows[i].DepartmentName.join(",");
+                        td[4].title = data.rows[i].ManagerName.join(",");
+                        td[5].title = data.rows[i].RoleName.join(",");
+                    }
+                }
+            }
+          
+            var clickrow = -1;
+
+            function onClickRow(row) {
+                if (row == clickrow) {
+                    $("#dg_DataTable").datagrid("unselectRow", row);
+                    clickrow = -1;
+                    return;
+                }
+                clickrow = row;
+            }
+            //打开下拉框查看是否有权限
+            function departmentshow() {
+                if(getdepartment=="False")
+                    showTipsMsg("您当前没有查看部门的权限",2000,2);
+            }
+            function roleshow()
+            {
+                if (getrole == "False")
+                {
+                    showTipsMsg("您当前没有查看角色的权限", 2000, 2);
+                }
+            }
+            function managershow()
+            {
+                if (getmanager == "False")
+                {
+                    showTipsMsg("您当前没有查看用户的权限", 2000, 2);
+                }
+            }
+            $(function () {
+                $(".window-mask").css("height", 620);
+                $("#Datainfo").dialog('close');
+            })
+
+        </script>
+    }
+    @section CSS{
+        <style>
+            .combobox-item-selected {
+                background-color: rgb(240,240,240);
+                color: black;
+            }
+        </style>
+    }
+</div>

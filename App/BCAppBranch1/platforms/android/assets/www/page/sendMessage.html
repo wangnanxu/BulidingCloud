@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body>
+		<div data-role="page" id="Page_SendMessage">
+			<div data-role="header" data-position="fixed">
+				<a href="#" data-role="button" data-rel="back">返回</a>
+				<h1>发送信息</h1>
+			</div>
+			<div data-role="content">
+				<div class="content_wrap" style="border-bottom: solid 1px #00AFEE; height: 70%;">
+					<div class="zTreeDemoBackground left">
+						<ul id="treeDemo" class="ztree"></ul>
+					</div>
+				</div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div id="div_show" style=" min-height:50px;width: 100%;border:solid 1px #00AFEE; background: #FFFFFF;">
+					<button class="ui-btn ui-btn-inline" disabled="disabled" style="border: none; background: none; color: #000000;">接收:</button>
+				</div>
+				<div style="width: 60%;float: left;padding-left: 50px;">
+					<input type="text" id="sendData_id" value="" />
+				</div>
+				<div style="width: 20%;float: right;">
+					<input type="button" id="" value="发送" onclick="SendMessageFun()" />
+				</div>
+			</div>
+	</body>
+
+</html>

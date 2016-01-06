@@ -1,0 +1,176 @@
+﻿
+<div id="Content" class="Content ClearFloat">
+    <!--标题-->
+    <div class="btnbartitle">
+        <div>
+            系统设置 - <span id="OrganizationName">消息</span>
+        </div>
+    </div>
+    <!--工具栏-->
+    <div class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+        @Html.Button(() => true, "查看详细", new { @class = "tools_btn", onclick = "info()", title = "查看相关详细信息" }, new { @class = "btn_Info" }, true, true)
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+    </div>
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件：
+                        </th>
+                        <td>
+                            <input placeholder="状态" type="text" style="width: 100px" class="easyui-combobox" id="Search_Status" name="Status" data-options="editable:false,prompt:'状态',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}],data:[{value:1,text:'已读'},{value:2,text:'未读'},{value:4,text:'所有',checked:'checked'}],panelHeight:'auto'" value="">
+                        </td>
+                        <td>
+                            <input placeholder="起始时间" type="text" style="width: 200px" class="easyui-datetimebox" id="StartTime" name="StartTime" data-options="editable:false,prompt:'起始时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).datetimebox('clear')}}]">
+                        </td>
+                        <td>
+                            <input placeholder="结束时间" type="text" style="width: 200px" class="easyui-datetimebox" id="EndTime" name="EndTime" data-options="editable:false,prompt:'截至时间',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).datetimebox('clear')}}]">
+                        </td>
+                        <td>
+                            <input placeholder="发送者" type="text" style="width:100px" class="easyui-textbox" id="Search_Sender" name="Sender" data-options="prompt:'发送者',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).datetimebox('clear')}}]">
+                        </td>
+                        <td>
+                            <input type="button" onclick="search()" value="搜 索" class="btnSearch" id="btnSearch">
+
+                        </td>
+
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table class="easyui-datagrid DataContent" id="dg_DataTable" data-options="singleSelect:true,rownumber:true,pagination:true,fitColumns:true,url:'@Html.Url("Account_default","GetList","MessageManagement")',method:'get',onLoadSuccess:onLoadSuccess,onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'Message',width:500">消息</th>
+                <th data-options="field:'Sender',width:100">发送者</th>
+                <th data-options="field:'SendTime',width:100">发送时间</th>
+                <th data-options="field:'Status',width:100,align:'center',formatter:format">状态</th>
+                <th data-options="field:'MessageID',width:1,hidden:true"></th>
+            </tr>
+        </thead>
+    </table>
+    <div id="dlg_details" class="easyui-dialog dlg_DataInfo" title="消息-详情" data-options="modal:true,width:300,height:200">
+        
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        消息:
+                    </td>
+                    <td>
+                        <label id="_message"></label>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                       发送者
+                    </td>
+                    <td>
+                      <label id="_sender"></label>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="FixedColumn">
+                        发送时间:
+                    </td>
+                    <td>
+                        <label id="_sendtime"></label>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        状态:
+                    </td>
+                    <td>
+                       <label id="_status"></label>
+                    </td>
+                </tr>
+                </table>
+        </div>
+        <script type="text/javascript">
+            function format(value) {
+                if (value != undefined) {
+                    if (value == 1)
+                        return "已读";
+                    else if (value == 2)
+                    {
+                        return "<input type='button' onclick='set(this)' value='标记已读' />";
+                    }
+
+                }
+            }
+            function set(doc)
+            {
+                var a = $(doc).parent().parent().parent();
+                var messageid = $($(a[0]).find("td[field='MessageID']").children()[0]).html();
+                 $.getJSON('@Html.Url("Account_default","ReadMessage","MessageManagement")', { messageid: messageid }, function (data) {
+                    if (data.Success)
+                    {
+                        showTipsMsg(data.Message, 2000, 0);
+                        $("#dg_DataTable").datagrid("reload");
+                    } else
+                    {
+                        showTipsMsg(data.Message, 2000, 2);
+                    }
+                })
+            }
+            function info()
+            {
+                var row = $("#dg_DataTable").datagrid("getSelected");
+                if (row)
+                {
+                    $("#_message").html(row.Message);
+                    $("#_sender").html(row.Sender);
+                    $("#_sendtime").html(row.SendTime);
+                    $("#_status").html(format(row.Status));
+                    $("#dlg_details").dialog("open");
+                }
+                else {
+                    showTipsMsg("您没有选择任何数据!", 2000, 2);
+                    return;
+                }
+                
+                
+            }
+            function search()
+            {
+                var parameter = {};
+                parameter.Sender = $("#Search_Sender").textbox("getValue");
+                parameter.BeginDate = $("#StartTime").datebox('getValue');
+                parameter.EndDate = $("#EndTime").datebox("getValue");
+                parameter.Status = $("#Search_Status").combobox("getValue");
+                var jsonstring = JSON.stringify(parameter);
+                $("#dg_DataTable").datagrid("options").queryParams = {jsonstring:jsonstring};
+                $("#dg_DataTable").datagrid('load',"@Html.Url("Account_default","GetList","MessageManagement")");
+            }
+            function onLoadSuccess(data) {
+
+                if (data != undefined && data.rows.length > 0) {
+                    for (var i = 0; i < $(".datagrid-btable tr").length; i++) {
+                        var td = $(".datagrid-btable tr")[i].children;
+                        td[0].title = data.rows[i].Message;
+                    }
+                }
+            }
+            
+            var clickrow = -1;
+
+            function onClickRow(row) {
+                if (row == clickrow) {
+                    $("#dg_DataTable").datagrid("unselectRow", row);
+                    clickrow = -1;
+                    return;
+                }
+                clickrow = row;
+            }
+        </script>
+    </div>

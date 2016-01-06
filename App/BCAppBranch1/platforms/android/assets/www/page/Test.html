@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_UserInformation">
+			<link rel="stylesheet" type="text/css" href="../css/progress-bar.css" />
+			<link rel="stylesheet" type="text/css" href="Test/zTreeStyle.css" />
+			<script src="Test/jquery.ztree.core-3.5.min.js" type="text/javascript" charset="utf-8"></script>
+			<script src="Test/jquery.ztree.excheck-3.5.min.js" type="text/javascript" charset="utf-8"></script>
+			<script src="Test/ztree.js" type="text/javascript" charset="utf-8"></script>
+			<script src="../js/View/sendMessage_V.js" type="text/javascript" charset="utf-8"></script>
+			<div data-role="header" data-position="fixed">
+				<h1>测试页面</h1>
+			</div>
+			<div data-role="content">
+				<script type="text/javascript">
+					$(function(){
+						$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+						setCheck();
+					});
+				</script>
+				<div class="content_wrap" style="border-bottom: solid 1px #00AFEE; height: 70%;">
+					<div class="zTreeDemoBackground left">
+						<ul id="treeDemo" class="ztree"></ul>
+					</div>
+				</div>
+				<a href="#" data-role="button" data-transition="none" onclick="GetCamera(CallBcakimg)">照相 </a>
+				<a href="#" data-role="button" data-transition="none" onclick="GetLocalPic(CallBcakimg)">打开相册 </a>
+				<img id="imgpic" src="" alt="" style="width: 50%;" />
+				<script type="text/javascript">
+					function CallBcakimg(src) {
+						$("#imgpic").attr("src", src);
+					}
+				</script>
+				<a href="#" data-role="button" data-transition="none" onclick="UploadFile('入戏太深.mp3',0)">上传图片 </a>
+				<a href="#" data-role="button" data-transition="none" onclick="Download('image_2015-05-08-14-44-28.jpg', CallBcakimg, 1)">下载 </a>
+				<div class="progress" id="Progress" style="display: none;">
+					<span class="progress-val" id="progressnum">84%</span>
+					<span class="progress-bar"><span id="progressbar" class="progress-in" style="width: 84%"></span></span>
+				</div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul id="dfooterul">
+						<li><a href="#" onClick="ChangePage('showMessage.html')" data-icon="comment" data-transition="none">消息</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('project.html')" data-icon="cloud" data-transition="none">项目</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('material.html')" data-icon="shop" data-transition="none">资料</a>
+						</li>
+						<li><a href="#" data-icon="user" class="ui-btn-active ui-state-persist">个人</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

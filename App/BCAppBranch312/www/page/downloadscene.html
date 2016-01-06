@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_Download">
+			<script src="../js/View/comm/bootstrap.min.js"></script>
+			<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
+			<div data-role="header" data-position="fixed">
+				<a href="#" data-role="button" onclick="GotoMaterialAllScene();">返回</a>
+				<h1>下载</h1>
+			</div>
+			<div data-role="content">
+				<div id="" style="text-align: center;">
+					<img id="downloadimg" src="" style="width: 50%;" />
+					<div>文件名：<span id="downloadMaterialName"></span></div>
+					<div>文件大小：<span id="downloadSize"></span></div>
+					<button id="btndown" data-role="none" type="button" class="btn btn-success" style="display: none;" onclick="DownloadMaterial()">点击下载</button>
+					<button id="btnopen" data-role="none" type="button" class="btn btn-success" style="display: none;" onclick="OpenApp()">打开文件</button>
+					<button id="btnnew" data-role="none" type="button" class="btn btn-success" style="display: none;" onclick="DownloadMaterial()">下载最新文件</button>
+				</div>
+				<div class="progress" style="margin-top: 50px;">
+					<div id="pro" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 10%">
+						0%
+					</div>
+				</div>
+			</div>
+	</body>
+
+</html>

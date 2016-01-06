@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_MaterialAll">
+			<div data-role="header" data-position="fixed">
+				<a href="#" data-role="button" onclick="BackToSceneItem();">返回</a>
+				<h1>资料库</h1>
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#" data-icon="arrow-d" onclick="GotoMaterialScene()">已下载</a></li>
+						<li><a href="#" data-icon="bullets">资料库</a></li>
+					</ul>
+				</div>
+			</div>
+			<div data-role="content">
+				<div id="wrapper" class="MessageBottom" style="top:100px;bottom:0">
+					<div id="scroller">
+						<ul id="materialul" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="搜素资料...">
+							
+						</ul>
+						<div data-role="popup" id="purchase" data-theme="b">
+							<ul data-role="listview" data-inset="true" style="min-width:210px;">
+								<li data-role="list-divider">选择操作</li>
+								<li><a onclick="">下载</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+	</body>
+
+</html>

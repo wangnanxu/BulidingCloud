@@ -1,0 +1,739 @@
+﻿@using ML.BC.Infrastructure;
+@using ML.BC.Web.Framework;
+@section CSS{
+    <style>
+        .combobox-item-selected {
+            background-color: rgb(223, 223, 223);
+            color: black;
+        }
+    </style>
+}
+<div id="Content" class="Content ClearFloat">
+    <!--标题-->
+    <div class="btnbartitle">
+        <div>
+            企业管理 - <span>企业帐号</span>
+        </div>
+    </div>
+    <!--工具栏-->
+    <div class="tools_bar">
+
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPUser_Add), "新增", new { @class = "tools_btn", onclick = "Add()" }, new { @class = "btn_Add" }, false, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPUser_Edit), "编辑", new { @class = "tools_btn", onclick = "Edit()" }, new { @class = "btn_Edit" }, false, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPUser_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_EPManagement_EPUser_ViewDetail), "查看详细", new { @class = "tools_btn", onclick = "Info()" }, new { @class = "btn_Info" }, false, true)
+
+
+
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+
+
+    </div>
+    <!--搜索栏-->
+    <div class="btnbarcontetn">
+        <div>
+            <table border="0" style="height: 45px;" class="frm-find">
+                <tbody>
+                    <tr>
+                        <th>
+                            查询条件：
+                        </th>
+
+                        <td>
+                            <input class="easyui-textbox" type="text" style="width: 200px" id="entName" name="keyword" data-options="prompt:'企业名称',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]">
+                        </td>
+
+
+                        <td>
+                            <input class="easyui-textbox" type="text" style="width: 200px" id="userName" name="keyword" data-options="prompt:'用户名称',icons:[{iconCls:'icon-clear',handler: function(e){$(e.data.target).textbox('clear')}}]">
+                        </td>
+                        <td>
+                            <input type="button" onclick="search()" value="搜 索" class="btnSearch" id="btnSearch">
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--数据表格-->
+    <table id="dg_DataTable" class="easyui-datagrid DataContent" data-options="rownumbers:true,singleSelect:true,pagination:true,fitColumns:true,url:'@Html.Url("Account_default", "GetList", "FrontUser")', onClickRow: onClickRow">
+        <thead>
+            <tr>
+                <th data-options="field:'UserID',width:80">
+                    ID
+                </th>
+                <th data-options="field:'Name',width:100">
+                    用户
+                </th>
+                <th data-options="field:'EnterpriseName',width:100">
+                    所属企业
+                </th>
+                <th data-options="field:'DepartName',width:100">
+                    所属部门
+                </th>
+
+                <th data-options="field:'Roles',width:190,formatter:RoleFormat">
+                    角色
+                </th>
+                <th data-options="field:'Mobile',width:120">
+                    移动电话
+                </th>
+                <th data-options="field:'RegistDate',width:150">
+                    注册日期
+                </th>
+                <th data-options="field:'LastDate',width:150">
+                    上次登录
+                </th>
+
+                <th data-options="field:'LastIP',width:150">
+                    上次IP
+                </th>
+                <th data-options="field:'Closed',width:60,align:'center',editor:{type:'checkbox',options:{on: 'true',off: 'false'}} ,formatter:format">
+                    状态
+                </th>
+                <th data-options="field:'UpdateTime',width:150">
+                    更新日期
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <!--新增对话框-->
+
+    <div id="dlg-buttons2">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitFormNew();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_DataInfo2').dialog('close')">
+            取消
+        </a>
+    </div>
+    <div id="dlg_DataInfo2" class="easyui-dialog dlg_DataInfo" title="企业帐号-新增" data-options="buttons: '#dlg-buttons2',modal:true,closed:true">
+        <form id="FormData2" class="easyui-form frm" method="post" data-options="">
+
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        用户名[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Name" data-options="required:true">
+                    </td>
+
+
+
+                </tr>
+
+
+                <tr>
+                    <td class="FixedColumn">
+                        所属企业[*]:
+                    </td>
+                    <td>
+                        <input id="etadd" class="easyui-combobox" name="EnterpriseID" data-options="
+                           editable:false,
+                           required:true,
+					multiple:false,
+                    multiline:false,
+					url: './GetEntList',
+                    method:'get',
+                    valueField:'EnterpriseID',
+					textField:'EnterpriseName',
+					panelHeight:'auto',
+
+                    onSelect:loadRole
+			">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        用户角色[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-combobox" name="Roles" id="roles" data-options="
+                           editable:false,
+                           required:true,
+                    multiple: true,
+                    multiline: true,
+                    url: './GetRoleList',
+                    method: 'get',
+                    valueField: 'RoleID',
+                    textField: 'RoleName',
+                    groupField: 'group',
+                    panelHeight: 'auto',
+                    formatter:checkformat,
+                    onLoadSuccess: onLoadSuccess,
+                    onSelect: onSelect,
+                    onUnselect: onUnselect,
+                    loadFilter:loadFilter
+
+                           ">
+                    </td>
+                </tr>
+
+
+
+                <tr>
+                    <td class="FixedColumn">
+                        密码[*]:
+                    </td>
+                    <td>
+                        <input placeholder="" class="easyui-textbox " type="password" name="Password" data-options="required:true">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        联系方式[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Mobile" data-options="required:true,validType:'mobile'">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        状态[*]:
+                    </td>
+                    <td>
+                        <select name="Closed" class="easyui-combobox" data-options="editable:false,panelHeight:'auto',require:true,value:'false' ">
+                            <option value="false" selected="selected">正常</option>
+                            <option value="true">关闭</option>
+
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <!--编辑对话框-->
+
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitForm();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#dlg_DataInfo').dialog('close')">
+            取消
+        </a>
+    </div>
+    <div id="dlg_DataInfo" class="easyui-dialog dlg_DataInfo" title="企业帐号-编辑" data-options="buttons: '#dlg-buttons',modal:true">
+        <form id="FormData" class="easyui-form frm" method="post" data-options="novalidate:true">
+
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        用户名[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Name" data-options="required:true">
+                    </td>
+
+
+
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        用户ID:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox" type="text" readonly="readonly" name="UserID" data-options="" />
+                    </td>
+
+
+
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        所属企业[*]:
+                    </td>
+                    <td>
+                        <input id="etedit" class="easyui-combobox" name="EnterpriseID" data-options="
+                           editable:false,
+                           required:true,
+					multiple:false,
+                    multiline:false,
+					url: './GetEntList',
+                    method:'get',
+                    valueField:'EnterpriseID',
+					textField:'EnterpriseName',
+					panelHeight:'auto',
+
+                    onSelect:loadRole
+			">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        用户角色[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-combobox" name="Roles" id="roles2" data-options="
+                           editable:false,
+                           required:true,
+                    multiple: true,
+                    multiline: true,
+                    url: './GetRoleList',
+                    method: 'get',
+                    valueField: 'RoleID',
+                    textField: 'RoleName',
+                    groupField: 'group',
+                    panelHeight: 'auto',
+                    formatter:checkformat,
+                    onLoadSuccess: onLoadSuccess,
+                    onSelect: onSelect,
+                    onUnselect: onUnselect,
+                    loadFilter:loadFilter
+
+                           ">
+                    </td>
+                </tr>
+
+
+
+                <tr>
+                    <td class="FixedColumn">
+                        密码:
+                    </td>
+                    <td>
+                        <input placeholder="" class="easyui-textbox " type="password" name="Password" data-options="">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        联系方式[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " type="text" name="Mobile" data-options="required:true,validType:'mobile'">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        状态[*]:
+                    </td>
+                    <td>
+                        <select name="Closed" class="easyui-combobox" data-options="editable:false,value:'false',panelHeight:'auto',required:true">
+                            <option value="false">正常</option>
+                            <option value="true">关闭</option>
+
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <!--详情对话框-->
+    <div id="dlg_details" class="easyui-dialog dlg_DataInfo" title="用户信息-详情" data-options="modal:true">
+        <form id="FormDetails" class="easyui-form frm" method="post" data-options="novalidate:true">
+
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        用户名:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="Name" data-options="required:true">
+                    </td>
+
+
+
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        用户ID:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="UserID" data-options="" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        企业:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox" readonly="readonly" type="text" name="EnterpriseName" data-options="" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        用户角色:
+                    </td>
+                    <td>
+                        <input readonly="readonly" class="easyui-combobox" name="Roles" data-options="
+					multiple:true,
+                    multiline:true,
+					url: './getRoleList',
+                    method:'get',
+                    valueField:'RoleID',
+					textField:'RoleName',
+                    groupField: 'group',
+					panelHeight:'auto',
+                    formatter:checkformat,
+                    onLoadSuccess: onLoadSuccess,
+                    onSelect: onSelect,
+                    onUnselect: onUnselect,
+                    loadFilter:loadFilter
+			">
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td class="FixedColumn">
+                        联系方式:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="Mobile" data-options="required:true">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        注册日期:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="RegistDate" data-options="required:true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        上此登录:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="LastDate" data-options="required:true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        上此IP:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="LastIP" data-options="required:true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        更新日期:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " readonly="readonly" type="text" name="UpdateTime" data-options="required:true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        状态:
+                    </td>
+                    <td>
+                        <select name="Closed" readonly="readonly" class="easyui-combobox" data-options="editable:false">
+                            <option value="false">正常</option>
+                            <option value="true">关闭</option>
+
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+
+        //$("#dg_DataTable").datagrid("load", '@Html.Url("Account_default", "", "FrontUser")');
+        //url: '@Html.Url("Account_default", "GetList", "BackUser")'
+        //$("#dlg_details").dialog('close');
+
+
+        //打开添加对话框
+        function Add() {
+            isnew = true;
+            $("#dlg_DataInfo2").dialog('open');
+            $('#FormData2').form('clear');
+            var model = { Closed: "false" };
+            $('#FormData2').form('load', model);
+        }
+
+        //刷新
+        function Refresh() {
+            $("#dg_DataTable").datagrid("reload");
+        }
+        //编辑
+        function Edit() {
+
+            var model = {};
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                var d = { EnterpriseID: row.EnterpriseID };
+                loadRole(d);
+                model = row;
+                //$.messager.alert('Info', row.itemid + ":" + row.productid + ":" + row.attr1);
+                for (var i in row.Roles) {
+                    model.Roles[i] = row.Roles[i] + "";
+                }
+                model.Closed = model.Closed + "";
+                //更新角色选择框
+
+                //加载数据到表单
+                $("#dlg_DataInfo").dialog('open');
+                $('#FormData').form('load', model);//model可以换成Url加载远程数据如:(/user?id=10)
+
+            } else {
+                IsEditData("");
+                return;
+            }
+
+        }
+        //详情
+        function Info() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                $("#dlg_details").dialog('open');
+                row.Closed = row.Closed + "";
+                $('#FormDetails').form('load', row);//model可以换成Url加载远程数据如:(/user?id=10)
+            } else {
+                showTipsMsg("您没有选择任何数据!", 2000, 2);
+                return;
+            }
+        }
+        //删除
+        function Delete() {
+            var row = $('#dg_DataTable').datagrid('getSelected');
+            if (row) {
+                var ID = row.UserID; //获取字段
+                $.messager.confirm("系统提示", "您确认删除?", function (a) {
+                    if (!a) return;
+                    $.getJSON('@Html.Url("Account_default", "DeleteUser", "FrontUser")', { FrontUserID: ID }, function (data) {
+                        if (data.Success) {
+                            if (data.Value == "True") {
+                                clickrow = -1;
+                                showTipsMsg("删除成功!", 2000, 0); //自定义提示信息在顶部显示
+
+                            }
+                            Refresh();
+                        }
+                    });
+
+                });
+
+            } else {
+                IsDelData(""); //方式1 预先定义的,适合删除时候调用
+                //showTipsMsg("您没有选择数据!", 2000,2); //方式2
+                return;
+            }
+        }
+        //加载数据
+        function ListGrid() {
+            $("#dg_DataTable").datagrid("load", '@Html.Url("Account_default", "SearchByEntName", "FrontUser")');
+        }
+
+        //搜索
+        function search() {
+            var username = $("#userName")[0].value;
+            var entname = $("#entName")[0].value;
+            var option = $("#dg_DataTable").datagrid("options");
+            var data = { userName: username, entName: entname, rows: option.pageSize, page: option.pageNumber };
+            option.queryParams = { userName: username, entName: entname };
+            $("#dg_DataTable").datagrid("load", '@Html.Url("Account_default", "GetList", "FrontUser")');
+        }
+
+        //提交表单 编辑
+        function submitForm() {
+            var url = '@Html.Url("Account_default", "UpdateUser", "FrontUser")';
+            $('#FormData').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('enableValidation').form('validate');
+                },
+                success: function (data) {
+                    if (typeof (data) != "undefined") {
+                        data = $.parseJSON(data);
+                        if (data.Success == true) {
+                            $("#dlg_DataInfo").dialog('close');
+                            showTipsMsg("编辑用户成功!", 2000, 0);
+                            clickrow = -1;
+                            Refresh();
+                        } else {
+                            //alert(data.Message);
+                            showTipsMsg(data.Message, 2000, 2);
+
+                        }
+                    }
+
+                }
+            });
+        }
+
+        //提交表单 新增
+        function submitFormNew() {
+            var url = '@Html.Url("Account_default", "AddUser", "FrontUser")';
+            $('#FormData2').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('enableValidation').form('validate');
+                },
+                success: function (data) {
+                    if (typeof (data) != "undefined") {
+                        data = $.parseJSON(data);
+                        if (data.Success == true) {
+                            $("#dlg_DataInfo2").dialog('close');
+                            showTipsMsg("增加用户成功!", 2000, 0);
+                            clickrow = -1;
+                            Refresh();
+                        } else {
+                            //alert(data.Message);
+                            showTipsMsg(data.Message, 2000, 2);
+
+                        }
+                    }
+
+                }
+            });
+
+        }
+
+        //格式化布尔值
+        function format(value) {
+            if (value == true) {
+
+                return '<span iconCls="icon-ok">关闭</span>';
+            } else {
+                return '<span iconCls="icon-cancel">正常</span>';
+            }
+        }
+
+        //格式化角色值 将多个角色id转换为角色名
+        var roleNames = undefined;
+
+        $.ajax({
+            type: "get",
+            url: '@Html.Url("Account_default", "GetRoleList", "FrontUser")',
+            dataType: "json",
+            success: function (data) {
+                roleNames = [];
+                if (typeof (data) != "undefined") {
+                    for (i in data) {
+                        roleNames[data[i].RoleID] = data[i].RoleName;
+
+                    }
+                }
+
+            }
+
+        })
+
+        //根据所选企业动态加载角色列表
+        function loadRole(rec) {
+            $('#roles').combobox({
+                multiple: true,
+                multiline: true,
+                url: './GetRoleList',
+                method: 'get',
+                queryParams: { EnterpriseID: rec.EnterpriseID },
+                valueField: 'RoleID',
+                textField: 'RoleName',
+                panelHeight: 'auto'
+            });
+            $('#roles2').combobox({
+                multiple: true,
+                multiline: true,
+                url: './GetRoleList',
+                method: 'get',
+                queryParams: { EnterpriseID: rec.EnterpriseID },
+                valueField: 'RoleID',
+                textField: 'RoleName',
+                panelHeight: 'auto'
+            });
+        }
+        //格式化多选框
+        function checkformat(value) {
+            if (value != undefined) {
+                var opts = $(this).combobox('options');
+                var str = '<input type="checkbox" class="combobox-checkbox v' + value[opts.valueField] + ' t' + value[opts.textField] + '">' + value[opts.textField];
+                return str;
+            }
+        }
+        function onLoadSuccess() {
+            var opts = $(this).combobox('options');
+            var target = this;
+            var values = $(target).combobox('getValues');
+            $.map(values, function (value) {
+                var el = opts.finder.getEl(target, value);
+                el.find('input.combobox-checkbox')._propAttr('checked', true);
+            })
+        }
+        function onSelect(row) {
+            //console.log(row);
+            var opts = $(this).combobox('options');
+            var el = opts.finder.getEl(this, row[opts.valueField]);
+            el.find('input.combobox-checkbox')._propAttr('checked', true);
+        }
+        function onUnselect(row) {
+            var opts = $(this).combobox('options');
+            var el = opts.finder.getEl(this, row[opts.valueField]);
+            el.find('input.combobox-checkbox')._propAttr('checked', false);
+        }
+        //去除角色的空格
+        function loadFilter(data) {
+
+            $.each(data, function (key, value) {
+                if (value.RoleName != undefined) {
+                    value.RoleName = value.RoleName.replace(/(\s*$)/g, "");
+                }
+            })
+            return data;
+        }
+        function refresh() {
+            var eid = $("#etedit").combobox('getValue');
+            $('#roles').combobox({
+                multiple: true,
+                multiline: true,
+                url: './GetRoleList',
+                method: 'get',
+                queryParams: { EnterpriseID: eid },
+                valueField: 'RoleID',
+                textField: 'RoleName',
+                panelHeight: 'auto'
+            });
+
+        }
+
+        var clickrow = -1;
+
+        function onClickRow(row) {
+            if (row == clickrow) {
+                $("#dg_DataTable").datagrid("unselectRow", row);
+                clickrow = -1;
+                return;
+            }
+            clickrow = row;
+        }
+
+        function RoleFormat(value, row, idx) {
+
+            if (!roleNames) {
+                return "未能获取到名称";
+
+            }
+            if (value != undefined) {
+                var str = "";
+                for (var i = 0; i < value.length; i++) {
+                    str = str + roleNames[value[i]] + ",";
+                }
+                return str.substr(0, str.length - 1);
+            }
+        }
+    </script>
+}

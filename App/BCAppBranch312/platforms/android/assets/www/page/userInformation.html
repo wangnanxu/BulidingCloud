@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+	</head>
+
+	<body>
+		<div data-role="page" id="Page_UserInformation">
+
+			<link rel="stylesheet" type="text/css" href="../css/UserInformation.css" />
+			<div data-role="header" data-position="fixed">
+				<h1>个人信息</h1>
+			</div>
+			<div data-role="content" style="margin: 0; padding: 0;">
+				<div class="UserContent">
+					<div class="UserHead">
+						<div class="HeadImage">
+							<img id="headimg" src="../img/head.jpg" onerror="this.src='../img/head.jpg'">
+						</div>
+						<div class="HeadInfo">
+							<span>
+								<a>账号	</a><a id="useraccount">账号</a>
+							</span>
+							<span>
+								<a>姓名	</a><a id="username">账号</a>
+							</span>
+						</div>
+						<div class="HeadChange UserButton">
+							<a href="#popupMenu" id="addpic" data-rel="popup" data-transition="fade">更改头像 >></a>
+						</div>
+						<div data-role="popup" data-position-to="window" id="popupMenu" data-theme="b">
+							<ul data-role="listview" data-inset="true" style="min-width:210px;">
+								<li data-role="list-divider">更改头像方式</li>
+								<li><a href="#" data-rel="back" onclick="GetHeadByCamera();">照相</a>
+								</li>
+								<li><a href="#" data-rel="back" onclick="GetHeadByLocal();">本地相册</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="UserPassword">
+						<div class="UserButton Userbtn" onclick="ChangePage('updatepassword.html')">
+							更改密码
+						</div>
+					</div>
+					<div class="UserQuit" onclick="ExitToLoading('0')">
+						<div class="UserButton Userbtn" style="font-weight: 700;">退出登录</div>
+					</div>
+					<div class="UserQuit" onclick="Quite();">
+						<div class="UserButton Userbtn">退出程序</div>
+					</div>
+					<div class="UserQuit" onclick="AlertDeleteTable()">
+						<div class="UserButton Userbtn">清除缓存</div>
+					</div>
+				</div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul id="dfooterul">
+						<li><a href="#" onClick="ChangePage('showMessage.html')" data-icon="comment" data-transition="none">消息</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('project.html')" data-icon="cloud" data-transition="none">项目</a>
+						</li>
+						<li><a href="#" onClick="ChangePage('material.html')" data-icon="shop" data-transition="none">资料</a>
+						</li>
+						<li><a href="#" data-icon="user" class="ui-btn-active ui-state-persist">个人</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

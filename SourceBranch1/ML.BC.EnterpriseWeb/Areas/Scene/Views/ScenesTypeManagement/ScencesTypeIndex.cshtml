@@ -1,0 +1,372 @@
+﻿@using ML.BC.Web.Framework;
+
+<div id="Content" class="Content ClearFloat">
+    <!--顶部标题-->
+    <div class="btnbartitle">
+        <div>
+            系统设置 - <span id="OrganizationName">现场类型</span>
+        </div>
+    </div>
+
+    <!--操作工具条-->
+    <div id="tb1" class="tools_bar">
+        @Html.Button(() => true, "刷新", new { @class = "tools_btn", onclick = "Replace()", title = "刷新页面" }, new { @class = "btn_Refresh" }, true, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_SystemSetting_RoleManagement_Add), "新增", new { @class = "tools_btn", onclick = "append()" }, new { @class = "btn_Add" }, false, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_SystemSetting_RoleManagement_Edit), "编辑", new { @class = "tools_btn", onclick = "edit()" }, new { @class = "btn_Edit" }, false, true)
+
+        @Html.Button(() => HasFunction(Functions.Root_SystemSetting_RoleManagement_Delete), "删除", new { @class = "tools_btn", onclick = "Delete()" }, new { @class = "btn_Delete" }, false, true)
+
+
+        @Html.Button(() => true, "离开", new { @class = "tools_btn", onclick = "ThisCloseTab()", title = "关闭当前窗口" }, new { @class = "btn_Back" }, true, true, false)
+    </div>
+
+    <!-- 弹出框-->
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:submitform();">
+            提交
+        </a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript: $('#add_dialog').dialog('close')">
+            取消
+        </a>
+    </div>
+    <div id="add_dialog" class="easyui-dialog dlg_DataInfo" 
+         data-options="
+ 				buttons: '#dlg-buttons',
+         modal:true
+         ">
+        <form id="typeform" class="easyui-form frm" action="Url" method="post" data-options="">
+            <table cellpadding="5">
+                <tr>
+                    <td class="FixedColumn">
+                        所属类型:
+                    </td>
+                    <td>
+                        <input class="easyui-combotree" id="scenetype" data-options="
+                    valueField: 'id',
+                    textField: 'text',
+					panelHeight:'auto'
+			">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        类型名称[*]:
+                    </td>
+                    <td>
+                        <input class="easyui-textbox " id="dname" type="text" name="Name" data-options="required:true">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="FixedColumn">
+                        是否有效:
+                    </td>
+                    <td>
+                        <input name="Available" class="easyui-combobox" id="dcheck" data-options="data:[{value:true,text:'是'},{value:false,text:'否'}],panelHeight:'auto',editable:false,required:true" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <!--右键菜单-->
+    
+    <!--树形表格-->
+    <div id="func-table" class="DataContent" style="height:auto">
+        <table id="tg" class="easyui-treegrid DataContent" style="width: auto; overflow: scroll" data-options="rownumbers: true,animate: true,collapsible: false,fitColumns: true,url: '@Html.Url("Scene_default", "GetList", "ScenesTypeManagement")',method: 'get',idField: 'id',treeField: 'Name',onClickRow:onClickRow,onLoadSuccess:onLoadSuccess">
+            <thead>
+                <tr>
+                    <th data-options="field:'Name',width:100,editor:'text'">现场名称</th>
+                    @*<th data-options="field:'MyID',width:60,align:'right',editor:'text'"><span class="red-star" style="color:red">*</span>MyID</th>*@
+                    @*<th data-options="field:'id',width:200,editor:'text'">描述</th>*@
+                    <th data-options="field:'Available',width:20,formatter:format,align:'center'">
+                        是否有效
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        var deleteurl = "@Html.Url("Scene_default", "DeleteType", "ScenesTypeManagement")";
+        var updateurl = "@Html.Url("Scene_default", "UpdateType", "ScenesTypeManagement")";
+        var addurl = "@Html.Url("Scene_default", "AddType", "ScenesTypeManagement")";
+        var funcurl = "";
+        //格式化布尔值
+        function format(value) {
+            if (value == true) {
+                return '<span iconCls="icon-ok">是</span>';
+            } else {
+                return '<span iconCls="icon-cancel">否</span>';
+            }
+        }
+        function append() {
+            var row = $('#tg').treegrid('getSelected');
+            var treedata = $('#tg').treegrid('getChildren');
+            var rowdata = $("#tg").treegrid('getData');
+                $('#typeform').form('clear');
+              
+                var root = [];//第一个children为所有parentid=0
+                var roots = $("#tg").treegrid("getRoots");
+                $.each(roots, function (rot1, rot2) {
+                    var rootnode = {};
+                    rootnode.id = rot2.id;
+                    rootnode.text = rot2.Name;
+                    rootnode.children = [];
+                    rootnode.children = getmytree(treedata, rot2);
+                    root.push(rootnode);
+                })
+                var temp = {};
+                temp.id = 0;
+                temp.text = "空";
+                root.push(temp);
+                $("#scenetype").combotree("loadData", root);
+                if (row) {
+                    curSeleNodeID = row.id;
+                    var selectnode = $("#scenetype").combotree("tree").tree("find", row.id);
+                    $("#scenetype").combotree("tree").tree('select', selectnode.target);
+                    $('#scenetype').combotree("setValue", row.Name);
+                }
+                funcurl = addurl;
+                $("#add_dialog").dialog({ title: '现场类型-新增' });
+                return;
+          
+        }
+        function edit() {
+            var row = $('#tg').treegrid('getSelected');
+            if (row) {
+               
+                var model = {};
+                model.Name = row.Name;
+                $('#typeform').form('load', model);
+                $("#dcheck").combobox("select", row.Available);
+                var treedata = $("#tg").treegrid("getChildren");
+                var root = [];//第一个children为所有parentid=0
+                var roots = $("#tg").treegrid("getRoots");
+                $.each(roots, function (rot1, rot2) {
+                    var rootnode = {};
+                    rootnode.id = rot2.id;
+                    rootnode.text = rot2.Name;
+                    rootnode.children = [];
+                    if (rot2.id != row.id) {
+                        rootnode.children = gettree(treedata, rot2);
+                        root.push(rootnode);
+                    }
+                })
+                var temp = {};
+                temp.id = 0;
+                temp.text = "空";
+                root.push(temp);
+                $("#scenetype").combotree("loadData", root);
+                if (row._parentId != 0) {
+                    var selectnode = $("#scenetype").combotree("tree").tree("find", row._parentId);
+                    $("#scenetype").combotree("tree").tree('select', selectnode.target);
+                    $('#scenetype').combotree("setValue", selectnode.text);
+                }
+                else {
+                    $('#scenetype').combotree("setValue", "空");
+                }
+                funcurl = updateurl;
+                $("#add_dialog").dialog({ title: '现场类型-编辑' })
+            } else {
+                IsEditData("");
+                return;
+            }
+        }
+        //提交表单
+        function submitform() {
+            $("#typeform").form("submit", {
+                url: funcurl,
+                onSubmit: function (para) {
+                    if (funcurl == updateurl) {
+                        var row = $("#tg").treegrid("getSelected");
+                        if ($("#scenetype").combobox('getValue') == "空" || $("#scenetype").combobox('getValue') == "") {//最高级部门
+                            para._parentId = 0;
+                        }
+                        else {
+                            var selectnode = $("#scenetype").combotree('tree').tree("getSelected");
+                            para._parentId = parseInt(selectnode.id);
+                        }
+                        para.id = row.id;
+                    }
+                    if (funcurl == addurl) {
+                        var row = $("#tg").treegrid("getSelected");
+                        var treedata = $("#tg").treegrid("getData");
+                        if ($("#scenetype").combotree("getValue") != "") {
+                            var selectnode = $("#scenetype").combotree('tree').tree("getSelected");
+                            para._parentId = parseInt( selectnode.id);
+                        }
+                        else
+                            para._parentId = 0;
+                    }
+                    return $("#typeform").form("enableValidation").form("validate");
+                },
+                success: function (data) {
+                    var a = eval("(" + data + ")");
+                    if (a.Success) {
+                        showTipsMsg(a.Message, 2000, 0);
+                        $("#add_dialog").dialog('close');
+                        Reload();
+
+                    }
+                    else {
+                        showTipsMsg(a.Message, 2000, 2);
+                    }
+                }
+            })
+        }
+        function Delete() {
+            var row = $('#tg').treegrid('getSelected');
+            funcurl = deleteurl;
+            if (row) {
+                var id = row.id; //获取字段
+                $("#tg").treegrid("unselect", row.id);
+                $.messager.confirm("系统提示", "您确认删除?", function (a) {
+                    if (!a) return;
+                    $.getJSON(funcurl, { TypeID: id }, function (data) {
+                        
+                        if (data.Success) {
+                            showTipsMsg(data.Message, 2000, 0);
+                            Reload();
+                        } else {
+                            showTipsMsg(data.Message, 2000, 2);
+                        }
+                    });
+                });
+            } else {
+                IsEditData("");
+                return;
+            }
+
+        }
+        function onLoadSuccess(x, y) {
+            if (y.total) {
+                total = y.total - 1;
+                $("#fc-tiper").html("共" + total + "个功能项.");
+            } else {
+                $("#fc-tiper").html("正在添加新功能...");
+            }
+        }
+        //递归转换成树结构 修改用
+        function gettree(root, node) {
+            var sublist = [];
+            sublist[0] = {};
+            if (node == undefined)
+                return;
+            var index = 0;
+            for (var i = 0; i < root.length; i++) {
+                if (root[i]._parentId == node.id)//找到参数的直接子节点
+                {
+                    sublist[index++] = root[i];
+                }
+            }
+            if (sublist[0].id == undefined)
+                return;
+            var result = [];
+            for (var j = 0; j < sublist.length; j++) {
+                var row = $("#tg").treegrid('getSelected');
+                if (sublist[j].id != row.id) {
+                    var ret = {};
+                    ret.id = sublist[j].id;
+                    ret.text = sublist[j].Name;
+                    ret.children = [];
+                    ret.children = gettree(root, sublist[j]);
+                    result.push(ret);
+                }
+            }
+            return result;
+        }
+        //递归转换成树结构 增加用
+        function getmytree(root, node) {
+            var sublist = [];
+            sublist[0] = {};
+            if (node == undefined)
+                return;
+            var index = 0;
+            for (var i = 0; i < root.length; i++) {
+                if (root[i]._parentId == node.id)//找到参数的直接子节点
+                {
+                    sublist[index++] = root[i];
+                }
+            }
+            if (sublist[0].id == undefined)
+                return;
+            var result = [];
+            for (var j = 0; j < sublist.length; j++) {
+
+                var ret = {};
+                ret.id = sublist[j].id;
+                ret.text = sublist[j].Name;
+                ret.children = [];
+                ret.children = getmytree(root, sublist[j]);
+                result.push(ret);
+
+            }
+            return result;
+        }
+        function Reload()
+        {
+            $("#tg").treegrid('reload');
+        }
+    
+        var flag = true;
+        var searchResult = new Array();
+        var index = 0;
+
+        function searchtree() {
+            //判断是否是新检索
+            if (flag) {
+                var all = $("#tg").treegrid("getChildren", $("#tg").treegrid("getRoot").id);
+
+                for (var i = 0; i < all.length; i++) {
+                    if (all[i].Name.indexOf($("#searchName").val()) >= 0) {
+                        searchResult[index++] = all[i].id;
+                    }
+                }
+                //找到
+                if (searchResult.length > 0) {
+                    //展开父节点
+                    $("#tg").treegrid("expand", $("#tg").treegrid("getParent", searchResult[0]).id);
+                    //选中节点
+                    $("#tg").treegrid("select", searchResult[0]);
+                    index = 1;
+                    flag = false;
+                    if (index == searchResult.length) {
+                        flag = true;
+                        index = 0;
+                        searchResult = [];
+                    }
+                }
+                    //没找到
+                else {
+                    index = 0;
+                    searchResult = [];
+                }
+            }
+                //查找下一条
+            else {
+                $("#tg").treegrid("expand", $("#tg").treegrid("getParent", searchResult[index]).id);
+                $("#tg").treegrid("select", searchResult[index++]);
+                if (index == searchResult.length) {
+                    flag = true;
+                    index = 0;
+                    searchResult = [];
+                }
+            }
+        }
+      
+     
+        var clickrow = 0;
+      
+        function onClickRow(row) {
+                    if (row.id == clickrow) {
+                        $("#tg").treegrid("unselect", row.id);
+                        clickrow = 0;
+                        return;
+                    }
+                    clickrow = row.id;
+                }
+
+    </script>
+</div>
+
